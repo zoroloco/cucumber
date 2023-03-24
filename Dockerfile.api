@@ -1,0 +1,21 @@
+FROM node:16.18.1
+
+USER root
+
+ENV API_HOME /usr/src/api
+
+RUN mkdir -p ${API_HOME}
+
+WORKDIR ${API_HOME}
+
+COPY ./api .
+
+COPY .env .
+
+RUN npm install
+
+RUN npm run build
+
+EXPOSE 3001
+
+CMD ["npm","start"]

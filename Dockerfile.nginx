@@ -1,0 +1,28 @@
+FROM node:16.18.1 as spa
+
+USER root
+
+ENV SPA_HOME /usr/src/spa
+
+RUN mkdir -p ${SPA_HOME}
+
+WORKDIR ${SPA_HOME}
+
+COPY ./spa .
+
+COPY .env .
+
+RUN npm install
+
+RUN npm run build
+
+FROM nginx:1.23.2
+
+COPY --from=0 /usr/src/spa/build /usr/share/nginx/html
+
+RUN rm /etc/nginx/conf.d/default.conf
+
+#RUN mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.ORIGINAL
+COPY ./spa/nginx.conf /etc/nginx/nginx.conf
+
+EXPOSE 3000

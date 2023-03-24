@@ -1,0 +1,12 @@
+.themeBlue {
+  color: #fff;
+  background: linear-gradient(112.03deg, #001d53 52.54%, rgba(0, 58, 165, 0.76) 93.68%);
+}
+
+.navBrandSpacer {
+  margin-left: 25px;
+}
+
+.navSpacer {
+  margin-right: 50px;
+}
