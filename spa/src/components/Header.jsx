@@ -20,13 +20,13 @@ const Header = () => {
           <Navbar.Brand className={classes.navBrandSpacer} href='/'>
             druidia.net
           </Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
 
+          <Navbar.Collapse className='justify-content-end'>
           {isAuthenticated &&
           <Nav className="me-auto">
             <Nav.Link href="/users">[Users]</Nav.Link>
           </Nav>}
-
-          <Navbar.Collapse className='justify-content-end'>
             {isAuthenticated && <LogoutButton />}
             {!isAuthenticated && <LoginButton />}
           </Navbar.Collapse>
