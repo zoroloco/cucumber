@@ -1,8 +1,8 @@
 {
-  "name": "api-tool",
+  "name": "druidia-api",
   "version": "0.0.1",
   "description": "",
-  "author": "kcenturion@carisls.com",
+  "author": "kcenturion@yahoo.com",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {

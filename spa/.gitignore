@@ -49,7 +49,7 @@ test/**/*.js.map
 .idea
 
 # Project
-/public
+#/public
 /dist
 
 #env

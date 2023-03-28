@@ -1,8 +1,8 @@
 {
-  "name": "frontend",
+  "name": "druidia-spa",
   "version": "0.1.0",
   "private": true,
-  "author": "kcenturion",
+  "author": "kcenturion@yahoo.com",
   "dependencies": {
     "@auth0/auth0-react": "^2.0.1",
     "bootstrap": "^5.2.2",

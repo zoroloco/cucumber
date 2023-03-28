@@ -10,9 +10,9 @@ WORKDIR ${API_HOME}
 
 COPY ./api .
 
-COPY .env .
-
 RUN npm install
+
+COPY .env .
 
 RUN npm run build
 
