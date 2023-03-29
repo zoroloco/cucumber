@@ -57,3 +57,10 @@ test/**/*.js.map
 .env.local
 .env.development
 package-lock.json
+
+druidia.crt
+druidia.key
+
+*.key
+*.crt
+*.pem

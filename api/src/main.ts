@@ -9,6 +9,12 @@ import { AppConstants } from './app.constants';
 import { AppModule } from './app.module';
 import * as conf from './conf.json';
 import path = require('path');
+const fs = require('fs');
+
+const httpsOptions = {
+  key: fs.readFileSync(process.env.KEY_PATH),
+  cert: fs.readFileSync(process.env.CERT_PATH)
+};
 
 async function bootstrap() {
   const dateStamp = new Date();
@@ -56,15 +62,15 @@ async function bootstrap() {
         // other transports...
       ],
       // other options
-    }),
+    }),httpsOptions
   });
 
   app.enableCors();
 
   //swagger init
   const config = new DocumentBuilder()
-    .setTitle('API Tool')
-    .setDescription('All purpose API tool')
+    .setTitle('Druidia.net API')
+    .setDescription('A secure restful resource API.')
     .setVersion('1.0')
     .addTag(AppConstants.SECURE)
     .build();
