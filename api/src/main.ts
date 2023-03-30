@@ -12,8 +12,8 @@ import path = require('path');
 const fs = require('fs');
 
 const httpsOptions = {
-  key: fs.readFileSync(process.env.KEY_PATH),
-  cert: fs.readFileSync(process.env.CERT_PATH)
+  key: fs.readFileSync(process.env.KEY_PATH, 'utf8'),
+  cert: fs.readFileSync(process.env.CERT_PATH,'utf8')
 };
 
 async function bootstrap() {
