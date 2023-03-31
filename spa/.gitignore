@@ -58,4 +58,5 @@ test/**/*.js.map
 .env.development
 package-lock.json
 
-build
+#lets enable build because ec2 freezes when doing its own npm run build.
+#build
