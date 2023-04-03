@@ -60,3 +60,6 @@ package-lock.json
 
 envs_mac.sh
 envs.sh
+
+druidia.crt
+druidia.key

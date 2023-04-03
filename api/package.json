@@ -29,7 +29,6 @@
     "cors": "^2.8.5",
     "csurf": "^1.11.0",
     "csv-writer": "^1.6.0",
-    "dotenv": "^16.0.3",
     "express-session": "1.17.3",
     "helmet": "^6.0.0",
     "jwks-rsa": "^3.0.1",

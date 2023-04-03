@@ -7,63 +7,35 @@ import {
 import * as winston from 'winston';
 import { AppConstants } from './app.constants';
 import { AppModule } from './app.module';
-import * as conf from './conf.json';
 import path = require('path');
 const fs = require('fs');
+import { Logger } from '@nestjs/common';
 
-const httpsOptions = {
+const httpsOptions =  {
   key: fs.readFileSync(process.env.KEY_PATH, 'utf8'),
   cert: fs.readFileSync(process.env.CERT_PATH,'utf8')
 };
 
 async function bootstrap() {
   const dateStamp = new Date();
+  let app = null;
 
-  const app = await NestFactory.create(AppModule, {
-    logger: WinstonModule.createLogger({
-      transports: [
-        new winston.transports.Console({
-          format: winston.format.combine(
-            winston.format.timestamp(),
-            winston.format.ms(),
-            winston.format.colorize({
-              colors: {
-                error: 'red',
-                debug: 'blue',
-                warn: 'yellow',
-                data: 'grey',
-                info: 'green',
-                verbose: 'cyan',
-              },
-            }),
-            nestWinstonModuleUtilities.format.nestLike(conf.title, {
-              // options
-            }),
-          ),
-        }),
-        new winston.transports.File({
-          filename: path.join(
-            __dirname,
-            '../logs/',
-            conf.title +
-              '-' +
-              (dateStamp.getMonth() + 1) +
-              '-' +
-              dateStamp.getDate() +
-              '-' +
-              dateStamp.getFullYear() +
-              '.log',
-          ),
-          maxFiles: 256,
-          maxsize: 4194304,
-          handleExceptions: true,
-        }),
-
-        // other transports...
-      ],
-      // other options
-    }),httpsOptions
-  });
+  if(process.env.NODE_ENV === 'production'){
+    app = await NestFactory.create(AppModule, {
+      logger: WinstonModule.createLogger({
+        transports: AppConstants.winstonTransports
+        // other options
+      }),httpsOptions
+    });
+  }else{
+    app = await NestFactory.create(AppModule, {
+      logger: WinstonModule.createLogger({
+        transports: AppConstants.winstonTransports
+        // other options
+      })
+    });
+  }
+  
 
   app.enableCors();
 
@@ -78,6 +50,6 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   await app.listen(AppConstants.appPort);
-
+  Logger.log('API environment:'+process.env.NODE_ENV);
 }
 bootstrap();
