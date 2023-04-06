@@ -1,11 +1,11 @@
 import { Module } from "@nestjs/common";
-import { TestDataSourceModule } from "../datasources";
+import { DbDataSourceModule } from "../datasources";
 import { UserModule } from "./user/user.module";
 
 @Module({
-  imports: [TestDataSourceModule, UserModule],
+  imports: [DbDataSourceModule, UserModule],
   providers: [],
   controllers: [],
   exports: []
 })
-export class TestModule {}
+export class DbModule {}

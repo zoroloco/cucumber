@@ -7,21 +7,21 @@ import { passportJwtSecret } from 'jwks-rsa';
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor() {
     super({
-      secretOrKeyProvider: passportJwtSecret({
-        cache: true,
-        rateLimit: true,
-        jwksRequestsPerMinute: 5,
-        jwksUri: `${process.env.API_ISSUER_URL}.well-known/jwks.json`,
-      }),
-
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      audience: process.env.API_AUDIENCE,
-      issuer: `${process.env.API_ISSUER_URL}`,
-      algorithms: ['RS256'],
+      ignoreExpiration: false,
+      secretOrKey: process.env.API_APP_SECRET,
     });
   }
 
-  validate(payload: unknown): unknown {
-    return payload;
+  /**
+   * Here is where passport injects the user object that will be part of the request.
+   * This is a good place to hit the database and finish populating more info on the
+   * user. This is invoked when your resource is decorated with the jwt auth guard.
+   * 
+   * @param payload 
+   * @returns 
+   */
+  async validate(payload: any) {
+    return { userId: payload.sub, username: payload.username };
   }
 }

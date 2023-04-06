@@ -1,12 +1,14 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import cors from 'cors';
 import helmet from 'helmet';
-import { TestModule } from './test/test.module';
+import { DbModule } from './db/db.module';
 import { AuthModule } from './auth/auth.module';
+import { LoginModule } from './login/login.module';
 
 @Module({
-  imports: [AuthModule, TestModule],
+  imports: [AuthModule, DbModule, LoginModule],
   providers: [],
+  controllers: [],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

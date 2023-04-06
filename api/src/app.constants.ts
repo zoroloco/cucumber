@@ -5,7 +5,6 @@ import {
 } from 'nest-winston';
 import * as winston from 'winston';
 
-
 export class AppConstants {
   static dateStamp = new Date();
 
@@ -58,12 +57,29 @@ export class AppConstants {
   ];
 
   //endpoints
-  static TEST: string = "test";
-  static TEST_GET_USERS: string = "users";
 
-  //swagger tags
-  static SECURE: string = 'secure';
+  //swagger tags (sections)
+  static API_TAG = 'API';
+  static AUTH_TAG = 'AUTH';
+
+  //root
+  static API_PATH: string = 'api';
+  static AUTH_PATH: string = 'auth';
+
+  //api endpoints
+  static FIND_ALL_USERS: string = 'find-all-users';
+  static FIND_USER_BY_USERNAME = 'find-user-by-username';
+  static CREATE_USER = 'create-user';
+
+  //auth endpoints
+  static LOGIN: string = 'login';  
 
   //swagger description
-  static TEST_USERS = "Returns users that are part of a test database.";  
+  static LOGIN_DESC = 'Validates credentials. Returns signed JWT if successful. 401 otherwise.';
+  static FIND_ALL_USERS_DESC = 'Returns all users.';
+  static FIND_USER_BY_USERNAME_DESC = 'Returns user given a username.';
+  static CREATE_USER_DESC = 'Registers a user.';
+
+  //bcrypt
+  static BCRYPT_SALT_ROUNDS = 10;
 }

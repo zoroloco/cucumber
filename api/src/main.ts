@@ -9,7 +9,7 @@ import { AppConstants } from './app.constants';
 import { AppModule } from './app.module';
 import path = require('path');
 const fs = require('fs');
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 
 const httpsOptions =  {
   key: fs.readFileSync(process.env.KEY_PATH, 'utf8'),
@@ -39,15 +39,23 @@ async function bootstrap() {
 
   app.enableCors();
 
+  app.useGlobalPipes(new ValidationPipe({
+    disableErrorMessages: process.env.NODE_ENV === 'production'
+  }));
+
   //swagger init
-  const config = new DocumentBuilder()
-    .setTitle('Druidia.net API')
+  if(process.env.NODE_ENV !== 'production'){
+    const config = new DocumentBuilder()
+    .setTitle('The Druidia.net API')
     .setDescription('A secure restful resource API.')
     .setVersion('1.0')
-    .addTag(AppConstants.SECURE)
+    .addTag(AppConstants.AUTH_TAG)
+    .addTag(AppConstants.API_TAG)    
+    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
+  }
 
   await app.listen(AppConstants.appPort);
   Logger.log('API environment:'+process.env.NODE_ENV);

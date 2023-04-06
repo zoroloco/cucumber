@@ -1,3 +1,8 @@
+
+npm install -g @nestjs/cli
+
 TODO:
 
-use passport js local nest js strategy with local db / hash pw
+strip password off all responses
+
+

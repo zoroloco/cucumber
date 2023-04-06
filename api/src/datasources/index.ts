@@ -1,1 +1,1 @@
-export { TestDataSourceModule } from './test-datasource.module';
+export { DbDataSourceModule } from './db-datasource.module';

@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from '../test/user';
+import { User } from '../db/user';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      name: 'test',
+      name: 'druidia',
       type: 'mysql',
       host: process.env.MYSQL_HOST,
       port: Number(process.env.MYSQL_PORT),
@@ -18,4 +18,4 @@ import { User } from '../test/user';
   ],
   exports: [TypeOrmModule],
 })
-export class TestDataSourceModule {}
+export class DbDataSourceModule {}
