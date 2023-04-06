@@ -7,7 +7,12 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { AppConstants } from '../../app.constants';
 import { SearchUserDto, CreateUserDto } from '../../dtos';
 import { User } from '../entities/user.entity';
@@ -17,17 +22,28 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  /**
+   * createUser
+   *
+   * @param createUserDto
+   * @returns - created user object with password ommitted.
+   */
   @ApiTags(AppConstants.API_TAG)
   @ApiResponse({
     description: AppConstants.CREATE_USER_DESC,
     type: CreateUserDto,
   })
-  @ApiOperation({ summary: AppConstants.CREATE_USER_DESC})
+  @ApiOperation({ summary: AppConstants.CREATE_USER_DESC })
   @Post(AppConstants.CREATE_USER)
-  async registerUser(@Body() createUserDto: CreateUserDto) {
+  async createUser(@Body() createUserDto: CreateUserDto) {
     return this.userService.createUser(createUserDto);
   }
 
+  /**
+   * findAll
+   *
+   * @returns - All users in system.
+   */
   @UseGuards(JwtAuthGuard)
   @Get(AppConstants.FIND_ALL_USERS)
   @ApiTags(AppConstants.API_TAG)
@@ -37,11 +53,17 @@ export class UserController {
     description: AppConstants.FIND_ALL_USERS_DESC,
     type: User,
   })
-  @ApiOperation({summary: AppConstants.FIND_ALL_USERS_DESC})
+  @ApiOperation({ summary: AppConstants.FIND_ALL_USERS_DESC })
   findAll() {
     return this.userService.findAll();
   }
 
+  /**
+   * findOneByUserName
+   *
+   * @param searchUserDto
+   * @returns - The user if found. NotFoundException otherwise.
+   */
   @UseGuards(JwtAuthGuard)
   @Post(AppConstants.FIND_USER_BY_USERNAME)
   @ApiBearerAuth()
@@ -50,9 +72,10 @@ export class UserController {
     description: AppConstants.FIND_USER_BY_USERNAME_DESC,
     type: User,
   })
-  @ApiOperation({summary: AppConstants.FIND_USER_BY_USERNAME_DESC})
+  @ApiOperation({ summary: AppConstants.FIND_USER_BY_USERNAME_DESC })
   async findOneByUserName(@Body() searchUserDto: SearchUserDto) {
     const user: User = await this.userService.findOneByUserName(
+      true,
       searchUserDto.username,
     );
     if (null === user) {

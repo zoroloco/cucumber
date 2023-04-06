@@ -46,9 +46,9 @@ async function bootstrap() {
   //swagger init
   if(process.env.NODE_ENV !== 'production'){
     const config = new DocumentBuilder()
-    .setTitle('The Druidia.net API')
+    .setTitle('The druidia.net API')
     .setDescription('A secure restful resource API.')
-    .setVersion('1.0')
+    .setVersion(process.env.API_VERSION)
     .addTag(AppConstants.AUTH_TAG)
     .addTag(AppConstants.API_TAG)    
     .addBearerAuth()
@@ -59,5 +59,6 @@ async function bootstrap() {
 
   await app.listen(AppConstants.appPort);
   Logger.log('API environment:'+process.env.NODE_ENV);
+  Logger.log('API version:'+process.env.API_VERSION);
 }
 bootstrap();
