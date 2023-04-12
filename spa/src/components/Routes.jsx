@@ -1,16 +1,30 @@
-import { Route, Routes } from "react-router-dom";
-import ErrorPage from "../pages/ErrorPage";
-import Home from "../pages/Home";
-import TestUsers from "../pages/TestUsers";
+import { createBrowserRouter } from "react-router-dom";
+import {Home, Login, ErrorPage} from "../pages";
+import PrivateRoutes from "./PrivateRoutes";
+import SiteTemplate from "./SiteTemplate";
 
-const AppRoutes = () => {
-  return (
-    <Routes>
-      <Route path='/' exact={true} element={<Home />} />
-      <Route path='/users' element={<TestUsers />} />
-      <Route path='*' element={<ErrorPage type='404'/>}/>
-    </Routes>
-  );
-};
-
-export default AppRoutes;
+const AppRouter = createBrowserRouter([
+  {
+    element: <SiteTemplate />,
+    children: [
+      {
+        element: <PrivateRoutes />,
+        children: [
+          {
+            path: "/",
+            element: <Home />,
+          },
+        ],
+      },
+      {
+        path: "/login",
+        element: <Login />,
+      },
+      {
+        path: "*",
+        element: <ErrorPage type="404" />,
+      },
+    ],
+  },
+]);
+export default AppRouter;

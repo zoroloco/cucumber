@@ -44,18 +44,17 @@ async function bootstrap() {
   }));
 
   //swagger init
-  if(process.env.NODE_ENV !== 'production'){
+  //if(process.env.NODE_ENV !== 'production'){ //TODO: don't put this to prod.
     const config = new DocumentBuilder()
     .setTitle('The druidia.net API')
     .setDescription('A secure restful resource API.')
     .setVersion(process.env.API_VERSION)
-    .addTag(AppConstants.AUTH_TAG)
     .addTag(AppConstants.API_TAG)    
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
-  }
+  //}
 
   await app.listen(AppConstants.appPort);
   Logger.log('API environment:'+process.env.NODE_ENV);

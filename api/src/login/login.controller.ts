@@ -6,7 +6,7 @@ import { AppConstants } from '../app.constants';
 import { LoginUserDto } from '../dtos';
 import { LocalAuthGuard } from '../auth/local-auth.guard';
 
-@Controller(AppConstants.AUTH_PATH)
+@Controller(AppConstants.API_PATH)
 export class LoginController {
   constructor(private authService: AuthService) {}
 
@@ -24,7 +24,7 @@ export class LoginController {
    * @returns
    */
   @UseGuards(LocalAuthGuard)
-  @ApiTags(AppConstants.AUTH_TAG)
+  @ApiTags(AppConstants.API_TAG)
   @ApiResponse({
     description: AppConstants.LOGIN_DESC,
     type: LoginUserDto

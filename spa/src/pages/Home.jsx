@@ -1,27 +1,12 @@
-import { useContext } from "react";
-import { useAuth0 } from "@auth0/auth0-react";
-import AuthContext from "../context/auth-context";
+//import { useContext } from "react";
+//import AuthContext from "../context/auth-context";
 
-const Home = () => {
-  const { isAuthenticated,error } = useAuth0();
-  const ctx = useContext(AuthContext);
-
-  if(error){
-    console.error('here is your error:'+error);
-  }
+export const Home = () => {
+  //const ctx = useContext(AuthContext);
 
   return (
     <div>
-      {!isAuthenticated && <div>not authorized!</div>}
-      
-      {isAuthenticated && (
-        <div>
-          <p>Welcome back! {ctx.user.name}</p>
-        </div>
-      )}
-
-      
+      <p>Welcome back! This page is private. </p>
     </div>
   );
 };
-export default Home;

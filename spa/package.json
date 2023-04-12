@@ -4,7 +4,6 @@
   "private": true,
   "author": "kcenturion@yahoo.com",
   "dependencies": {
-    "@auth0/auth0-react": "^2.0.1",
     "bootstrap": "^5.2.2",
     "react": "^18.2.0",
     "react-bootstrap": "^2.6.0",
