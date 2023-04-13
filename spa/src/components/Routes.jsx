@@ -1,5 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
-import {Home, Login, ErrorPage} from "../pages";
+import { Home, Login, ErrorPage, Register } from "../pages";
 import PrivateRoutes from "./PrivateRoutes";
 import SiteTemplate from "./SiteTemplate";
 
@@ -19,6 +19,10 @@ const AppRouter = createBrowserRouter([
       {
         path: "/login",
         element: <Login />,
+      },
+      {
+        path: "/register",
+        element: <Register />
       },
       {
         path: "*",

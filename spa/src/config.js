@@ -4,7 +4,6 @@ export default {
   domain: process.env.REACT_APP_DOMAIN,
   resourceServer:
     process.env.NODE_ENV !== "production"
-      ? `http`
-      : `https` +
-        `://${process.env.REACT_APP_API_URL}:${process.env.REACT_APP_API_PORT}`,
+      ? `http://${process.env.REACT_APP_API_URL}:${process.env.REACT_APP_API_PORT}`
+      : `https://${process.env.REACT_APP_API_URL}:${process.env.REACT_APP_API_PORT}`,
 };

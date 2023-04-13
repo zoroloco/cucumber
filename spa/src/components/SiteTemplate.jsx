@@ -6,19 +6,13 @@ import { Card } from "react-bootstrap";
 const SiteTemplate = () => {
   return (
     <Card>
-      <Card.Header>
-        <header>
-          <Header />
-        </header>
-      </Card.Header>
+      <Header />
+
       <Card.Body>
-        <main>
-          <Outlet />
-        </main>
+        <Outlet />
       </Card.Body>
-      <Card.Footer>
-        <Footer />
-      </Card.Footer>
+
+      <Footer />
     </Card>
   );
 };
