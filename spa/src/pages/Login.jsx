@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import Form from "react-bootstrap/form";
+import Alert from 'react-bootstrap/Alert';
 import classes from "./Login.module.css";
 import Button from "react-bootstrap/Button";
 import { Navigate } from "react-router-dom";
@@ -11,16 +12,21 @@ export const Login = () => {
   const [password, setPassword] = useState("");
   const emailRef = useRef();
 
-  useEffect(()=>{
-    emailRef.current.focus();
-  });
+  useEffect(() => {
+    if (
+      (null === username || !username.trim().length) &&
+      (null === password || !password.trim().length)
+    ) {
+      emailRef.current.focus();
+    }
+  }, [username, password]);
 
   useEffect(() => {
-    if(null !== accessToken){
+    if (null !== accessToken) {
       localStorage.setItem("access-token", accessToken);
-    }else{
+    } else {
       setAccessToken(localStorage.getItem("access-token"));
-    }        
+    }
   }, [accessToken]);
 
   const loginHandler = async () => {
@@ -78,7 +84,10 @@ export const Login = () => {
                 [Log In]
               </Button>
             </div>
-          </Form>
+            <div className="d-grid gap-2">
+              <Alert variant='danger'>err</Alert>
+            </div>
+          </Form>          
         </div>
       )}
     </>
