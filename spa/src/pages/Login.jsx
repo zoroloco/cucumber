@@ -1,33 +1,40 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import Form from "react-bootstrap/form";
-import Alert from 'react-bootstrap/Alert';
+import Alert from "react-bootstrap/Alert";
 import classes from "./Login.module.css";
 import Button from "react-bootstrap/Button";
 import { Navigate } from "react-router-dom";
+import { AuthContext } from "../context/auth-context";
 import config from "../config";
 
 export const Login = () => {
+  const ctx = useContext(AuthContext);
   const [accessToken, setAccessToken] = useState(null);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [formState, setFormState] = useState({
+    username: "",
+    password: "",
+    error: "",
+  });
+
   const emailRef = useRef();
 
   useEffect(() => {
     if (
-      (null === username || !username.trim().length) &&
-      (null === password || !password.trim().length)
+      ((null === formState.username || !formState.username.trim().length) &&
+        (null === formState.password || !formState.password.trim().length)) ||
+      formState.error
     ) {
       emailRef.current.focus();
     }
-  }, [username, password]);
+  }, [formState]);
 
   useEffect(() => {
     if (null !== accessToken) {
-      localStorage.setItem("access-token", accessToken);
+      ctx.onLogIn(accessToken);
     } else {
       setAccessToken(localStorage.getItem("access-token"));
     }
-  }, [accessToken]);
+  }, [accessToken, ctx]);
 
   const loginHandler = async () => {
     const response = await fetch(config.resourceServer + "/api/login", {
@@ -38,12 +45,22 @@ export const Login = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ username: username, password: password }),
+      body: JSON.stringify({
+        username: formState.username,
+        password: formState.password,
+      }),
     });
 
+    const responseJson = await response.json();
     if (response.status === 201) {
-      const responseJson = await response.json();
       setAccessToken(responseJson.access_token);
+    } else {
+      setFormState((prevFormState) => {
+        return {
+          ...prevFormState,
+          error: responseJson.message,
+        };
+      });
     }
   };
 
@@ -66,8 +83,16 @@ export const Login = () => {
                 type="email"
                 placeholder="Email"
                 ref={emailRef}
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                value={formState.username}
+                onChange={(e) =>
+                  setFormState((prevFormState) => {
+                    return {
+                      ...prevFormState,
+                      username: e.target.value,
+                      error: null,
+                    };
+                  })
+                }
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="formGroupPassword">
@@ -75,8 +100,16 @@ export const Login = () => {
               <Form.Control
                 type="password"
                 placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={formState.password}
+                onChange={(e) =>
+                  setFormState((prevFormState) => {
+                    return {
+                      ...prevFormState,
+                      password: e.target.value,
+                      error: null,
+                    };
+                  })
+                }
               />
             </Form.Group>
             <div className="d-grid gap-2">
@@ -84,10 +117,12 @@ export const Login = () => {
                 [Log In]
               </Button>
             </div>
-            <div className="d-grid gap-2">
-              <Alert variant='danger'>err</Alert>
-            </div>
-          </Form>          
+            {formState.error && (
+              <div className="d-grid gap-2">
+                <Alert variant="danger">{formState.error}</Alert>
+              </div>
+            )}
+          </Form>
         </div>
       )}
     </>

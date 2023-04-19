@@ -1,5 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
-import { Home, Login, ErrorPage, Register } from "../pages";
+import { Home, Login, ErrorPage, Register, Chat } from "../pages";
 import PrivateRoutes from "./PrivateRoutes";
 import SiteTemplate from "./SiteTemplate";
 
@@ -14,6 +14,10 @@ const AppRouter = createBrowserRouter([
             path: "/",
             element: <Home />,
           },
+          {
+            path: "/chat",
+            element: <Chat />
+          }
         ],
       },
       {

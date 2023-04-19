@@ -18,7 +18,7 @@ export class AuthController {
     description: AppConstants.VALIDATE_TOKEN_DESC,
   })
   @ApiOperation({ summary: AppConstants.VALIDATE_TOKEN_DESC })
-  async validateAuth() {
+  async validateToken() {
     return HttpStatus.OK;
   }
 }
