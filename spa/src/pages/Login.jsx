@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useContext } from "react";
 import Form from "react-bootstrap/form";
 import Alert from "react-bootstrap/Alert";
-import classes from "./Login.module.css";
+import classes from "../druidia.module.css";
 import Button from "react-bootstrap/Button";
 import { Navigate } from "react-router-dom";
 import { AuthContext } from "../context/auth-context";
@@ -119,7 +119,9 @@ export const Login = () => {
             </div>
             {formState.error && (
               <div className="d-grid gap-2">
-                <Alert variant="danger">{formState.error}</Alert>
+                <Alert className={classes.centerText} variant="danger">
+                  {formState.error}
+                </Alert>
               </div>
             )}
           </Form>
