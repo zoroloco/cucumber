@@ -1,6 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import router from "./components/Routes";
-import {AuthContextProvider} from "./context/auth-context";
+import { AuthContextProvider } from "./context/auth-context";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { RouterProvider } from "react-router-dom";
 

@@ -22,11 +22,13 @@ const Header = () => {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
 
           <Navbar.Collapse className="justify-content-end">
-            <Nav onSelect={(selectedKey)=>{
-              if(selectedKey === 'logout'){
-                ctx.onLogOut();                
-              }
-            }}>
+            <Nav
+              onSelect={(selectedKey) => {
+                if (selectedKey === "logout") {
+                  ctx.onLogOut();
+                }
+              }}
+            >
               {!ctx.loggedIn && (
                 <Nav.Item>
                   <Nav.Link className={classes.navLink} href="/register">
@@ -36,16 +38,16 @@ const Header = () => {
               )}
               {ctx.loggedIn && (
                 <>
-                <Nav.Item>
-                  <Nav.Link className={classes.navLink} eventKey="logout">
-                    [Sign Out]
-                  </Nav.Link>
-                </Nav.Item>
-                <Nav.Item>
-                  <Nav.Link className={classes.navLink} href="/chat">
-                    [Chat]
-                  </Nav.Link>
-                </Nav.Item>
+                  <Nav.Item>
+                    <Nav.Link className={classes.navLink} eventKey="logout">
+                      [Sign Out]
+                    </Nav.Link>
+                  </Nav.Item>
+                  <Nav.Item>
+                    <Nav.Link className={classes.navLink} href="/chat">
+                      [Chat]
+                    </Nav.Link>
+                  </Nav.Item>
                 </>
               )}
             </Nav>

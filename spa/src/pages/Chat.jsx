@@ -3,13 +3,13 @@ import { AuthContext } from "../context/auth-context";
 
 export const Chat = () => {
   const { user, isLoading } = useContext(AuthContext);
-  const [showContent,setShowContent] = useState(false);
+  const [showContent, setShowContent] = useState(false);
 
   useEffect(() => {
     setShowContent(!isLoading);
   }, [isLoading]);
 
-  if(!showContent){
+  if (!showContent) {
     return <p>loading...</p>;
   }
 

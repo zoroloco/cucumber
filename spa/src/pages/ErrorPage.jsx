@@ -5,7 +5,7 @@ export const ErrorPage = (props) => {
     <Container fluid>
       <h1>to err is to be human. to really foul things up takes a computer.</h1>
 
-      {props.type === '404' && <p>Page cannot be found.</p>}
+      {props.type === "404" && <p>Page cannot be found.</p>}
     </Container>
   );
 };

@@ -1,5 +1,5 @@
 import classes from "../druidia.module.css";
-import { useReducer, useEffect, useRef } from "react";
+import { useReducer, useEffect, useRef, useState } from "react";
 import Form from "react-bootstrap/form";
 import Alert from "react-bootstrap/Alert";
 import Button from "react-bootstrap/Button";
@@ -7,6 +7,7 @@ import { Navigate } from "react-router-dom";
 import config from "../config";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const redirectCountdownTime = 3;
 
 const formReducer = (prevState, action) => {
   let newState = { ...prevState };
@@ -100,13 +101,15 @@ const formReducer = (prevState, action) => {
 };
 
 export const Register = () => {
+  const [redirectCountdown, setRedirectCountdown] = useState(
+    redirectCountdownTime
+  );
   const [formState, dispatchForm] = useReducer(formReducer, {
     username: { value: "", isValid: false },
     password: { value: "", isValid: false },
     password2: { value: "", isValid: false },
     firstName: { value: "" },
     lastName: { value: "" },
-    isRegistered: false,
     formValid: false,
     registationValid: false,
     validationMessage: null,
@@ -117,6 +120,18 @@ export const Register = () => {
   useEffect(() => {
     usernameRef.current.focus();
   }, []);
+
+  useEffect(() => {
+    if (formState.registrationValid) {
+      const intervalId = setInterval(() => {
+        setRedirectCountdown((redirectCountdown) => redirectCountdown - 1);
+      }, 1000);
+
+      return () => {
+        clearInterval(intervalId);
+      };
+    }
+  }, [formState.registrationValid]);
 
   const registerHandler = async (event) => {
     if (formState.formValid) {
@@ -150,7 +165,7 @@ export const Register = () => {
 
   return (
     <>
-      {formState.isRegistered ? (
+      {!redirectCountdown ? (
         <Navigate to="/login" />
       ) : (
         <div
@@ -258,10 +273,15 @@ export const Register = () => {
             </div>
             {formState.validationMessage && (
               <div className="d-grid gap-2">
-                <Alert className={classes.centerText}
+                <Alert
+                  className={classes.centerText}
                   variant={formState.registrationValid ? "primary" : "danger"}
                 >
-                  {formState.validationMessage}
+                  {formState.registrationValid
+                    ? formState.validationMessage +
+                      " Redirecting in " +
+                      (redirectCountdown > 0 ? redirectCountdown : "0")
+                    : formState.validationMessage}
                 </Alert>
               </div>
             )}

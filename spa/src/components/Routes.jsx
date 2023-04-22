@@ -16,8 +16,8 @@ const AppRouter = createBrowserRouter([
           },
           {
             path: "/chat",
-            element: <Chat />
-          }
+            element: <Chat />,
+          },
         ],
       },
       {
@@ -26,7 +26,7 @@ const AppRouter = createBrowserRouter([
       },
       {
         path: "/register",
-        element: <Register />
+        element: <Register />,
       },
       {
         path: "*",
