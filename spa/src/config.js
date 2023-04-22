@@ -7,3 +7,4 @@ export default {
       ? `http://${process.env.REACT_APP_API_URL}:${process.env.REACT_APP_API_PORT}`
       : `https://${process.env.REACT_APP_API_URL}:${process.env.REACT_APP_API_PORT}`,
 };
+//TODO: resourceServer is set at compile time, so you will be sending localhost to prod here!
