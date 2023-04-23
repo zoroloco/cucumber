@@ -5,5 +5,6 @@ export default {
   resourceServer:
     process.env.NODE_ENV !== "production"
       ? `http://${process.env.REACT_APP_API_URL}:${process.env.REACT_APP_API_PORT}`
-      : `https://${process.env.REACT_APP_API_URL}`,
+      : `https://druidia.net`,
 };
+//TODO: fix hard-coded url in prod.
