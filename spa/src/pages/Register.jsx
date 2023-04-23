@@ -1,4 +1,4 @@
-import classes from "../druidia.module.css";
+import styles from "../global.module.css";
 import { useReducer, useEffect, useRef, useState } from "react";
 import Form from "react-bootstrap/form";
 import Alert from "react-bootstrap/Alert";
@@ -170,7 +170,7 @@ export const Register = () => {
       ) : (
         <div
           className={
-            classes.colorOverlay +
+            styles.colorOverlay +
             " " +
             "d-flex justify-content-center align-items-center"
           }
@@ -274,7 +274,7 @@ export const Register = () => {
             {formState.validationMessage && (
               <div className="d-grid gap-2">
                 <Alert
-                  className={classes.centerText}
+                  className={styles.centerText}
                   variant={formState.registrationValid ? "primary" : "danger"}
                 >
                   {formState.registrationValid

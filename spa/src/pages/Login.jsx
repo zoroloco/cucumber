@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useContext } from "react";
 import Form from "react-bootstrap/form";
 import Alert from "react-bootstrap/Alert";
-import classes from "../druidia.module.css";
+import styles from "../global.module.css";
 import Button from "react-bootstrap/Button";
 import { Navigate } from "react-router-dom";
 import { AuthContext } from "../context/auth-context";
@@ -71,7 +71,7 @@ export const Login = () => {
       ) : (
         <div
           className={
-            classes.colorOverlay +
+            styles.colorOverlay +
             " " +
             "d-flex justify-content-center align-items-center"
           }
@@ -119,7 +119,7 @@ export const Login = () => {
             </div>
             {formState.error && (
               <div className="d-grid gap-2">
-                <Alert className={classes.centerText} variant="danger">
+                <Alert className={styles.centerText} variant="danger">
                   {formState.error}
                 </Alert>
               </div>

@@ -1,0 +1,37 @@
+body {
+  background-color: #212529;;
+}
+
+.mainDiv {
+  background-color: #212529;
+}
+
+.masthead {
+  min-height: 100vh;
+  position: relative;
+}
+
+.colorOverlay {
+  position: relative;
+  background-color: rgba(0, 0, 0, 0);
+  height: 100%;
+  width: auto;
+  mix-blend-mode: normal;
+}
+
+form {
+  background-color: #212529;
+  color: white;
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
+  width:auto;
+}
+
+.centerText {
+  text-align: center;
+}
+
+@media screen and (max-width: 768px) {
+  form {
+    width: 100%;
+  }
+}
