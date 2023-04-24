@@ -35,3 +35,38 @@ form {
     width: 100%;
   }
 }
+
+.customTabs {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background-color: #212529;
+  height: 60px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  padding: 0 10px;
+}
+
+@media screen and (min-width: 768px) {
+  .customTabs {
+    position: static;
+    height: auto;
+    width: 100%;
+    background-color: transparent;
+    padding: 0;
+  }
+}
+
+/* ExampleComponent.css */
+
+.flex-wrap {
+  flex-wrap: wrap !important;
+}
+
+@media (max-width: 576px) {
+  .flex-sm-column {
+    flex-direction: column !important;
+  }
+}
+

@@ -7,16 +7,15 @@ import styles from "../global.module.css";
 const SiteTemplate = () => {
   return (
     <div className={styles.mainDiv}>
-    <Card style={{ backgroundColor: '#212529', color: 'white' }}>
+      <Card style={{ backgroundColor: "#212529", color: "white" }}>
+        <Header />
 
-      <Header />
+        <Card.Body>
+          <Outlet />
+        </Card.Body>
 
-      <Card.Body>
-        <Outlet />
-      </Card.Body>
-
-      <Footer />
-    </Card>
+        <Footer />
+      </Card>
     </div>
   );
 };

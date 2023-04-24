@@ -67,16 +67,20 @@ export class AppConstants {
   //api endpoints
   static FIND_ALL_USERS: string = 'find-all-users';
   static FIND_USER_BY_USERNAME = 'find-user-by-username';
+  static FIND_USERS_BY_SEARCH_PARAMS = 'find-users-by-search-params';
   static CREATE_USER = 'create-user';
   static LOGIN: string = 'login';
   static VALIDATE_TOKEN: string = 'validate-token';
 
   //swagger description
-  static LOGIN_DESC = 'Validates credentials. Returns signed JWT if successful. 401 otherwise.';
+  static LOGIN_DESC =
+    'Validates credentials. Returns signed JWT if successful. 401 otherwise.';
   static FIND_ALL_USERS_DESC = 'Returns all users.';
   static FIND_USER_BY_USERNAME_DESC = 'Returns user given a username.';
+  static FIND_USERS_BY_SEARCH_PARAMS_DESC = 'Returns users matching only the query string in the request. All other parameters are ignored.';
   static CREATE_USER_DESC = 'Registers a user.';
-  static VALIDATE_TOKEN_DESC = 'Provides a way for clients to see if their token is valid.';
+  static VALIDATE_TOKEN_DESC =
+    'Provides a way for clients to see if their token is valid.';
 
   //bcrypt
   static BCRYPT_SALT_ROUNDS = 10;

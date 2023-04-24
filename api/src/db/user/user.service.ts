@@ -15,6 +15,10 @@ export class UserService {
     private userRepository: Repository<User>,
   ) {}
 
+  /**
+   *
+   * findAll
+   */
   public async findAll(): Promise<void> {
     return new Promise((resolve: any, reject: any) => {
       this.userRepository
@@ -36,7 +40,15 @@ export class UserService {
     });
   }
 
-  public async findOneByUserName(concatPw: boolean, un: string): Promise<User | undefined> {
+  /**
+   * findOneByUserName
+   */
+  public async findOneByUserName(
+    concatPw: boolean,
+    un: string,
+  ): Promise<User | undefined> {
+    Logger.log('Attempting to search user by username:' + un);
+
     return this.userRepository.findOne({
       select: {
         username: true,
@@ -50,6 +62,24 @@ export class UserService {
     });
   }
 
+  /**
+   * findUsersBySearchCriteria
+   */
+  public async findUsersBySearchCriteria(query: string) {
+    Logger.log('Attempting to search users by criteria:' + query);
+
+    return this.userRepository
+      .createQueryBuilder('user')
+      .select(['user.id', 'user.firstName', 'user.lastName', 'user.username'])
+      .where('user.firstName LIKE :query', { query: `%${query}%` })
+      .orWhere('user.lastName LIKE :query', { query: `%${query}%` })
+      .orWhere('user.username LIKE :query', { query: `%${query}%` })
+      .getMany();
+  }
+
+  /**
+   * createUser
+   */
   public async createUser(createUserDto: CreateUserDto) {
     Logger.log('Attempting to create user:' + createUserDto.username);
 

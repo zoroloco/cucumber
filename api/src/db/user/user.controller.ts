@@ -12,6 +12,8 @@ import {
   ApiOperation,
   ApiResponse,
   ApiTags,
+  ApiBody,
+  getSchemaPath
 } from '@nestjs/swagger';
 import { AppConstants } from '../../app.constants';
 import { SearchUserDto, CreateUserDto } from '../../dtos';
@@ -51,7 +53,7 @@ export class UserController {
   @ApiResponse({
     status: 200,
     description: AppConstants.FIND_ALL_USERS_DESC,
-    type: User,
+    type: [User]
   })
   @ApiOperation({ summary: AppConstants.FIND_ALL_USERS_DESC })
   findAll() {
@@ -83,5 +85,51 @@ export class UserController {
     }
 
     return user;
+  }
+
+  /**
+   * findUsersBySearchCriteria
+   *
+   * @param string
+   * @returns - List of users matching search criteria.
+   */
+  @UseGuards(JwtAuthGuard)
+  @Post(AppConstants.FIND_USERS_BY_SEARCH_PARAMS)
+  @ApiBearerAuth()
+  @ApiTags(AppConstants.API_TAG)
+  @ApiBody(
+    {
+      type: SearchUserDto,
+      examples:{
+        example: {
+          value: {
+            username: 'NA',
+            firstName: 'NA',
+            lastName: 'NA',
+            query: 'john@doe.org'
+          }
+        }
+      }
+    }
+  )
+  @ApiResponse({
+    status: 200,
+    description: AppConstants.FIND_USERS_BY_SEARCH_PARAMS_DESC,    
+    schema: {
+      type: 'array',
+      items: {
+        $ref: getSchemaPath(User),
+        example: {
+          id: 1,
+          firstName: 'John',
+          lastName: 'Doe',
+          username: 'john@doe.org'
+        }
+      }
+    }   
+  })
+  @ApiOperation({ summary: AppConstants.FIND_USERS_BY_SEARCH_PARAMS_DESC })
+  async findUsersBySearchCriteria(@Body() searchUserDto: SearchUserDto) {
+    return await this.userService.findUsersBySearchCriteria(searchUserDto.query);
   }
 }

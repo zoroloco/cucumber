@@ -7,6 +7,7 @@ export const AuthContextProvider = (props) => {
   const [isLoading, setIsLoading] = useState(true);
   const [loggedIn, setLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
+  const [accessToken, setAccessToken] = useState(null);
 
   //recover the values from local storage because any route change will
   //recreate this provider component and you lose all state such as user.
@@ -16,10 +17,13 @@ export const AuthContextProvider = (props) => {
       setUser(JSON.parse(storedUser));
     }
 
-    //we do the dbl negate to make the value truthy so it can be assigned to boolean.
-    setLoggedIn(!!localStorage.getItem("access-token"));
+    const token = localStorage.getItem("access-token");
+
+    setLoggedIn(!!token);
 
     setIsLoading(false);
+
+    setAccessToken(token);
   }, []);
 
   const logoutHandler = () => {
@@ -28,6 +32,7 @@ export const AuthContextProvider = (props) => {
     localStorage.removeItem("user");
     setLoggedIn(false);
     setUser(null);
+    setAccessToken(null);
   };
 
   const loginHandler = (accessToken) => {
@@ -40,6 +45,7 @@ export const AuthContextProvider = (props) => {
       const loggedInUser = { username: decoded.username };
       localStorage.setItem("user", JSON.stringify(loggedInUser));
       setUser(loggedInUser);
+      setAccessToken(accessToken);
       console.info(loggedInUser.username + " is now logged in.");
     } catch (error) {
       console.error("Error encountered while decoding access token:" + error);
@@ -49,6 +55,7 @@ export const AuthContextProvider = (props) => {
   return (
     <AuthContext.Provider
       value={{
+        accessToken: accessToken,
         isLoading: isLoading,
         loggedIn: loggedIn,
         user: user,
