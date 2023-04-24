@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Container, Nav, Navbar, Card } from "react-bootstrap";
+import { Container, Nav, Navbar, Card, Button } from "react-bootstrap";
 import classes from "./Header.module.css";
 import { AuthContext } from "../context/auth-context";
 
@@ -32,7 +32,9 @@ const Header = () => {
               {!ctx.loggedIn && (
                 <Nav.Item>
                   <Nav.Link className={classes.navLink} href="/register">
-                    [Sign Up]
+                    <Button variant="dark" size="lg">
+                      [Sign Up]
+                    </Button>
                   </Nav.Link>
                 </Nav.Item>
               )}
