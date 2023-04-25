@@ -12,7 +12,7 @@ export class AppConstants {
 
   static appPort = process.env.REACT_APP_API_PORT || 3001;
 
-  static appEnv: string = process.env.NODE_ENV || 'development';
+  static appEnv: string = process.env.API_ENV || 'development';
   static appSecret: string = process.env.API_APP_SECRET;
 
   static winstonTransports = [
