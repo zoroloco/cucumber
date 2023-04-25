@@ -58,14 +58,12 @@ form {
   }
 }
 
-/* ExampleComponent.css */
-
-.flex-wrap {
-  flex-wrap: wrap !important;
+.flex-column {
+  flex-direction: column !important;
 }
 
-@media (max-width: 576px) {
-  .flex-sm-column {
+@media (min-width: 768px) {
+  .flex-md-column {
     flex-direction: column !important;
   }
 }

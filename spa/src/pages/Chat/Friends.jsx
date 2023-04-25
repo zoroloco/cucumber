@@ -66,7 +66,7 @@ export const Friends = (props) => {
           value={searchParam}
           onChange={(e) => setSearchParam(e.target.value)}
         />
-        <Container className="d-flex justify-content-center flex-wrap flex-sm-column">
+        <Container className="d-flex justify-content-center flex-wrap flex-lg-column">
           <Button
             variant="dark"
             className="m-2"
