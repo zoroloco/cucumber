@@ -5,6 +5,12 @@ import {
   UseGuards,
   Body,
   NotFoundException,
+  UploadedFile,
+  ParseFilePipe,
+  MaxFileSizeValidator,
+  FileTypeValidator,
+  UseInterceptors,
+  Logger
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import {
@@ -13,12 +19,16 @@ import {
   ApiResponse,
   ApiTags,
   ApiBody,
-  getSchemaPath
+  getSchemaPath,
 } from '@nestjs/swagger';
 import { AppConstants } from '../../app.constants';
 import { SearchUserDto, CreateUserDto } from '../../dtos';
-import { User } from '../entities/user.entity';
+import { User } from '../entities';
 import { UserService } from './user.service';
+import { Express } from 'express';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import * as path from 'path';
 
 @Controller(AppConstants.API_PATH)
 export class UserController {
@@ -31,14 +41,56 @@ export class UserController {
    * @returns - created user object with password ommitted.
    */
   @ApiTags(AppConstants.API_TAG)
+  @ApiBody({
+    type: CreateUserDto,
+    examples: {
+      example: {
+        value: {
+          username: 'john@doe.net',
+          password: 'password',
+          firstName: 'John',
+          middleName: 'Jacob',
+          lastName: 'Dingleheimer'
+        },
+      },
+    },
+  })
   @ApiResponse({
+    status: 201,
     description: AppConstants.CREATE_USER_DESC,
     type: CreateUserDto,
   })
   @ApiOperation({ summary: AppConstants.CREATE_USER_DESC })
   @Post(AppConstants.CREATE_USER)
-  async createUser(@Body() createUserDto: CreateUserDto) {
-    return this.userService.createUser(createUserDto);
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (req, file, cb) => {
+          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const extension = path.extname(file.originalname);
+          const newFileName = file.fieldname + '-' + uniqueSuffix + extension;
+          Logger.log('filename interceptor renaming file to:'+newFileName);
+          if(!extension.match(/\.(jpg|jpeg|png)$/)){
+            cb(new Error('jpg|jpeg|png are the only allowed file types.'),newFileName);
+          }
+          cb(null, newFileName);
+        },
+      }),
+    }),
+  )
+  async createUser(
+    @Body() createUserDto: CreateUserDto,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 5000000 })//5mb max size         
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+  ) {    
+    return this.userService.createUser(createUserDto, file.filename);
   }
 
   /**
@@ -53,7 +105,7 @@ export class UserController {
   @ApiResponse({
     status: 200,
     description: AppConstants.FIND_ALL_USERS_DESC,
-    type: [User]
+    type: [User],
   })
   @ApiOperation({ summary: AppConstants.FIND_ALL_USERS_DESC })
   findAll() {
@@ -71,6 +123,7 @@ export class UserController {
   @ApiBearerAuth()
   @ApiTags(AppConstants.API_TAG)
   @ApiResponse({
+    status: 201,
     description: AppConstants.FIND_USER_BY_USERNAME_DESC,
     type: User,
   })
@@ -97,24 +150,22 @@ export class UserController {
   @Post(AppConstants.FIND_USERS_BY_SEARCH_PARAMS)
   @ApiBearerAuth()
   @ApiTags(AppConstants.API_TAG)
-  @ApiBody(
-    {
-      type: SearchUserDto,
-      examples:{
-        example: {
-          value: {
-            username: 'NA',
-            firstName: 'NA',
-            lastName: 'NA',
-            query: 'john@doe.org'
-          }
-        }
-      }
-    }
-  )
+  @ApiBody({
+    type: SearchUserDto,
+    examples: {
+      example: {
+        value: {
+          username: 'NA',
+          firstName: 'NA',
+          lastName: 'NA',
+          query: 'john@doe.org',
+        },
+      },
+    },
+  })
   @ApiResponse({
-    status: 200,
-    description: AppConstants.FIND_USERS_BY_SEARCH_PARAMS_DESC,    
+    status: 201,
+    description: AppConstants.FIND_USERS_BY_SEARCH_PARAMS_DESC,
     schema: {
       type: 'array',
       items: {
@@ -123,13 +174,15 @@ export class UserController {
           id: 1,
           firstName: 'John',
           lastName: 'Doe',
-          username: 'john@doe.org'
-        }
-      }
-    }   
+          username: 'john@doe.org',
+        },
+      },
+    },
   })
   @ApiOperation({ summary: AppConstants.FIND_USERS_BY_SEARCH_PARAMS_DESC })
   async findUsersBySearchCriteria(@Body() searchUserDto: SearchUserDto) {
-    return await this.userService.findUsersBySearchCriteria(searchUserDto.query);
+    return await this.userService.findUsersBySearchCriteria(
+      searchUserDto.query,
+    );
   }
 }

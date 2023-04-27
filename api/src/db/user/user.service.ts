@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { AppConstants } from '../../app.constants';
 import { CreateUserDto } from '../../dtos';
 import { Repository } from 'typeorm';
-import { User } from '../entities/user.entity';
+import { User, UserProfile } from '../entities';
 const bcrypt = require('bcrypt');
 
 @Injectable()
@@ -12,7 +12,9 @@ export class UserService {
 
   constructor(
     @InjectRepository(User, 'druidia')
-    private userRepository: Repository<User>,
+    private readonly userRepository: Repository<User>,
+    @InjectRepository(UserProfile, 'druidia')
+    private readonly userProfileRepository: Repository<UserProfile>,
   ) {}
 
   /**
@@ -20,17 +22,26 @@ export class UserService {
    * findAll
    */
   public async findAll(): Promise<void> {
+    Logger.log('Searching for all active users.');
     return new Promise((resolve: any, reject: any) => {
       this.userRepository
         .find({
+          relations: {
+            userProfile: true, //joins with userProfile table
+          },
           select: {
             username: true,
             id: true,
             createdTime: true,
           },
+          where: {
+            inactivatedTime: null,
+          },
         })
         .then((users: User[]) => {
-          this.logger.log('Successfully found ' + users.length + ' users');
+          this.logger.log(
+            'Successfully found ' + users.length + ' active users',
+          );
           resolve(users);
         })
         .catch((error: any) => {
@@ -50,6 +61,9 @@ export class UserService {
     Logger.log('Attempting to search user by username:' + un);
 
     return this.userRepository.findOne({
+      relations: {
+        userProfile: true, //joins with userProfile table
+      },
       select: {
         username: true,
         password: !concatPw,
@@ -64,36 +78,39 @@ export class UserService {
 
   /**
    * findUsersBySearchCriteria
+   *
+   * Partial user so all fields will be defined but not all set.
    */
-  public async findUsersBySearchCriteria(query: string) {
+  public async findUsersBySearchCriteria(
+    query: string,
+  ): Promise<Partial<User>[]> {
     Logger.log('Attempting to search users by criteria:' + query);
 
     return this.userRepository
       .createQueryBuilder('user')
-      .select(['user.id', 'user.firstName', 'user.lastName', 'user.username'])
-      .where('user.firstName LIKE :query', { query: `%${query}%` })
-      .orWhere('user.lastName LIKE :query', { query: `%${query}%` })
+      .leftJoinAndSelect('user.userProfile', 'userProfile')
+      .select([
+        'user.id',
+        'user.username',
+        'userProfile.firstName',
+        'userProfile.lastName',
+        'userProfile.profilePhotoPath',
+      ])
+      .where('userProfile.firstName LIKE :query', { query: `%${query}%` })
+      .orWhere('userProfile.lastName LIKE :query', { query: `%${query}%` })
       .orWhere('user.username LIKE :query', { query: `%${query}%` })
-      .getMany();
+      .andWhere('user.inactivatedTime is null')
+      .getRawMany(); //raw many because i am returning specific columns
   }
 
   /**
    * createUser
    */
-  public async createUser(createUserDto: CreateUserDto) {
+  public async createUser(
+    createUserDto: CreateUserDto,
+    profilePhotoPath: string,
+  ) {
     Logger.log('Attempting to create user:' + createUserDto.username);
-
-    if (createUserDto.username.length > 32) {
-      throw new BadRequestException(
-        'Username is too long. 32 character limit.',
-      );
-    }
-
-    if (createUserDto.password.length < 10) {
-      throw new BadRequestException(
-        'Please enter a minimum of 10 characters for password.',
-      );
-    }
 
     //hash the pw
     const saltedPassword: string = await bcrypt.hash(
@@ -105,22 +122,32 @@ export class UserService {
     const user: User = new User();
     user.username = createUserDto.username;
     user.password = saltedPassword;
-    user.createdBy = 'druidia';
-    user.createdTime = new Date();
+    user.setAuditFields(createUserDto.username);
+
+    const userProfile: UserProfile = new UserProfile();
+    userProfile.firstName = createUserDto.firstName;
+    userProfile.middleName = createUserDto.middleName;
+    userProfile.lastName = createUserDto.lastName;
+    userProfile.profilePhotoPath = profilePhotoPath;
+    userProfile.setAuditFields(createUserDto.username);
 
     try {
-      const savedUser = await this.userRepository.save(user);
-      Logger.log(
-        'Successfully created user:' +
-          savedUser.username +
-          ' with ID:' +
-          savedUser.id,
+      const savedUserProfile = await this.userProfileRepository.save(
+        userProfile,
       );
-      const { password, ...result } = savedUser; //strip password out of user object
-      return result;
+      Logger.log(
+        'User Profile successfully created:' + JSON.stringify(savedUserProfile),
+      );
+
+      user.userProfile = savedUserProfile; //foreign key
+
+      const savedUser = await this.userRepository.save(user);
+      Logger.log('User successfully created:' + JSON.stringify(savedUser));
+      const { password, ...userNoPass } = savedUser; //strip password out of user object
+      return userNoPass;
     } catch (err) {
       if (err) {
-        Logger.error('Error encountered while saving user' + err);
+        Logger.error('Error encountered while creating user' + err);
         if (err.code === 'ER_DUP_ENTRY') {
           throw new BadRequestException('Username taken.');
         }

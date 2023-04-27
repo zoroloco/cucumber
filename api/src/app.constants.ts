@@ -12,7 +12,7 @@ export class AppConstants {
 
   static appPort = process.env.REACT_APP_API_PORT || 3001;
 
-  static appEnv: string = process.env.API_ENV || 'development';
+  static appEnv: string = process.env.NODE_ENV || 'development';
   static appSecret: string = process.env.API_APP_SECRET;
 
   static winstonTransports = [
@@ -75,9 +75,9 @@ export class AppConstants {
   //swagger description
   static LOGIN_DESC =
     'Validates credentials. Returns signed JWT if successful. 401 otherwise.';
-  static FIND_ALL_USERS_DESC = 'Returns all users.';
+  static FIND_ALL_USERS_DESC = 'Returns all active users.';
   static FIND_USER_BY_USERNAME_DESC = 'Returns user given a username.';
-  static FIND_USERS_BY_SEARCH_PARAMS_DESC = 'Returns users matching only the query string in the request. All other parameters are ignored.';
+  static FIND_USERS_BY_SEARCH_PARAMS_DESC = 'Returns active users matching only the query string in the request. All other parameters are ignored.';
   static CREATE_USER_DESC = 'Registers a user.';
   static VALIDATE_TOKEN_DESC =
     'Provides a way for clients to see if their token is valid.';

@@ -37,6 +37,7 @@ export const Login = () => {
   }, [accessToken, ctx]);
 
   const loginHandler = async () => {
+    console.info('Environment:'+process.env.NODE_ENV);
     console.info('Resource Server URL:'+config.resourceServer);
     const response = await fetch(config.resourceServer + "/api/login", {
       method: "POST",

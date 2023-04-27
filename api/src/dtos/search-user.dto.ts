@@ -1,20 +1,24 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, MaxLength } from 'class-validator';
 
 export class SearchUserDto {
   @ApiProperty()
   @IsNotEmpty()
-  username: string;
+  @MaxLength(32)
+  readonly username: string;
 
   @ApiProperty()
   @IsNotEmpty()
-  lastName: string;
+  @MaxLength(40)
+  readonly lastName: string;
 
   @ApiProperty()
   @IsNotEmpty()
-  firstName: string;
+  @MaxLength(40)
+  readonly firstName: string;
 
   @ApiProperty()
   @IsNotEmpty()
-  query: string;
+  @MaxLength(40)
+  readonly query: string;
 }

@@ -8,6 +8,14 @@ import { Column, PrimaryGeneratedColumn } from "typeorm";
 export class CommonEntity {
     @PrimaryGeneratedColumn() id!: number;
 
+    /**
+     * Sets the entity's createdTime and createdBy fields.
+     */
+    public setAuditFields(createdBy: string){
+        this.createdBy = createdBy;
+        this.createdTime = new Date();
+    }
+
     @IsNotEmpty()
     @Column({type: 'timestamp'})
     public createdTime!: Date;

@@ -1,21 +1,23 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, Unique } from 'typeorm';
+import { Column, Entity, OneToOne, JoinColumn } from 'typeorm';
 import { CommonEntity } from './common.entity';
+import { UserProfile } from '../entities';
 
 @Entity('user')
 export class User extends CommonEntity {
   @ApiProperty()
-  @Column({ type: 'varchar', length: 32 })
+  @Column({ type: 'varchar', length: 32, unique: true })
   public username!: string;
 
+  @ApiProperty()
   @Column({ type: 'varchar', length: 128 })
-  public password!: string;
+  public password!: string; //This is saved as a hash.
 
   @ApiProperty()
-  @Column({ type: 'varchar', length: 100 })
-  public firstName!: string;
+  @Column({ type: 'timestamp' })
+  public lastLoginTime!: Date;
 
-  @ApiProperty()
-  @Column({ type: 'varchar', length: 100 })
-  public lastName!: string;
+  @OneToOne(() => UserProfile)
+  @JoinColumn()
+  userProfile: UserProfile;
 }

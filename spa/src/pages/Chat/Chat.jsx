@@ -28,7 +28,7 @@ export const Chat = () => {
           </Tab>
         </Tabs>
       ) : (
-        <div>isLoading...</div>
+        <div>Please wait...</div>
       )}
     </div>
   );

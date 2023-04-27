@@ -84,6 +84,8 @@ const formReducer = (prevState, action) => {
     newState.firstName.value = action.firstName.value;
   } else if (action.type === "LAST_NAME_INPUT") {
     newState.lastName.value = action.lastName.value;
+  } else if (action.type === "MIDDLE_NAME_INPUT") {
+    newState.middleName.value = action.middleName.value;
   } else if (action.type === "REGISTRATION_ERROR") {
     newState.registrationValid = false;
     newState.validationMessage = action.validationMessage;
@@ -104,11 +106,15 @@ export const Register = () => {
   const [redirectCountdown, setRedirectCountdown] = useState(
     redirectCountdownTime
   );
+
+  const [file, setFile] = useState(null);
+
   const [formState, dispatchForm] = useReducer(formReducer, {
     username: { value: "", isValid: false },
     password: { value: "", isValid: false },
     password2: { value: "", isValid: false },
     firstName: { value: "" },
+    middleName: { value: "" },
     lastName: { value: "" },
     formValid: false,
     registationValid: false,
@@ -134,31 +140,43 @@ export const Register = () => {
   }, [formState.registrationValid]);
 
   const registerHandler = async (event) => {
-    if (formState.formValid) {
-      const response = await fetch(config.resourceServer + "/api/create-user", {
-        method: "POST",
-        mode: "cors",
-        cache: "no-cache",
-        credentials: "same-origin",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: formState.username.value,
-          password: formState.password.value,
-        }),
-      });
+    const formData = new FormData();
 
-      const responseJson = await response.json();
-      if (response.status === 201) {
-        dispatchForm({
-          type: "REGISTRATION_SUCCESSFUL",
-        });
-      } else {
-        dispatchForm({
-          type: "REGISTRATION_ERROR",
-          validationMessage: responseJson.message,
-        });
+    formData.append("file", file);
+    //all the values below will be part of request body that will 
+    //become createUserDto on back-end.
+    formData.append("username", formState.username.value);
+    formData.append("password", formState.password.value);
+    formData.append("firstName", formState.firstName.value);
+    formData.append("middleName", formState.firstName.value);
+    formData.append("lastName", formState.firstName.value);
+
+    if (formState.formValid) {
+      try {
+        const response = await fetch(
+          config.resourceServer + "/api/create-user",
+          {
+            method: "POST",
+            mode: "cors",
+            cache: "no-cache",
+            credentials: "same-origin",            
+            body: formData,
+          }
+        );
+
+        const responseJson = await response.json();
+        if (response.status === 201) {
+          dispatchForm({
+            type: "REGISTRATION_SUCCESSFUL",
+          });
+        } else {
+          dispatchForm({
+            type: "REGISTRATION_ERROR",
+            validationMessage: responseJson.message,
+          });
+        }
+      } catch (error) {
+        console.error('Error encountered while creating new user:'+error);
       }
     }
   };
@@ -246,6 +264,21 @@ export const Register = () => {
                 }}
               />
             </Form.Group>
+            <Form.Group className="mb-3" controlId="formGroupMiddleName">
+              <Form.Label>Middle Name:</Form.Label>
+              <Form.Control
+                type="input"
+                placeholder="Middle Name"
+                disabled={formState.registationValid}
+                value={formState.middleName.value}
+                onChange={(event) => {
+                  dispatchForm({
+                    type: "MIDDLE_NAME_INPUT",
+                    middleName: { value: event.target.value },
+                  });
+                }}
+              />
+            </Form.Group>
             <Form.Group className="mb-3" controlId="formGroupLastName">
               <Form.Label>Last Name:</Form.Label>
               <Form.Control
@@ -261,6 +294,17 @@ export const Register = () => {
                 }}
               />
             </Form.Group>
+
+            <Form.Group controlId="formFile">
+              <Form.Label>Profile Image</Form.Label>
+              <Form.Control
+                type="file"
+                onChange={(event) => {
+                  setFile(event.target.files[0]);
+                }}
+              />
+            </Form.Group>
+
             <div className="d-grid gap-2">
               <Button
                 variant="dark"

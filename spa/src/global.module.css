@@ -58,13 +58,4 @@ form {
   }
 }
 
-.flex-column {
-  flex-direction: column !important;
-}
-
-@media (min-width: 768px) {
-  .flex-md-column {
-    flex-direction: column !important;
-  }
-}
 

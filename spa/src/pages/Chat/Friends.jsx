@@ -19,28 +19,41 @@ export const Friends = (props) => {
   };
 
   const searchHandler = async () => {
-    const response = await fetch(
-      config.resourceServer + "/api/find-users-by-search-params",
-      {
-        method: "POST",
+    let response = null;
+
+    if (searchParam && searchParam.trim().length > 3) {
+      response = await fetch(
+        config.resourceServer + "/api/find-users-by-search-params",
+        {
+          method: "POST",
+          mode: "cors",
+          cache: "no-cache",
+          credentials: "same-origin",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${props.accessToken}`,
+          },
+          body: JSON.stringify({
+            username: "NA",
+            firstName: "NA",
+            lastName: "NA",
+            query: searchParam,
+          }),
+        }
+      );
+    } else {
+      response = await fetch(config.resourceServer + "/api/find-all-users", {
         mode: "cors",
         cache: "no-cache",
         credentials: "same-origin",
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${props.accessToken}`,
         },
-        body: JSON.stringify({
-          username: "NA",
-          firstName: "NA",
-          lastName: "NA",
-          query: searchParam,
-        }),
-      }
-    );
+      });
+    }
 
     const responseJson = await response.json();
-    if (response.status === 201) {
+    if (response.status === 201 || response.status === 200) {
       setSearchResults(responseJson);
       console.info("Search found:" + JSON.stringify(responseJson));
     } else {
@@ -66,7 +79,18 @@ export const Friends = (props) => {
           value={searchParam}
           onChange={(e) => setSearchParam(e.target.value)}
         />
-        <Container className="d-flex justify-content-center flex-wrap flex-lg-column">
+        <Container className="d-flex justify-content-center flex-wrap">
+          <Button
+            variant="dark"
+            className="m-2"
+            disabled={
+              searchParam.trim().length > 0 && searchParam.trim().length < 3
+            }
+            size="lg"
+            onClick={searchHandler}
+          >
+            Search
+          </Button>
           <Button
             variant="dark"
             className="m-2"
@@ -75,22 +99,16 @@ export const Friends = (props) => {
           >
             Clear
           </Button>
-          <Button
-            variant="dark"
-            className="m-2"
-            disabled={!searchParam || searchParam.trim().length < 3}
-            size="lg"
-            onClick={searchHandler}
-          >
-            Search
-          </Button>
         </Container>
 
         {searchResults ? (
           <ListGroup>
             {searchResults.map((result) => {
               return (
-                <ListGroup.Item className="d-flex justify-content-between align-items-start">
+                <ListGroup.Item
+                  className="d-flex justify-content-between align-items-start"
+                  key={result.id}
+                >
                   <img
                     src="path/to/image"
                     alt={result.username}

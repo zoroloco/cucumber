@@ -14,7 +14,7 @@ export const Home = () => {
       {showContent ? (
         <div>Welcome back {user.username}</div>
       ) : (
-        <div>isLoading...</div>
+        <div>Please wait...</div>
       )}
     </div>
   );
