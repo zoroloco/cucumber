@@ -10,7 +10,7 @@ import {
   MaxFileSizeValidator,
   FileTypeValidator,
   UseInterceptors,
-  Logger
+  Logger,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import {
@@ -50,7 +50,7 @@ export class UserController {
           password: 'password',
           firstName: 'John',
           middleName: 'Jacob',
-          lastName: 'Dingleheimer'
+          lastName: 'Dingleheimer',
         },
       },
     },
@@ -67,12 +67,16 @@ export class UserController {
       storage: diskStorage({
         destination: './uploads',
         filename: (req, file, cb) => {
-          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
           const extension = path.extname(file.originalname);
           const newFileName = file.fieldname + '-' + uniqueSuffix + extension;
-          Logger.log('filename interceptor renaming file to:'+newFileName);
-          if(!extension.match(/\.(jpg|jpeg|png)$/)){
-            cb(new Error('jpg|jpeg|png are the only allowed file types.'),newFileName);
+          Logger.log('filename interceptor renaming file to:' + newFileName);
+          if (!extension.match(/\.(jpg|jpeg|png)$/)) {
+            cb(
+              new Error('jpg|jpeg|png are the only allowed file types.'),
+              newFileName,
+            );
           }
           cb(null, newFileName);
         },
@@ -84,12 +88,12 @@ export class UserController {
     @UploadedFile(
       new ParseFilePipe({
         validators: [
-          new MaxFileSizeValidator({ maxSize: 5000000 })//5mb max size         
+          new MaxFileSizeValidator({ maxSize: 5000000 }), //5mb max size
         ],
       }),
     )
     file: Express.Multer.File,
-  ) {    
+  ) {
     return this.userService.createUser(createUserDto, file.filename);
   }
 

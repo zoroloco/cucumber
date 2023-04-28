@@ -4,7 +4,9 @@ import { AppConstants } from '../../app.constants';
 import { CreateUserDto } from '../../dtos';
 import { Repository } from 'typeorm';
 import { User, UserProfile } from '../entities';
+import { ImageGeneratorService, ImageReaderService } from '../../common';
 const bcrypt = require('bcrypt');
+const fs = require('fs');
 
 @Injectable()
 export class UserService {
@@ -15,6 +17,8 @@ export class UserService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(UserProfile, 'druidia')
     private readonly userProfileRepository: Repository<UserProfile>,
+    private readonly imageGeneratorService: ImageGeneratorService,
+    private readonly imageReaderService: ImageReaderService,
   ) {}
 
   /**
@@ -79,28 +83,45 @@ export class UserService {
   /**
    * findUsersBySearchCriteria
    *
-   * Partial user so all fields will be defined but not all set.
+   * Sends back users matching search criteria with user profile photo as well.
    */
-  public async findUsersBySearchCriteria(
-    query: string,
-  ): Promise<Partial<User>[]> {
+  public async findUsersBySearchCriteria(query: string) {
     Logger.log('Attempting to search users by criteria:' + query);
+    try {
+      const users = await this.userRepository
+        .createQueryBuilder('user')
+        .leftJoinAndSelect('user.userProfile', 'userProfile')
+        .where('userProfile.firstName LIKE :query', { query: `%${query}%` })
+        .orWhere('userProfile.lastName LIKE :query', { query: `%${query}%` })
+        .orWhere('user.username LIKE :query', { query: `%${query}%` })
+        .andWhere('user.inactivatedTime is null')
+        .getMany();
 
-    return this.userRepository
-      .createQueryBuilder('user')
-      .leftJoinAndSelect('user.userProfile', 'userProfile')
-      .select([
-        'user.id',
-        'user.username',
-        'userProfile.firstName',
-        'userProfile.lastName',
-        'userProfile.profilePhotoPath',
-      ])
-      .where('userProfile.firstName LIKE :query', { query: `%${query}%` })
-      .orWhere('userProfile.lastName LIKE :query', { query: `%${query}%` })
-      .orWhere('user.username LIKE :query', { query: `%${query}%` })
-      .andWhere('user.inactivatedTime is null')
-      .getRawMany(); //raw many because i am returning specific columns
+      Logger.log(
+        users.length + ' user(s) found matching search criteria:' + query,
+      );
+
+      return await Promise.all(users.map(this.hydrateUser.bind(this)));
+    } catch (error) {
+      Logger.error('Error searching for users:' + error);
+      return [];
+    }
+  }
+
+  private async hydrateUser(user) {
+    user.password = '';
+    const profilePhotoPath = await this.imageGeneratorService.generateImage(
+      user.userProfile.profilePhotoPath,
+      128,
+    );
+    if (profilePhotoPath) {
+      const profilePhoto = await this.imageReaderService.readImage(profilePhotoPath);
+      if(profilePhoto){
+        user.profilePhotoFile = profilePhoto;
+      }
+    }
+
+    return user;
   }
 
   /**

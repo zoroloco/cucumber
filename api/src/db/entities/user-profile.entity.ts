@@ -20,5 +20,4 @@ export class UserProfile extends CommonEntity {
   @ApiProperty()
   @Column({ type: 'varchar', length: 40 })
   public lastName!: string;
-
 }

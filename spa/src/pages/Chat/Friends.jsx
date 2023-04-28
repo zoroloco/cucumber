@@ -103,24 +103,25 @@ export const Friends = (props) => {
 
         {searchResults ? (
           <ListGroup>
-            {searchResults.map((result) => {
+            {searchResults.map((user) => {
               return (
                 <ListGroup.Item
                   className="d-flex justify-content-between align-items-start"
-                  key={result.id}
+                  key={user.id}
                 >
                   <img
-                    src="path/to/image"
-                    alt={result.username}
+                    src={`data:image/png;base64, ${user.profilePhotoFile}`}
+                    alt={user.username}
                     style={{
                       width: "30px",
                       height: "30px",
                       marginRight: "10px",
                     }}
                   />
+
                   <div className="ms-2 me-auto">
-                    <div className="fw-bold">{result.username}</div>
-                    {result.firstName} {result.lastName}
+                    <div className="fw-bold">{user.username}</div>
+                    {user.userProfile.firstName} {user.userProfile.lastName}
                   </div>
                 </ListGroup.Item>
               );
