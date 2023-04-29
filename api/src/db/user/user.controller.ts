@@ -27,7 +27,7 @@ import { User } from '../entities';
 import { UserService } from './user.service';
 import { Express } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
+import { diskStorage, Multer } from 'multer';
 import * as path from 'path';
 
 @Controller(AppConstants.API_PATH)
