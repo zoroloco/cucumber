@@ -25,7 +25,7 @@ import { AppConstants } from '../../app.constants';
 import { SearchUserDto, CreateUserDto } from '../../dtos';
 import { User } from '../entities';
 import { UserService } from './user.service';
-//import { Express } from 'express';
+import { Express } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import * as path from 'path';
@@ -92,7 +92,7 @@ export class UserController {
         ],
       }),
     )
-    file: Express.Multer.File,
+    file: any,
   ) {
     return this.userService.createUser(createUserDto, file.filename);
   }

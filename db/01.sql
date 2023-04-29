@@ -8,11 +8,11 @@ CREATE TABLE IF NOT EXISTS `user_profile` (
   middleName varchar(40) DEFAULT NULL,
 	lastName varchar(40) DEFAULT NULL,
 	createdTime datetime DEFAULT CURRENT_TIMESTAMP  NOT NULL,
-	createdBy varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+	createdBy varchar(32) CHARACTER SET utf8mb4 NOT NULL,
 	modifiedTime datetime NULL,
-	modifiedBy varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
+	modifiedBy varchar(32) CHARACTER SET utf8mb4 NULL,
 	inactivatedTime datetime NULL,
-	inactivatedBy varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
+	inactivatedBy varchar(32) CHARACTER SET utf8mb4  NULL,
 	profilePhotoPath varchar(64) NULL,
 	CONSTRAINT `PRIMARY` PRIMARY KEY (id)
 )
