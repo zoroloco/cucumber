@@ -148,8 +148,8 @@ export const Register = () => {
     formData.append("username", formState.username.value);
     formData.append("password", formState.password.value);
     formData.append("firstName", formState.firstName.value);
-    formData.append("middleName", formState.firstName.value);
-    formData.append("lastName", formState.firstName.value);
+    formData.append("middleName", formState.middleName.value);
+    formData.append("lastName", formState.lastName.value);
 
     if (formState.formValid) {
       try {

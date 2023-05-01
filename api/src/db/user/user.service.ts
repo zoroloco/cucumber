@@ -25,34 +25,28 @@ export class UserService {
    *
    * findAll
    */
-  public async findAll(): Promise<void> {
+  public async findAll() {
     Logger.log('Searching for all active users.');
-    return new Promise((resolve: any, reject: any) => {
-      this.userRepository
-        .find({
-          relations: {
-            userProfile: true, //joins with userProfile table
-          },
-          select: {
-            username: true,
-            id: true,
-            createdTime: true,
-          },
-          where: {
-            inactivatedTime: null,
-          },
-        })
-        .then((users: User[]) => {
-          this.logger.log(
-            'Successfully found ' + users.length + ' active users',
-          );
-          resolve(users);
-        })
-        .catch((error: any) => {
-          this.logger.error('Error finding all users with error:' + error);
-          resolve([]); // return empty array
-        });
-    });
+
+    try {
+      const users = await this.userRepository.find({
+        relations: {
+          userProfile: true, //joins with userProfile table
+        },
+        select: {
+          username: true,
+          id: true,
+          createdTime: true,
+        },
+        where: {
+          inactivatedTime: null,
+        },
+      });
+
+      return await Promise.all(users.map(this.hydrateUser.bind(this)));
+    } catch (error) {
+      Logger.error('Error finding all users:' + error);
+    }
   }
 
   /**
@@ -115,13 +109,32 @@ export class UserService {
       128,
     );
     if (profilePhotoPath) {
-      const profilePhoto = await this.imageReaderService.readImage(profilePhotoPath);
-      if(profilePhoto){
+      const profilePhoto = await this.imageReaderService.readImage(
+        profilePhotoPath,
+      );
+      if (profilePhoto) {
         user.profilePhotoFile = profilePhoto;
       }
     }
 
     return user;
+  }
+
+  public async updateUserPostLogin(user: User){
+    Logger.log('Updating user ID:'+user.id);
+    try{
+      await this.userRepository.update(user.id,{
+        lastLoginTime: new Date()
+      });
+
+      return this.userRepository.findOne({
+        where: {
+          id: user.id
+        }
+      });
+    }catch(error){
+      Logger.error('Error updating user:'+error);
+    }
   }
 
   /**
@@ -140,12 +153,14 @@ export class UserService {
     );
 
     //save the new user
-    const user: User = new User();
+    //Note: we are instantiating the entities with the repository create() method so some
+    //validation checks will occur.  This is better than using 'new' operator.
+    const user: User = this.userRepository.create();
     user.username = createUserDto.username;
     user.password = saltedPassword;
     user.setAuditFields(createUserDto.username);
 
-    const userProfile: UserProfile = new UserProfile();
+    const userProfile: UserProfile = this.userProfileRepository.create();
     userProfile.firstName = createUserDto.firstName;
     userProfile.middleName = createUserDto.middleName;
     userProfile.lastName = createUserDto.lastName;

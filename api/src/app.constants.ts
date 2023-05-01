@@ -74,7 +74,7 @@ export class AppConstants {
 
   //swagger description
   static LOGIN_DESC =
-    'Validates credentials. Returns signed JWT if successful. 401 otherwise.';
+    'Validates credentials. Returns signed JWT if successful. 401 otherwise. Updates last login time.';
   static FIND_ALL_USERS_DESC = 'Returns all active users.';
   static FIND_USER_BY_USERNAME_DESC = 'Returns user given a username.';
   static FIND_USERS_BY_SEARCH_PARAMS_DESC = 'Returns active users matching only the query string in the request. All other parameters are ignored.';

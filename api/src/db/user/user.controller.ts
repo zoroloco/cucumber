@@ -25,7 +25,7 @@ import { AppConstants } from '../../app.constants';
 import { SearchUserDto, CreateUserDto } from '../../dtos';
 import { User } from '../entities';
 import { UserService } from './user.service';
-import { Express } from 'express';
+import { IsOptional } from 'class-validator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import * as path from 'path';
@@ -50,7 +50,7 @@ export class UserController {
           password: 'password',
           firstName: 'John',
           middleName: 'Jacob',
-          lastName: 'Dingleheimer',
+          lastName: 'Jingleheimer',
         },
       },
     },
@@ -72,9 +72,11 @@ export class UserController {
           const extension = path.extname(file.originalname);
           const newFileName = file.fieldname + '-' + uniqueSuffix + extension;
           Logger.log('filename interceptor renaming file to:' + newFileName);
-          if (!extension.match(/\.(jpg|jpeg|png)$/)) {
+          if (!extension.match(/\.(jpg|jpeg|png|JPEG|JPG)$/)) {
             cb(
-              new Error('jpg|jpeg|png are the only allowed file types.'),
+              new Error(
+                'jpg|jpeg|png|JPG|JPEG are the only allowed file types.',
+              ),
               newFileName,
             );
           }
@@ -88,7 +90,7 @@ export class UserController {
     @UploadedFile(
       new ParseFilePipe({
         validators: [
-          new MaxFileSizeValidator({ maxSize: 5000000 }), //5mb max size
+          new MaxFileSizeValidator({ maxSize: 15000000 }), //15mb max size
         ],
       }),
     )

@@ -2,7 +2,6 @@ import { Injectable, Logger } from '@nestjs/common';
 import { join } from 'path';
 import { existsSync } from 'fs';
 import sharp = require('sharp');
-import { User } from '../db/entities';
 
 @Injectable()
 export class ImageGeneratorService {
@@ -40,6 +39,7 @@ export class ImageGeneratorService {
         Logger.log('Resizing image:' + basePath.toString());
         await sharp(basePath.toString())
           .resize(+width)
+          .withMetadata() //retain meta-data on re-size
           .toFile(targetPath.toString());
         Logger.log('Successfully resized image to:' + targetPath.toString());
       }

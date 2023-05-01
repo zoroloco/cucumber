@@ -1,5 +1,5 @@
 body {
-  background-color: #212529;;
+  background-color: #212529;
 }
 
 .mainDiv {
@@ -23,11 +23,15 @@ form {
   background-color: #212529;
   color: white;
   box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
-  width:auto;
+  width: auto;
 }
 
 .centerText {
   text-align: center;
+}
+
+.roundImage {
+  border-radius: 50%;
 }
 
 @media screen and (max-width: 768px) {
@@ -57,5 +61,3 @@ form {
     padding: 0;
   }
 }
-
-

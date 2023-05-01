@@ -2,7 +2,9 @@ import { useState, useRef, useEffect } from "react";
 import { Form, Button, Container } from "react-bootstrap";
 import styles from "../../global.module.css";
 import ListGroup from "react-bootstrap/ListGroup";
+import {Friend} from "./Friend";
 import config from "../../config";
+import classes from "./Friend.module.css";
 
 export const Friends = (props) => {
   const [searchParam, setSearchParam] = useState("");
@@ -55,9 +57,9 @@ export const Friends = (props) => {
     const responseJson = await response.json();
     if (response.status === 201 || response.status === 200) {
       setSearchResults(responseJson);
-      console.info("Search found:" + JSON.stringify(responseJson));
+      //console.info("Search found:" + JSON.stringify(responseJson));
     } else {
-      console.info("nada" + response.status);
+      console.error('Error communicating with server.');
     }
   };
 
@@ -101,34 +103,21 @@ export const Friends = (props) => {
           </Button>
         </Container>
 
-        {searchResults ? (
+        {searchResults.length>0 ? (
           <ListGroup>
             {searchResults.map((user) => {
               return (
                 <ListGroup.Item
-                  className="d-flex justify-content-between align-items-start"
+                  className={classes.friendContainer + "d-flex justify-content-between align-items-start"}
                   key={user.id}
                 >
-                  <img
-                    src={`data:image/png;base64, ${user.profilePhotoFile}`}
-                    alt={user.username}
-                    style={{
-                      width: "30px",
-                      height: "30px",
-                      marginRight: "10px",
-                    }}
-                  />
-
-                  <div className="ms-2 me-auto">
-                    <div className="fw-bold">{user.username}</div>
-                    {user.userProfile.firstName} {user.userProfile.lastName}
-                  </div>
+                  <Friend user={user}/>
                 </ListGroup.Item>
               );
             })}
           </ListGroup>
         ) : (
-          <p>you have no friends</p>
+          <p className={styles.centerText}>I am sorry but it seems that you have no friends.</p>
         )}
       </Form>
     </div>
