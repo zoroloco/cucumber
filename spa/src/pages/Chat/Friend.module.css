@@ -1,17 +1,37 @@
-.friendContainer {
+.listGroup{
+    margin:0px;
+}
+
+.listGroupItem {
   display: flex;
   align-items: center;
-  background-color: #e0e0e0;
+  background-color: #ffffff;
+  border-radius: 20px; /* add border-radius to round the corners */
+  margin-bottom: 16px; /* add margin-bottom to create vertical separation */
+}
+
+.listGroupItem:first-child {
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+
+.listGroupItem:last-child {
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
 }
 
 .friendPhotoContainer {
-    width: 25%;
-    height: 100px; /* set the height to the desired value */
-    background-color: #e0e0e0; /* change this to the color you want for the square */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-right: 16px;
+  width: 25%;
+  height: 80px; /* set the height to the desired value */
+  background-color: #ffffff; /* change this to the color you want for the square */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 16px;
 }
 
 .friendPhotoContainer img {

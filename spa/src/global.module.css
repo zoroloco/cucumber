@@ -45,8 +45,9 @@ form {
   justify-content: space-around;
   align-items: center;
   background-color: #212529;
-  height: 60px;
+  height: 40px;
   position: fixed;
+  z-index: 1;
   bottom: 0;
   width: 100%;
   padding: 0 10px;

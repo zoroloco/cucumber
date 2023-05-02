@@ -1,6 +1,5 @@
 import Header from "./Header";
 import { Outlet } from "react-router-dom";
-import Footer from "./Footer";
 import { Card } from "react-bootstrap";
 import styles from "../global.module.css";
 
@@ -14,7 +13,6 @@ const SiteTemplate = () => {
           <Outlet />
         </Card.Body>
 
-        <Footer />
       </Card>
     </div>
   );

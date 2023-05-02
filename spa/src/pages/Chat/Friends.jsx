@@ -104,11 +104,11 @@ export const Friends = (props) => {
         </Container>
 
         {searchResults.length>0 ? (
-          <ListGroup>
+          <ListGroup className={classes.listGroup}>
             {searchResults.map((user) => {
               return (
                 <ListGroup.Item
-                  className={classes.friendContainer}
+                  className={classes.listGroupItem}
                   key={user.id}
                 >
                   <Friend user={user}/>
