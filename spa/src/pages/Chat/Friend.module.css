@@ -7,10 +7,11 @@
 .friendPhotoContainer {
     width: 25%;
     height: 100px; /* set the height to the desired value */
-    background-color: #f0f0f0; /* change this to the color you want for the square */
+    background-color: #e0e0e0; /* change this to the color you want for the square */
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-right: 16px;
 }
 
 .friendPhotoContainer img {

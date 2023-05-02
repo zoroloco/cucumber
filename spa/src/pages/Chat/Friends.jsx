@@ -108,7 +108,7 @@ export const Friends = (props) => {
             {searchResults.map((user) => {
               return (
                 <ListGroup.Item
-                  className={classes.friendContainer + "d-flex justify-content-between align-items-start"}
+                  className={classes.friendContainer}
                   key={user.id}
                 >
                   <Friend user={user}/>
