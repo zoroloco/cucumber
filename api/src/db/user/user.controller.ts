@@ -1,5 +1,6 @@
 import {
   Controller,
+  Param,
   Get,
   Post,
   UseGuards,
@@ -8,7 +9,6 @@ import {
   UploadedFile,
   ParseFilePipe,
   MaxFileSizeValidator,
-  FileTypeValidator,
   UseInterceptors,
   Logger,
 } from '@nestjs/common';
@@ -25,7 +25,6 @@ import { AppConstants } from '../../app.constants';
 import { SearchUserDto, CreateUserDto } from '../../dtos';
 import { User } from '../entities';
 import { UserService } from './user.service';
-import { IsOptional } from 'class-validator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import * as path from 'path';
@@ -190,5 +189,24 @@ export class UserController {
     return await this.userService.findUsersBySearchCriteria(
       searchUserDto.query,
     );
+  }
+
+  /**
+   * createUser
+   *
+   * @param createUserDto
+   * @returns - created user object with password ommitted.
+   */
+  @UseGuards(JwtAuthGuard)
+  @ApiTags(AppConstants.API_TAG)
+  @ApiResponse({
+    status: 200,
+    description: AppConstants.FIND_USER_ASSOCIATIONS_BY_USER_DESC,
+  })
+  @ApiOperation({ summary: AppConstants.FIND_USER_ASSOCIATIONS_BY_USER_DESC })
+  @Get(AppConstants.FIND_USER_ASSOCIATIONS_BY_USER)
+  async findUserAssociationsByUserId(@Param('userid') userId: number
+  ) {
+    return this.userService.findUserAssociationsByUserId(userId);
   }
 }

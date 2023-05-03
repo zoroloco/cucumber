@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Column, Entity, OneToOne, JoinColumn } from 'typeorm';
 import { CommonEntity } from './common.entity';
-import { UserProfile } from '../entities';
+import { UserProfile } from '.';
 
 @Entity('user')
 export class User extends CommonEntity {

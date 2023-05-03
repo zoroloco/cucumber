@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { AppConstants } from '../../app.constants';
 import { CreateUserDto } from '../../dtos';
 import { Repository } from 'typeorm';
-import { User, UserProfile } from '../entities';
+import { User, UserAssociation, UserProfile } from '../entities';
 import { ImageGeneratorService, ImageReaderService } from '../../common';
 const bcrypt = require('bcrypt');
 const fs = require('fs');
@@ -17,6 +17,8 @@ export class UserService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(UserProfile, 'druidia')
     private readonly userProfileRepository: Repository<UserProfile>,
+    @InjectRepository(UserAssociation, 'druidia')
+    private readonly userAssociationRepository: Repository<UserAssociation>,
     private readonly imageGeneratorService: ImageGeneratorService,
     private readonly imageReaderService: ImageReaderService,
   ) {}
@@ -102,6 +104,11 @@ export class UserService {
     }
   }
 
+  /**
+   *
+   * @param user
+   * @returns - user with user profile photo
+   */
   private async hydrateUser(user) {
     user.password = '';
     const profilePhotoPath = await this.imageGeneratorService.generateImage(
@@ -120,20 +127,20 @@ export class UserService {
     return user;
   }
 
-  public async updateUserPostLogin(user: User){
-    Logger.log('Updating user ID:'+user.id);
-    try{
-      await this.userRepository.update(user.id,{
-        lastLoginTime: new Date()
+  public async updateUserPostLogin(user: User) {
+    Logger.log('Updating user ID:' + user.id);
+    try {
+      await this.userRepository.update(user.id, {
+        lastLoginTime: new Date(),
       });
 
       return this.userRepository.findOne({
         where: {
-          id: user.id
-        }
+          id: user.id,
+        },
       });
-    }catch(error){
-      Logger.error('Error updating user:'+error);
+    } catch (error) {
+      Logger.error('Error updating user:' + error);
     }
   }
 
@@ -190,6 +197,32 @@ export class UserService {
 
         throw new BadRequestException('Error encountered while creating user.');
       }
+    }
+  }
+
+  public async findUserAssociationsByUserId(userId: number) {
+    Logger.log('Attempting to find user associations for user id:' + userId);
+    try {
+      const userAssociations = await this.userAssociationRepository
+        .createQueryBuilder('ua')
+        .leftJoin('ua.user', 'u')
+        .leftJoinAndSelect('ua.associate', 'a')
+        .where('ua.user.id = :userId', { userId })
+        .andWhere('ua.inactivatedTime is null')
+        .andWhere('a.inactivatedTime is null')
+        .getMany();
+
+      if (userAssociations) {
+        Logger.log(
+          'Successfully found ' +
+            userAssociations.length +
+            ' user assocation(s).',
+        );
+      }
+
+      return userAssociations;
+    } catch (error) {
+      Logger.error('Error finding user associations for user id:' + userId);
     }
   }
 }
