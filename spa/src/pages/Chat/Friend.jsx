@@ -1,6 +1,7 @@
 import styles from "../../global.module.css";
-import {Image} from "react-bootstrap";
+import { Image, Button } from "react-bootstrap";
 import classes from "./Friend.module.css";
+import { TiPlus, TiMinus } from "react-icons/ti";
 
 export const Friend = (props) => {
   return (
@@ -16,7 +17,30 @@ export const Friend = (props) => {
 
       <div className={classes.friendContent}>
         <div className="fw-bold">{props.user.username}</div>
-        {props.user.__userProfile__.firstName} {props.user.__userProfile__.lastName}
+        {props.user.__userProfile__.firstName}{" "}
+        {props.user.__userProfile__.lastName}
+      </div>
+
+      <div className={classes.friendActionContainer}>
+        {props.user.isFriend ? (
+          <Button
+            className={classes.friendActionButton}
+            variant="dark"
+            size="sm"
+            onClick={() => props.removeFriendHandler(props.user.id)}
+          >
+            <TiMinus/>
+          </Button>
+        ) : (
+          <Button
+            className={classes.friendActionButton}
+            variant="dark"
+            size="sm"
+            onClick={() => props.addFriendHandler(props.user.id)}
+          >
+            <TiPlus/>
+          </Button>
+        )}
       </div>
     </>
   );

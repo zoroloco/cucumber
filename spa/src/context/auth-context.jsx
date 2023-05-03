@@ -41,12 +41,17 @@ export const AuthContextProvider = (props) => {
     //TODO: hydrate user from DB.
     try {
       //decode token to check for exp
-      const decoded = jwt_decode(accessToken);
-      const loggedInUser = { username: decoded.username };
+      const decoded = jwt_decode(accessToken);      
+
+      const loggedInUser = {
+        username: decoded.username, 
+        id: decoded.sub
+      };
+
       localStorage.setItem("user", JSON.stringify(loggedInUser));
       setUser(loggedInUser);
       setAccessToken(accessToken);
-      console.info(loggedInUser.username + " is now logged in.");
+      console.info(JSON.stringify(loggedInUser) + " is now logged in!");
     } catch (error) {
       console.error("Error encountered while decoding access token:" + error);
     }

@@ -5,44 +5,65 @@ import ListGroup from "react-bootstrap/ListGroup";
 import { Friend } from "./Friend";
 import config from "../../config";
 import classes from "./Friend.module.css";
+import { TiZoom } from "react-icons/ti";
 
 export const Friends = (props) => {
   const [searchParam, setSearchParam] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  const [friends, setFriends] = useState([]);
   const searchRef = useRef();
 
+  /**
+   * set focus to search field and load any existing friends, if any.
+   */
   useEffect(() => {
-    searchRef.current.focus();
-    loadFriends();
-  }, []);
+    async function loadFriends() {
+      searchRef.current.focus();
+      const userId = props.user.id;
 
-  const loadFriends = async () => {
-    const response = await fetch(
-      config.resourceServer + "/api/find-user-associations-by-user-id/2",
-      {
-        method: "GET",
-        mode: "cors",
-        cache: "no-cache",
-        credentials: "same-origin",
-        headers: {
-          Authorization: `Bearer ${props.accessToken}`,
-        },
+      const response = await fetch(
+        `${config.resourceServer}/api/find-user-associations-by-user-id/${userId}`,
+        {
+          method: "GET",
+          mode: "cors",
+          cache: "no-cache",
+          credentials: "same-origin",
+          headers: {
+            Authorization: `Bearer ${props.accessToken}`,
+          },
+        }
+      );
+
+      const responseJson = await response.json();
+      if (response.status === 200) {
+        setSearchResults(responseJson.map(f=>{
+          f.isFriend=true;
+          return f;
+        }));
+        setFriends(responseJson);
+      } else {
+        console.error("Error communicating with server.");
       }
-    );
-
-    const responseJson = await response.json();
-    if (response.status === 200) {
-      setSearchResults(responseJson);
-    } else {
-      console.error("Error communicating with server.");
     }
-  };
 
-  const clearHandler = () => {
     loadFriends();
+  }, [props.accessToken, props.user.id]);
+
+  /**
+   * clear search field and reset list to just existing friends, if any.
+   */
+  const clearHandler = () => {
     setSearchParam("");
+    setSearchResults(friends.map(f=>{
+      f.isFriend=true;
+      return f;
+    }));
   };
 
+  /**
+   * If searchParam present then search by those params,
+   * otherwise search all users.
+   */
   const searchHandler = async () => {
     let response = null;
 
@@ -79,11 +100,25 @@ export const Friends = (props) => {
 
     const responseJson = await response.json();
     if (response.status === 201 || response.status === 200) {
-      setSearchResults(responseJson);
+      setSearchResults(responseJson.map(r=>{
+        const isFriend = friends.some((f)=> f.id === r.id);
+        return {
+          ...r,
+          isFriend
+        }
+      }));
       //console.info("Search found:" + JSON.stringify(responseJson));
     } else {
       console.error("Error communicating with server.");
     }
+  };
+
+  const addFriendHandler = (userId) => {
+    console.info("Adding friend with ID:" + userId);
+  };
+
+  const removeFriendHandler = (userId) => {
+    console.info("Removing friend with ID:" + userId);
   };
 
   return (
@@ -104,7 +139,7 @@ export const Friends = (props) => {
           value={searchParam}
           onChange={(e) => setSearchParam(e.target.value)}
         />
-        <Container className="d-flex justify-content-center flex-wrap">
+        <Container className="d-flex justify-content-center flex-wrap">        
           <Button
             variant="dark"
             className="m-2"
@@ -114,7 +149,7 @@ export const Friends = (props) => {
             size="lg"
             onClick={searchHandler}
           >
-            Search
+            Search<TiZoom/>
           </Button>
           <Button
             variant="dark"
@@ -131,7 +166,11 @@ export const Friends = (props) => {
             {searchResults.map((user) => {
               return (
                 <ListGroup.Item className={classes.listGroupItem} key={user.id}>
-                  <Friend user={user} />
+                  <Friend
+                    user={user}
+                    addFriendHandler={addFriendHandler}
+                    removeFriendHandler={removeFriendHandler}
+                  />
                 </ListGroup.Item>
               );
             })}

@@ -34,6 +34,16 @@
   margin-right: 16px;
 }
 
+.friendActionContainer {
+  width: 25%;
+  height: 80px; /* set the height to the desired value */
+  background-color: #ffffff; /* change this to the color you want for the square */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 16px;
+}
+
 .friendPhotoContainer img {
   max-width: 100%;
   max-height: 100%;
@@ -42,4 +52,19 @@
 
 .friendContent {
   flex: 1;
+}
+
+.friendActionButton {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  border: none;
+  border-radius: 0;
+  outline: none;
 }
