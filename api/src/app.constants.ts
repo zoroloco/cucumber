@@ -71,7 +71,7 @@ export class AppConstants {
   static CREATE_USER = 'create-user';
   static LOGIN: string = 'login';
   static VALIDATE_TOKEN: string = 'validate-token';
-  static FIND_USER_ASSOCIATIONS_BY_USER = 'find-user-associations-by-user_id/:userid';
+  static FIND_USER_ASSOCIATIONS_BY_USER = 'find-user-associations-by-user-id/:userid';
 
   //swagger description
   static LOGIN_DESC =

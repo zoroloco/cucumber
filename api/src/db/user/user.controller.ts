@@ -113,7 +113,7 @@ export class UserController {
     type: [User],
   })
   @ApiOperation({ summary: AppConstants.FIND_ALL_USERS_DESC })
-  findAll() {
+  findAllUsers() {
     return this.userService.findAll();
   }
 
@@ -192,10 +192,10 @@ export class UserController {
   }
 
   /**
-   * createUser
+   * findUserAssociationsByUserId
    *
-   * @param createUserDto
-   * @returns - created user object with password ommitted.
+   * @param id - id of the user
+   * @returns - list of user associates for given user id
    */
   @UseGuards(JwtAuthGuard)
   @ApiTags(AppConstants.API_TAG)
@@ -204,6 +204,7 @@ export class UserController {
     description: AppConstants.FIND_USER_ASSOCIATIONS_BY_USER_DESC,
   })
   @ApiOperation({ summary: AppConstants.FIND_USER_ASSOCIATIONS_BY_USER_DESC })
+  @ApiBearerAuth()
   @Get(AppConstants.FIND_USER_ASSOCIATIONS_BY_USER)
   async findUserAssociationsByUserId(@Param('userid') userId: number
   ) {

@@ -32,9 +32,6 @@ export class UserService {
 
     try {
       const users = await this.userRepository.find({
-        relations: {
-          userProfile: true, //joins with userProfile table
-        },
         select: {
           username: true,
           id: true,
@@ -109,10 +106,13 @@ export class UserService {
    * @param user
    * @returns - user with user profile photo
    */
-  private async hydrateUser(user) {
+  private async hydrateUser(user:User) {
     user.password = '';
+
+    const userProfile = await user.userProfile;//lazy load
+
     const profilePhotoPath = await this.imageGeneratorService.generateImage(
-      user.userProfile.profilePhotoPath,
+      userProfile.profilePhotoPath,
       128,
     );
     if (profilePhotoPath) {
@@ -200,6 +200,12 @@ export class UserService {
     }
   }
 
+  /**
+   * findUserAssociationsByUserId
+   * 
+   * @param userId 
+   * @returns 
+   */
   public async findUserAssociationsByUserId(userId: number) {
     Logger.log('Attempting to find user associations for user id:' + userId);
     try {
@@ -209,7 +215,7 @@ export class UserService {
         .leftJoinAndSelect('ua.associate', 'a')
         .where('ua.user.id = :userId', { userId })
         .andWhere('ua.inactivatedTime is null')
-        .andWhere('a.inactivatedTime is null')
+        .andWhere('a.inactivatedTime is null')//don't get inactivated friends
         .getMany();
 
       if (userAssociations) {
@@ -218,9 +224,14 @@ export class UserService {
             userAssociations.length +
             ' user assocation(s).',
         );
-      }
 
-      return userAssociations;
+        const friends = userAssociations.map(ua=>{
+          return ua.associate;
+        });
+
+        //return friends;
+        return await Promise.all(friends.map(this.hydrateUser.bind(this)));
+      }
     } catch (error) {
       Logger.error('Error finding user associations for user id:' + userId);
     }

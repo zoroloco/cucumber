@@ -17,7 +17,7 @@ export class User extends CommonEntity {
   @Column({ type: 'timestamp' })
   public lastLoginTime!: Date;
 
-  @OneToOne(() => UserProfile)
+  @OneToOne(() => UserProfile,{ lazy: true })
   @JoinColumn()
   userProfile: UserProfile;
 

@@ -16,7 +16,7 @@ export const Friend = (props) => {
 
       <div className={classes.friendContent}>
         <div className="fw-bold">{props.user.username}</div>
-        {props.user.userProfile.firstName} {props.user.userProfile.lastName}
+        {props.user.__userProfile__.firstName} {props.user.__userProfile__.lastName}
       </div>
     </>
   );

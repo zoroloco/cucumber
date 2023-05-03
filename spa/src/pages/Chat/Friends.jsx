@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Form, Button, Container } from "react-bootstrap";
 import styles from "../../global.module.css";
 import ListGroup from "react-bootstrap/ListGroup";
-import {Friend} from "./Friend";
+import { Friend } from "./Friend";
 import config from "../../config";
 import classes from "./Friend.module.css";
 
@@ -13,10 +13,33 @@ export const Friends = (props) => {
 
   useEffect(() => {
     searchRef.current.focus();
+    loadFriends();
   }, []);
 
+  const loadFriends = async () => {
+    const response = await fetch(
+      config.resourceServer + "/api/find-user-associations-by-user-id/2",
+      {
+        method: "GET",
+        mode: "cors",
+        cache: "no-cache",
+        credentials: "same-origin",
+        headers: {
+          Authorization: `Bearer ${props.accessToken}`,
+        },
+      }
+    );
+
+    const responseJson = await response.json();
+    if (response.status === 200) {
+      setSearchResults(responseJson);
+    } else {
+      console.error("Error communicating with server.");
+    }
+  };
+
   const clearHandler = () => {
-    setSearchResults([]);
+    loadFriends();
     setSearchParam("");
   };
 
@@ -59,7 +82,7 @@ export const Friends = (props) => {
       setSearchResults(responseJson);
       //console.info("Search found:" + JSON.stringify(responseJson));
     } else {
-      console.error('Error communicating with server.');
+      console.error("Error communicating with server.");
     }
   };
 
@@ -103,21 +126,20 @@ export const Friends = (props) => {
           </Button>
         </Container>
 
-        {searchResults.length>0 ? (
+        {searchResults.length > 0 ? (
           <ListGroup className={classes.listGroup}>
             {searchResults.map((user) => {
               return (
-                <ListGroup.Item
-                  className={classes.listGroupItem}
-                  key={user.id}
-                >
-                  <Friend user={user}/>
+                <ListGroup.Item className={classes.listGroupItem} key={user.id}>
+                  <Friend user={user} />
                 </ListGroup.Item>
               );
             })}
           </ListGroup>
         ) : (
-          <p className={styles.centerText}>I am sorry but it seems that you have no friends.</p>
+          <p className={styles.centerText}>
+            I am sorry, but it seems that you have no friends.
+          </p>
         )}
       </Form>
     </div>
