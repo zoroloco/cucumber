@@ -1,13 +1,46 @@
-.listGroup{
-    margin:0px;
-}
-
 .listGroupItem {
   display: flex;
   align-items: center;
-  background-color: #ffffff;
-  border-radius: 20px; /* add border-radius to round the corners */
-  margin-bottom: 16px; /* add margin-bottom to create vertical separation */
+  padding: 1rem;
+  border: none;
+  background-color: #f5f5f5;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  margin-bottom: 5px;
+}
+
+.listGroupItem img {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  margin-right: 0.4rem;
+  border-radius: 50%;
+}
+
+.listGroupItem .userInfo {
+  display: flex;
+  flex-direction: column;
+  margin-left:auto;
+}
+
+.listGroupItem .userInfo h4 {
+  margin: 0;
+  text-align: left;
+  flex-wrap:wrap;
+  font-size: 1.0rem;
+}
+
+.listGroupItem .userInfo span {
+  font-size: 0.8rem;
+  flex-wrap: wrap;
+  text-align: left;
+  color: #666;
+}
+
+.listGroupItem .userButton {
+  margin-left: 1rem;  
 }
 
 .listGroupItem:first-child {
@@ -24,51 +57,3 @@
   border-bottom-right-radius: 20px;
 }
 
-.friendPhotoContainer {
-  width: 25%;
-  height: 80px; /* set the height to the desired value */
-  background-color: #ffffff; /* change this to the color you want for the square */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-right: 16px;
-  padding: 0;
-  border:none;
-  border-radius:0;
-  outline: none;
-}
-
-.friendActionContainer {
-  width: 25%;
-  height: 80px; /* set the height to the desired value */
-  background-color: #ffffff; /* change this to the color you want for the square */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-left: 16px;
-}
-
-.friendPhotoContainer img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-}
-
-.friendContent {
-  flex: 1;
-}
-
-.friendActionButton {
-  width: 40px;
-  height: 40px;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  font-size: 14px;
-  font-weight: bold;
-  border: none;
-  border-radius: 0;
-  outline: none;
-}

@@ -22,7 +22,7 @@ import {
   getSchemaPath,
 } from '@nestjs/swagger';
 import { AppConstants } from '../../app.constants';
-import { SearchUserDto, CreateUserDto } from '../../dtos';
+import { SearchUserDto, CreateUserDto, CreateUserAssociationDto } from '../../dtos';
 import { User } from '../entities';
 import { UserService } from './user.service';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -206,8 +206,41 @@ export class UserController {
   @ApiOperation({ summary: AppConstants.FIND_USER_ASSOCIATIONS_BY_USER_DESC })
   @ApiBearerAuth()
   @Get(AppConstants.FIND_USER_ASSOCIATIONS_BY_USER)
-  async findUserAssociationsByUserId(@Param('userid') userId: number
-  ) {
+  async findUserAssociationsByUserId(@Param('userid') userId: number) {
     return this.userService.findUserAssociationsByUserId(userId);
+  }
+
+  /**
+   * createUserAssociation
+   *
+   * @param createUserAssocationDto
+   * @returns - creates friends. :)
+   */
+  @ApiTags(AppConstants.API_TAG)
+  @ApiBody({
+    type: CreateUserAssociationDto,
+    examples: {
+      example: {
+        value: {
+          userId: '1',
+          associateUserId:'2'
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 201,
+    description: AppConstants.CREATE_USER_ASSOCIATION_DESC,
+    type: CreateUserAssociationDto,
+  })
+  @ApiOperation({ summary: AppConstants.CREATE_USER_ASSOCIATION_DESC })
+  @Post(AppConstants.CREATE_USER_ASSOCIATION)
+  async createUserAssociation(
+    @Body() createUserAssociationDto: CreateUserAssociationDto,
+  ) {
+    return await this.userService.createUserAssocation(
+      createUserAssociationDto.userId,
+      createUserAssociationDto.associateUserId,
+    );
   }
 }

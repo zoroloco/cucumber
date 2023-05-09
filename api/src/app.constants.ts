@@ -72,6 +72,8 @@ export class AppConstants {
   static LOGIN: string = 'login';
   static VALIDATE_TOKEN: string = 'validate-token';
   static FIND_USER_ASSOCIATIONS_BY_USER = 'find-user-associations-by-user-id/:userid';
+  static CREATE_USER_ASSOCIATION = 'create-user-association';
+  static REMOVE_USER_ASSOCIATION = 'remove-user-association';
 
   //swagger description
   static LOGIN_DESC =
@@ -83,6 +85,8 @@ export class AppConstants {
   static VALIDATE_TOKEN_DESC =
     'Provides a way for clients to see if their token is valid.';
   static FIND_USER_ASSOCIATIONS_BY_USER_DESC = 'Returns all the user associations given a user id. This is the friend list.';
+  static CREATE_USER_ASSOCIATION_DESC = 'Given two user ids, will create a link between them (will you be my frend?).';
+  static REMOVE_USER_ASSOCIATION_DESC = 'Deactivates an association between 2 users (unfriend)'
 
   //bcrypt
   static BCRYPT_SALT_ROUNDS = 10;

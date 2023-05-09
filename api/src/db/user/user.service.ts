@@ -236,4 +236,34 @@ export class UserService {
       Logger.error('Error finding user associations for user id:' + userId);
     }
   }
+
+  public async createUserAssocation(userId:number, associateUserId:number){
+    Logger.log(
+      'Attempting to create association between userId:' +
+        userId +
+        ' and associate userId:' +
+        associateUserId,
+    );
+
+    try{
+      const userAssociation: UserAssociation = this.userAssociationRepository.create();
+      userAssociation.user = await this.userRepository.findOne({where:{id:userId}});
+      userAssociation.associate = await this.userRepository.findOne({where:{id:associateUserId}});
+      userAssociation.setAuditFields(userAssociation.user.username);
+
+      //TODO: do i have to fetch the users above or can i create a new user object with just id?
+      const savedUserAssocation = this.userAssociationRepository.save(userAssociation);
+      Logger.log('Successfully linked users:'+userId+' and '+associateUserId);
+      return savedUserAssocation;
+    }catch(error){
+      Logger.error(
+        'Error creating association between userIds:' +
+          userId +
+          ' and ' +
+          associateUserId +
+          ' with error:' +
+          error,
+      );
+    }
+  }
 }
