@@ -3,6 +3,7 @@ import {
   Param,
   Get,
   Post,
+  Request,
   UseGuards,
   Body,
   NotFoundException,
@@ -13,6 +14,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
+import { AuthUserGuard } from '../../auth/auth.user.guard';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -28,6 +30,7 @@ import { UserService } from './user.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import * as path from 'path';
+import { RemoveUserAssociationDto } from 'src/dtos/remove-user-association';
 
 @Controller(AppConstants.API_PATH)
 export class UserController {
@@ -241,6 +244,34 @@ export class UserController {
     return await this.userService.createUserAssocation(
       createUserAssociationDto.userId,
       createUserAssociationDto.associateUserId,
+    );
+  }
+
+  @ApiTags(AppConstants.API_TAG)
+  @ApiBody({
+    type: RemoveUserAssociationDto,
+    examples: {
+      example: {
+        value: {
+          userId: '1',
+          associateUserId:'2'
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 201,
+    description: AppConstants.REMOVE_USER_ASSOCIATION_DESC,
+    type: RemoveUserAssociationDto,
+  })
+  @ApiOperation({ summary: AppConstants.REMOVE_USER_ASSOCIATION_DESC })
+  @Post(AppConstants.REMOVE_USER_ASSOCIATION)
+  async removeUserAssociation(@Request() req, @Body() removeUserAssociationDto: RemoveUserAssociationDto){
+    Logger.log('here is user:'+JSON.stringify(req.user));
+    return await this.userService.removeUserAssociation(
+      '',
+      removeUserAssociationDto.userId,
+      removeUserAssociationDto.associateUserId,
     );
   }
 }

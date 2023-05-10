@@ -34,5 +34,5 @@ export class CommonEntity {
     public inactivatedTime!: Date;
 
     @Column({type: 'varchar', length: 32})
-    public inactivatedBy!: Date;
+    public inactivatedBy!: string;
 }

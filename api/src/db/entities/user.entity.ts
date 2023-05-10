@@ -18,7 +18,7 @@ export class User extends CommonEntity {
   public lastLoginTime!: Date;
 
   @OneToOne(() => UserProfile,{ lazy: true })
-  @JoinColumn()
+  @JoinColumn({name: 'userProfileId'})
   userProfile: UserProfile;
 
   @ApiProperty({description: 'Base64 encoded string with the profile photo.'})

@@ -124,6 +124,8 @@ export class UserService {
       }
     }
 
+    //Logger.log(JSON.stringify(user));
+
     return user;
   }
 
@@ -252,12 +254,52 @@ export class UserService {
       userAssociation.setAuditFields(userAssociation.user.username);
 
       //TODO: do i have to fetch the users above or can i create a new user object with just id?
-      const savedUserAssocation = this.userAssociationRepository.save(userAssociation);
+      const savedUserAssocation = await this.userAssociationRepository.save(userAssociation);
       Logger.log('Successfully linked users:'+userId+' and '+associateUserId);
       return savedUserAssocation;
     }catch(error){
       Logger.error(
         'Error creating association between userIds:' +
+          userId +
+          ' and ' +
+          associateUserId +
+          ' with error:' +
+          error,
+      );
+    }
+  }
+
+  public async removeUserAssociation(username:string, userId:number, associateUserId:number){
+    Logger.log(
+      'Attempting to remove association between userId:' +
+        userId +
+        ' and associate userId:' +
+        associateUserId,
+    );
+
+    try{
+      let userAssociation = await this.userAssociationRepository
+        .createQueryBuilder('ua')
+        .leftJoin('ua.user', 'u')
+        .leftJoinAndSelect('ua.associate', 'a')
+        .where('ua.user.id = :userId', { userId })
+        .andWhere('ua.associate.id = :associateUserId', {associateUserId})
+        .andWhere('ua.inactivatedTime is null')
+        .getOne();
+
+      if(userAssociation){
+        Logger.log('Successfully found user association to remove with id:'+userAssociation.id);
+        userAssociation.inactivatedBy = username;
+        userAssociation.inactivatedTime = new Date();
+
+        const savedUserAssociation = await this.userAssociationRepository.save(userAssociation);
+        Logger.log('Successfully unlinked users:'+userId+' and '+associateUserId);
+        return savedUserAssociation;
+      }
+
+    }catch(error){
+      Logger.error(
+        'Error removing association between userIds:' +
           userId +
           ' and ' +
           associateUserId +

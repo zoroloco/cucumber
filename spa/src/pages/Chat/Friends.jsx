@@ -36,10 +36,12 @@ export const Friends = (props) => {
 
       const responseJson = await response.json();
       if (response.status === 200) {
-        setSearchResults(responseJson.map(f=>{
-          f.isFriend=true;
-          return f;
-        }));
+        setSearchResults(
+          responseJson.map((f) => {
+            f.isFriend = true;
+            return f;
+          })
+        );
         setFriends(responseJson);
       } else {
         console.error("Error communicating with server.");
@@ -54,10 +56,12 @@ export const Friends = (props) => {
    */
   const clearHandler = () => {
     setSearchParam("");
-    setSearchResults(friends.map(f=>{
-      f.isFriend=true;
-      return f;
-    }));
+    setSearchResults(
+      friends.map((f) => {
+        f.isFriend = true;
+        return f;
+      })
+    );
   };
 
   /**
@@ -100,25 +104,110 @@ export const Friends = (props) => {
 
     const responseJson = await response.json();
     if (response.status === 201 || response.status === 200) {
-      setSearchResults(responseJson.map(r=>{
-        const isFriend = friends.some((f)=> f.id === r.id);
-        return {
-          ...r,
-          isFriend
-        }
-      }));
-      //console.info("Search found:" + JSON.stringify(responseJson));
+      //flag the search results as friend or foe
+      setSearchResults(
+        responseJson.map((r) => {
+          const isFriend = friends.some((f) => f.id === r.id);
+          return {
+            ...r,
+            isFriend,
+          };
+        })
+      );
     } else {
       console.error("Error communicating with server.");
     }
   };
 
-  const addFriendHandler = (userId) => {
-    console.info("Adding friend with ID:" + userId);
+  /**
+   * ADD FRIEND
+   * @param {} associateUserId 
+   */
+  const addFriendHandler = async (associateUserId) => {
+    console.info("Adding friend with ID:" + associateUserId);
+    const userId = props.user.id;
+
+    const response = await fetch(
+      config.resourceServer + "/api/create-user-association",
+      {
+        method: "POST",
+        mode: "cors",
+        cache: "no-cache",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${props.accessToken}`,
+        },
+        body: JSON.stringify({
+          userId: userId,
+          associateUserId: associateUserId,
+        }),
+      }
+    );
+
+    const responseJson = await response.json();
+    if (response.status === 201 || response.status === 200) {
+      console.info("Successfully made a frend!");
+      setFriends((prevFriends) => [
+        ...prevFriends,
+        ...searchResults.filter((r) => r.id === responseJson.associate.id),
+      ]);
+
+      setSearchResults(
+        searchResults.map((r) => {
+          const isFriend = friends.some((f) => {
+            return f.id === r.id || responseJson.associate.id === r.id;
+          });
+          return {
+            ...r,
+            isFriend,
+          };
+        })
+      );
+    }
   };
 
-  const removeFriendHandler = (userId) => {
-    console.info("Removing friend with ID:" + userId);
+  const removeFriendHandler = async (associateUserId) => {
+    console.info("Removing friend with ID:" + associateUserId);
+    const userId = props.user.id;
+
+    const response = await fetch(
+      config.resourceServer + "/api/remove-user-association",
+      {
+        method: "POST",
+        mode: "cors",
+        cache: "no-cache",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${props.accessToken}`,
+        },
+        body: JSON.stringify({
+          userId: userId,
+          associateUserId: associateUserId,
+        }),
+      }
+    );
+
+    const responseJson = await response.json();
+    if (response.status === 201 || response.status === 200) {
+      console.info("Successfully lost a frend!");
+      setFriends((prevFriends) => [
+        ...prevFriends.filter((r)=> r.id !== responseJson.associate.id)
+      ]);
+
+      setSearchResults(
+        searchResults.map((r) => {
+          const isFriend = friends.some((f) => {
+            return f.id === r.id && responseJson.associate.id !== r.id;
+          });
+          return {
+            ...r,
+            isFriend,
+          };
+        })
+      );
+    }
   };
 
   return (
@@ -139,7 +228,7 @@ export const Friends = (props) => {
           value={searchParam}
           onChange={(e) => setSearchParam(e.target.value)}
         />
-        <Container className="d-flex justify-content-center flex-wrap">        
+        <Container className="d-flex justify-content-center flex-wrap">
           <Button
             variant="dark"
             className="m-2"
@@ -149,7 +238,8 @@ export const Friends = (props) => {
             size="lg"
             onClick={searchHandler}
           >
-            Search<TiZoom/>
+            Search
+            <TiZoom />
           </Button>
           <Button
             variant="dark"

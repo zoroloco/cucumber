@@ -84,7 +84,7 @@ export class AppConstants {
   static CREATE_USER_DESC = 'Registers a user.';
   static VALIDATE_TOKEN_DESC =
     'Provides a way for clients to see if their token is valid.';
-  static FIND_USER_ASSOCIATIONS_BY_USER_DESC = 'Returns all the user associations given a user id. This is the friend list.';
+  static FIND_USER_ASSOCIATIONS_BY_USER_DESC = 'Returns all active user associations given a user id. This is the friend list.';
   static CREATE_USER_ASSOCIATION_DESC = 'Given two user ids, will create a link between them (will you be my frend?).';
   static REMOVE_USER_ASSOCIATION_DESC = 'Deactivates an association between 2 users (unfriend)'
 
