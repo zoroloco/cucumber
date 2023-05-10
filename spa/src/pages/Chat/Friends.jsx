@@ -121,7 +121,7 @@ export const Friends = (props) => {
 
   /**
    * ADD FRIEND
-   * @param {} associateUserId 
+   * @param {} associateUserId
    */
   const addFriendHandler = async (associateUserId) => {
     console.info("Adding friend with ID:" + associateUserId);
@@ -153,11 +153,13 @@ export const Friends = (props) => {
         ...searchResults.filter((r) => r.id === responseJson.associate.id),
       ]);
 
+      //now traverse the search results and update the friends flag
       setSearchResults(
         searchResults.map((r) => {
-          const isFriend = friends.some((f) => {
-            return f.id === r.id || responseJson.associate.id === r.id;
-          });
+          const isFriend =
+            friends.some((f) => {
+              return f.id === r.id;
+            }) || responseJson.associate.id === r.id;
           return {
             ...r,
             isFriend,
@@ -193,7 +195,7 @@ export const Friends = (props) => {
     if (response.status === 201 || response.status === 200) {
       console.info("Successfully lost a frend!");
       setFriends((prevFriends) => [
-        ...prevFriends.filter((r)=> r.id !== responseJson.associate.id)
+        ...prevFriends.filter((r) => r.id !== responseJson.associate.id),
       ]);
 
       setSearchResults(

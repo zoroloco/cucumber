@@ -12,9 +12,9 @@ export const Friend = (props) => {
         alt={props.user.username}
       />
       <div className={classes.userInfo}>
-        <h4>
-          {fullName.trim().substring(0,16)}
-        </h4>
+        <h5>
+          {fullName.trim().substring(0,19)}
+        </h5>
         <span>{props.user.username.trim().substring(0,16)}</span>
       </div>
 
