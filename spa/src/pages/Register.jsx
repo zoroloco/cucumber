@@ -12,8 +12,6 @@ const redirectCountdownTime = 3;
 const formReducer = (prevState, action) => {
   let newState = { ...prevState };
 
-  newState.validationMessage = null;
-
   if (action.type === "USERNAME_INPUT") {
     newState.username.isValid = false;
     if (!action.username.value.trim().length) {
@@ -65,11 +63,11 @@ const formReducer = (prevState, action) => {
   } else if (action.type === "PASSWORD2_INPUT") {
     newState.password2.isValid = false;
     if (action.password2.value.trim().length < 10) {
-      newState.password2.errMsg  = "Password2 must be >10 character.";
+      newState.password2.errMsg = "Password2 must be >10 character.";
     } else if (action.password2.value !== prevState.password.value) {
-      newState.password2.errMsg  = "Passwords must match.";
+      newState.password2.errMsg = "Passwords must match.";
     } else {
-      newState.password2.errMsg  = null;
+      newState.password2.errMsg = null;
       newState.password.errMsg = null;
       newState.password.isValid = true;
       newState.password2.isValid = true;
@@ -79,11 +77,11 @@ const formReducer = (prevState, action) => {
     newState.password2.isValid = false;
 
     if (prevState.password2.value.trim().length < 10) {
-      newState.password2.errMsg  = "Password2 must be >10 character.";
+      newState.password2.errMsg = "Password2 must be >10 character.";
     } else if (prevState.password2.value !== prevState.password.value) {
-      newState.password2.errMsg  = "Passwords must match.";
+      newState.password2.errMsg = "Passwords must match.";
     } else {
-      newState.password2.errMsg  = null;
+      newState.password2.errMsg = null;
       newState.password.errMsg = null;
       newState.password.isValid = true;
       newState.password2.isValid = true;
@@ -95,10 +93,15 @@ const formReducer = (prevState, action) => {
   } else if (action.type === "MIDDLE_NAME_INPUT") {
     newState.middleName.value = action.middleName.value;
   } else if (action.type === "REGISTRATION_ERROR") {
-    newState.registrationValid = false;
-    newState.validationMessage = action.validationMessage;
+    newState.registrationSubmitted = false;
+    newState.registrationComplete = false;
+    newState.errMsg = action.errMsg;
+  }else if (action.type === "REGISTRATION_SUBMITTED") {
+    newState.registrationSubmitted = true;
+    newState.registrationComplete = false;
   } else if (action.type === "REGISTRATION_SUCCESSFUL") {
-    newState.registrationValid = true;
+    newState.registrationSubmitted = false;
+    newState.registrationComplete = true;
   }
 
   newState.formValid =
@@ -118,14 +121,15 @@ export const Register = () => {
 
   const [formState, dispatchForm] = useReducer(formReducer, {
     username: { value: "", isValid: false, errMsg: null },
-    password: { value: "", isValid: false, errMsg: null},
-    password2: { value: "", isValid: false, errMsg: null},
+    password: { value: "", isValid: false, errMsg: null },
+    password2: { value: "", isValid: false, errMsg: null },
     firstName: { value: "" },
     middleName: { value: "" },
     lastName: { value: "" },
     formValid: false,
-    registationValid: false,
-    validationMessage: null,
+    registrationSubmitted: false,
+    registrationComplete: false,
+    errMsg: null,
   });
 
   const usernameRef = useRef();
@@ -135,7 +139,7 @@ export const Register = () => {
   }, []);
 
   useEffect(() => {
-    if (formState.registrationValid) {
+    if (formState.registrationComplete) {
       const intervalId = setInterval(() => {
         setRedirectCountdown((redirectCountdown) => redirectCountdown - 1);
       }, 1000);
@@ -144,9 +148,13 @@ export const Register = () => {
         clearInterval(intervalId);
       };
     }
-  }, [formState.registrationValid]);
+  }, [formState.registrationComplete]);
 
   const registerHandler = async (event) => {
+    dispatchForm({
+      type: "REGISTRATION_SUBMITTED",
+    });
+
     const formData = new FormData();
 
     formData.append("file", file);
@@ -179,11 +187,15 @@ export const Register = () => {
         } else {
           dispatchForm({
             type: "REGISTRATION_ERROR",
-            validationMessage: responseJson.message,
+            errMsg: responseJson.message,
           });
         }
       } catch (error) {
         console.error("Error encountered while creating new user:" + error);
+        dispatchForm({
+          type: "REGISTRATION_ERROR",
+          errMsg: 'Unknown error.',
+        });
       }
     }
   };
@@ -206,7 +218,7 @@ export const Register = () => {
               <Form.Control
                 type="email"
                 placeholder="Email"
-                disabled={formState.registationValid}
+                disabled={formState.registrationComplete}
                 ref={usernameRef}
                 value={formState.username.value}
                 onChange={(event) => {
@@ -222,10 +234,7 @@ export const Register = () => {
             </Form.Group>
             {!formState.username.isValid && formState.username.errMsg && (
               <div className="d-grid gap-2">
-                <Alert
-                  className={styles.centerText}
-                  variant="danger"
-                >
+                <Alert className={styles.centerText} variant="danger">
                   {formState.username.errMsg}
                 </Alert>
               </div>
@@ -235,7 +244,7 @@ export const Register = () => {
               <Form.Control
                 type="password"
                 placeholder="Password"
-                disabled={formState.registationValid}
+                disabled={formState.registrationComplete}
                 value={formState.password.value}
                 onChange={(event) => {
                   dispatchForm({
@@ -250,10 +259,7 @@ export const Register = () => {
             </Form.Group>
             {!formState.password.isValid && formState.password.errMsg && (
               <div className="d-grid gap-2">
-                <Alert
-                  className={styles.centerText}
-                  variant="danger"
-                >
+                <Alert className={styles.centerText} variant="danger">
                   {formState.password.errMsg}
                 </Alert>
               </div>
@@ -263,7 +269,7 @@ export const Register = () => {
               <Form.Control
                 type="password"
                 placeholder="Password"
-                disabled={formState.registationValid}
+                disabled={formState.registrationComplete}
                 value={formState.password2.value}
                 onChange={(event) => {
                   dispatchForm({
@@ -278,10 +284,7 @@ export const Register = () => {
             </Form.Group>
             {!formState.password2.isValid && formState.password2.errMsg && (
               <div className="d-grid gap-2">
-                <Alert
-                  className={styles.centerText}
-                  variant="danger"
-                >
+                <Alert className={styles.centerText} variant="danger">
                   {formState.password2.errMsg}
                 </Alert>
               </div>
@@ -291,7 +294,7 @@ export const Register = () => {
               <Form.Control
                 type="input"
                 placeholder="First Name"
-                disabled={formState.registationValid}
+                disabled={formState.registrationComplete}
                 value={formState.firstName.value}
                 onChange={(event) => {
                   dispatchForm({
@@ -306,7 +309,7 @@ export const Register = () => {
               <Form.Control
                 type="input"
                 placeholder="Middle Name"
-                disabled={formState.registationValid}
+                disabled={formState.registrationComplete}
                 value={formState.middleName.value}
                 onChange={(event) => {
                   dispatchForm({
@@ -321,7 +324,7 @@ export const Register = () => {
               <Form.Control
                 type="input"
                 placeholder="Last Name"
-                disabled={formState.registationValid}
+                disabled={formState.registrationComplete}
                 value={formState.lastName.value}
                 onChange={(event) => {
                   dispatchForm({
@@ -346,17 +349,34 @@ export const Register = () => {
               <Button
                 variant="dark"
                 size="lg"
-                disabled={!formState.formValid || formState.registationValid}
+                disabled={!formState.formValid || formState.registrationComplete}
                 onClick={registerHandler}
               >
                 [Register]
               </Button>
             </div>
-            {formState.registationValid && (
+
+            {formState.registrationComplete && (
               <div className="d-grid gap-2">
                 <Alert className={styles.centerText} variant="primary">
-                  "Account created. Redirecting in " +
-                  {redirectCountdown > 0 ? redirectCountdown : "0"}
+                  Account created. Redirecting in 
+                  {redirectCountdown > 0 ? " "+redirectCountdown : " 0"}
+                </Alert>
+              </div>
+            )}
+
+            {formState.registrationSubmitted && (
+              <div className="d-grid gap-2">
+                <Alert className={styles.centerText} variant="primary">
+                  Please wait...
+                </Alert>
+              </div>
+            )}
+
+            {formState.errMsg && (
+              <div className="d-grid gap-2">
+                <Alert className={styles.centerText} variant="danger">
+                {formState.errMsg}
                 </Alert>
               </div>
             )}

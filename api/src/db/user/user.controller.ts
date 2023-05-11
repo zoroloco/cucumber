@@ -1,9 +1,7 @@
 import {
   Controller,
-  Param,
   Get,
   Post,
-  Request,
   UseGuards,
   Body,
   NotFoundException,
@@ -14,7 +12,6 @@ import {
   Logger,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
-import { AuthUserGuard } from '../../auth/auth.user.guard';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -24,13 +21,12 @@ import {
   getSchemaPath,
 } from '@nestjs/swagger';
 import { AppConstants } from '../../app.constants';
-import { SearchUserDto, CreateUserDto, CreateUserAssociationDto } from '../../dtos';
+import { SearchUserDto, CreateUserDto } from '../../dtos';
 import { User } from '../entities';
 import { UserService } from './user.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import * as path from 'path';
-import { RemoveUserAssociationDto } from 'src/dtos/remove-user-association';
 
 @Controller(AppConstants.API_PATH)
 export class UserController {
@@ -43,6 +39,7 @@ export class UserController {
    * @returns - created user object with password ommitted.
    */
   @ApiTags(AppConstants.API_TAG)
+  @ApiBearerAuth()
   @ApiBody({
     type: CreateUserDto,
     examples: {
@@ -191,87 +188,6 @@ export class UserController {
   async findUsersBySearchCriteria(@Body() searchUserDto: SearchUserDto) {
     return await this.userService.findUsersBySearchCriteria(
       searchUserDto.query,
-    );
-  }
-
-  /**
-   * findUserAssociationsByUserId
-   *
-   * @param id - id of the user
-   * @returns - list of user associates for given user id
-   */
-  @UseGuards(JwtAuthGuard)
-  @ApiTags(AppConstants.API_TAG)
-  @ApiResponse({
-    status: 200,
-    description: AppConstants.FIND_USER_ASSOCIATIONS_BY_USER_DESC,
-  })
-  @ApiOperation({ summary: AppConstants.FIND_USER_ASSOCIATIONS_BY_USER_DESC })
-  @ApiBearerAuth()
-  @Get(AppConstants.FIND_USER_ASSOCIATIONS_BY_USER)
-  async findUserAssociationsByUserId(@Param('userid') userId: number) {
-    return this.userService.findUserAssociationsByUserId(userId);
-  }
-
-  /**
-   * createUserAssociation
-   *
-   * @param createUserAssocationDto
-   * @returns - creates friends. :)
-   */
-  @ApiTags(AppConstants.API_TAG)
-  @ApiBody({
-    type: CreateUserAssociationDto,
-    examples: {
-      example: {
-        value: {
-          userId: '1',
-          associateUserId:'2'
-        },
-      },
-    },
-  })
-  @ApiResponse({
-    status: 201,
-    description: AppConstants.CREATE_USER_ASSOCIATION_DESC,
-    type: CreateUserAssociationDto,
-  })
-  @ApiOperation({ summary: AppConstants.CREATE_USER_ASSOCIATION_DESC })
-  @Post(AppConstants.CREATE_USER_ASSOCIATION)
-  async createUserAssociation(
-    @Body() createUserAssociationDto: CreateUserAssociationDto,
-  ) {
-    return await this.userService.createUserAssocation(
-      createUserAssociationDto.userId,
-      createUserAssociationDto.associateUserId,
-    );
-  }
-
-  @ApiTags(AppConstants.API_TAG)
-  @ApiBody({
-    type: RemoveUserAssociationDto,
-    examples: {
-      example: {
-        value: {
-          userId: '1',
-          associateUserId:'2'
-        },
-      },
-    },
-  })
-  @ApiResponse({
-    status: 201,
-    description: AppConstants.REMOVE_USER_ASSOCIATION_DESC,
-    type: RemoveUserAssociationDto,
-  })
-  @ApiOperation({ summary: AppConstants.REMOVE_USER_ASSOCIATION_DESC })
-  @Post(AppConstants.REMOVE_USER_ASSOCIATION)
-  async removeUserAssociation(@Request() req, @Body() removeUserAssociationDto: RemoveUserAssociationDto){
-    Logger.log('here is user:'+JSON.stringify(req.user));
-    return await this.userService.removeUserAssociation(
-      '',
-      removeUserAssociationDto.userId,
-      removeUserAssociationDto.associateUserId,
     );
   }
 }

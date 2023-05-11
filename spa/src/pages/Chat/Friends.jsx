@@ -70,6 +70,7 @@ export const Friends = (props) => {
    */
   const searchHandler = async () => {
     let response = null;
+    const userId = props.user.id;
 
     if (searchParam && searchParam.trim().length > 3) {
       response = await fetch(
@@ -112,7 +113,7 @@ export const Friends = (props) => {
             ...r,
             isFriend,
           };
-        })
+        }).filter(r=>r.id !== userId)//filter out yourself.
       );
     } else {
       console.error("Error communicating with server.");
@@ -223,7 +224,7 @@ export const Friends = (props) => {
       <Form className="rounded p-4 p-sm-3">
         <Form.Control
           type="search"
-          placeholder="Search"
+          placeholder="Search All Users"
           className="me-2"
           aria-label="Search"
           ref={searchRef}
@@ -249,7 +250,7 @@ export const Friends = (props) => {
             size="lg"
             onClick={clearHandler}
           >
-            Clear
+            Friends
           </Button>
         </Container>
 

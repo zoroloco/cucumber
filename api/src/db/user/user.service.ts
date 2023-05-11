@@ -3,13 +3,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { AppConstants } from '../../app.constants';
 import { CreateUserDto } from '../../dtos';
 import { Repository } from 'typeorm';
-import { User, UserAssociation, UserProfile } from '../entities';
-import { ImageGeneratorService, ImageReaderService } from '../../common';
+import { User, UserProfile } from '../entities';
+import { UserCommonService } from '../user-common.service';
 const bcrypt = require('bcrypt');
-const fs = require('fs');
 
 @Injectable()
-export class UserService {
+export class UserService extends UserCommonService{
   private readonly logger = new Logger(UserService.name);
 
   constructor(
@@ -17,11 +16,9 @@ export class UserService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(UserProfile, 'druidia')
     private readonly userProfileRepository: Repository<UserProfile>,
-    @InjectRepository(UserAssociation, 'druidia')
-    private readonly userAssociationRepository: Repository<UserAssociation>,
-    private readonly imageGeneratorService: ImageGeneratorService,
-    private readonly imageReaderService: ImageReaderService,
-  ) {}
+  ) {
+    super();
+  }
 
   /**
    *
@@ -101,34 +98,6 @@ export class UserService {
     }
   }
 
-  /**
-   *
-   * @param user
-   * @returns - user with user profile photo
-   */
-  private async hydrateUser(user:User) {
-    user.password = '';
-
-    const userProfile = await user.userProfile;//lazy load
-
-    const profilePhotoPath = await this.imageGeneratorService.generateImage(
-      userProfile.profilePhotoPath,
-      128,
-    );
-    if (profilePhotoPath) {
-      const profilePhoto = await this.imageReaderService.readImage(
-        profilePhotoPath,
-      );
-      if (profilePhoto) {
-        user.profilePhotoFile = profilePhoto;
-      }
-    }
-
-    //Logger.log(JSON.stringify(user));
-
-    return user;
-  }
-
   public async updateUserPostLogin(user: User) {
     Logger.log('Updating user ID:' + user.id);
     try {
@@ -199,113 +168,6 @@ export class UserService {
 
         throw new BadRequestException('Error encountered while creating user.');
       }
-    }
-  }
-
-  /**
-   * findUserAssociationsByUserId
-   * 
-   * @param userId 
-   * @returns 
-   */
-  public async findUserAssociationsByUserId(userId: number) {
-    Logger.log('Attempting to find user associations for user id:' + userId);
-    try {
-      const userAssociations = await this.userAssociationRepository
-        .createQueryBuilder('ua')
-        .leftJoin('ua.user', 'u')
-        .leftJoinAndSelect('ua.associate', 'a')
-        .where('ua.user.id = :userId', { userId })
-        .andWhere('ua.inactivatedTime is null')
-        .andWhere('a.inactivatedTime is null')//don't get inactivated friends
-        .getMany();
-
-      if (userAssociations) {
-        Logger.log(
-          'Successfully found ' +
-            userAssociations.length +
-            ' user assocation(s).',
-        );
-
-        const friends = userAssociations.map(ua=>{
-          return ua.associate;
-        });
-
-        //return friends;
-        return await Promise.all(friends.map(this.hydrateUser.bind(this)));
-      }
-    } catch (error) {
-      Logger.error('Error finding user associations for user id:' + userId);
-    }
-  }
-
-  public async createUserAssocation(userId:number, associateUserId:number){
-    Logger.log(
-      'Attempting to create association between userId:' +
-        userId +
-        ' and associate userId:' +
-        associateUserId,
-    );
-
-    try{
-      const userAssociation: UserAssociation = this.userAssociationRepository.create();
-      userAssociation.user = await this.userRepository.findOne({where:{id:userId}});
-      userAssociation.associate = await this.userRepository.findOne({where:{id:associateUserId}});
-      userAssociation.setAuditFields(userAssociation.user.username);
-
-      //TODO: do i have to fetch the users above or can i create a new user object with just id?
-      const savedUserAssocation = await this.userAssociationRepository.save(userAssociation);
-      Logger.log('Successfully linked users:'+userId+' and '+associateUserId);
-      return savedUserAssocation;
-    }catch(error){
-      Logger.error(
-        'Error creating association between userIds:' +
-          userId +
-          ' and ' +
-          associateUserId +
-          ' with error:' +
-          error,
-      );
-    }
-  }
-
-  public async removeUserAssociation(username:string, userId:number, associateUserId:number){
-    Logger.log(
-      'Attempting to remove association between userId:' +
-        userId +
-        ' and associate userId:' +
-        associateUserId,
-    );
-
-    try{
-      let userAssociation = await this.userAssociationRepository
-        .createQueryBuilder('ua')
-        .leftJoin('ua.user', 'u')
-        .leftJoinAndSelect('ua.associate', 'a')
-        .where('ua.user.id = :userId', { userId })
-        .andWhere('ua.associate.id = :associateUserId', {associateUserId})
-        .andWhere('ua.inactivatedTime is null')
-        .getOne();
-
-      if(userAssociation){
-        Logger.log('Successfully found user association to remove with id:'+userAssociation.id);
-        userAssociation.inactivatedBy = username;
-        userAssociation.inactivatedTime = new Date();
-
-        const savedUserAssociation = await this.userAssociationRepository.save(userAssociation);
-        Logger.log('Successfully unlinked users:'+userId+' and '+associateUserId);
-        return savedUserAssociation;
-      }
-
-    }catch(error){
-      Logger.error(
-        'Error removing association between userIds:' +
-          userId +
-          ' and ' +
-          associateUserId +
-          ' with error:' +
-          error,
-      );
     }
   }
 }
