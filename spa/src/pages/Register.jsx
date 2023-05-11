@@ -12,14 +12,16 @@ const redirectCountdownTime = 3;
 const formReducer = (prevState, action) => {
   let newState = { ...prevState };
 
+  newState.validationMessage = null;
+
   if (action.type === "USERNAME_INPUT") {
     newState.username.isValid = false;
     if (!action.username.value.trim().length) {
-      newState.validationMessage = "Please enter a username.";
+      newState.username.errMsg = "Please enter a username.";
     } else if (!emailRegex.test(action.username.value)) {
-      newState.validationMessage = "Invalid email format.";
+      newState.username.errMsg = "Invalid email format.";
     } else {
-      newState.validationMessage = null;
+      newState.username.errMsg = null;
       newState.username.isValid = true;
     }
 
@@ -27,44 +29,49 @@ const formReducer = (prevState, action) => {
   } else if (action.type === "USERNAME_BLUR") {
     newState.username.isValid = false;
     if (!prevState.username.value.trim().length) {
-      newState.validationMessage = "Please enter a username.";
+      newState.username.errMsg = "Please enter a username.";
     } else if (!emailRegex.test(prevState.username.value)) {
-      newState.validationMessage = "Invalid email format.";
+      newState.username.errMsg = "Invalid email format.";
     } else {
-      newState.validationMessage = null;
+      newState.username.errMsg = null;
       newState.username.isValid = true;
     }
   } else if (action.type === "PASSWORD_INPUT") {
     newState.password.isValid = false;
     if (action.password.value.trim().length < 10) {
-      newState.validationMessage = "Password must be >10 characters.";
+      newState.password.errMsg = "Password must be >10 characters.";
     } else if (action.password.value !== prevState.password2.value) {
-      newState.validationMessage = "Passwords must match.";
+      newState.password.errMsg = "Passwords must match.";
     } else {
-      newState.validationMessage = null;
+      newState.password.errMsg = null;
+      newState.password2.errMsg = null;
       newState.password.isValid = true;
+      newState.password2.isValid = true;
     }
     newState.password.value = action.password.value;
   } else if (action.type === "PASSWORD_BLUR") {
     newState.password.isValid = false;
 
     if (prevState.password.value.trim().length < 10) {
-      newState.validationMessage = "Password must be >10 characters.";
+      newState.password.errMsg = "Password must be >10 characters.";
     } else if (prevState.password.value !== prevState.password2.value) {
-      newState.validationMessage = "Passwords must match.";
+      newState.password.errMsg = "Passwords must match.";
     } else {
-      newState.validationMessage = null;
+      newState.password.errMsg = null;
+      newState.password2.errMsg = null;
       newState.password.isValid = true;
       newState.password2.isValid = true;
     }
   } else if (action.type === "PASSWORD2_INPUT") {
     newState.password2.isValid = false;
     if (action.password2.value.trim().length < 10) {
-      newState.validationMessage = "Password2 must be >10 character.";
+      newState.password2.errMsg  = "Password2 must be >10 character.";
     } else if (action.password2.value !== prevState.password.value) {
-      newState.validationMessage = "Passwords must match.";
+      newState.password2.errMsg  = "Passwords must match.";
     } else {
-      newState.validationMessage = null;
+      newState.password2.errMsg  = null;
+      newState.password.errMsg = null;
+      newState.password.isValid = true;
       newState.password2.isValid = true;
     }
     newState.password2.value = action.password2.value;
@@ -72,11 +79,12 @@ const formReducer = (prevState, action) => {
     newState.password2.isValid = false;
 
     if (prevState.password2.value.trim().length < 10) {
-      newState.validationMessage = "Password2 must be >10 character.";
+      newState.password2.errMsg  = "Password2 must be >10 character.";
     } else if (prevState.password2.value !== prevState.password.value) {
-      newState.validationMessage = "Passwords must match.";
+      newState.password2.errMsg  = "Passwords must match.";
     } else {
-      newState.validationMessage = null;
+      newState.password2.errMsg  = null;
+      newState.password.errMsg = null;
       newState.password.isValid = true;
       newState.password2.isValid = true;
     }
@@ -90,7 +98,6 @@ const formReducer = (prevState, action) => {
     newState.registrationValid = false;
     newState.validationMessage = action.validationMessage;
   } else if (action.type === "REGISTRATION_SUCCESSFUL") {
-    newState.validationMessage = "Account Created";
     newState.registrationValid = true;
   }
 
@@ -110,9 +117,9 @@ export const Register = () => {
   const [file, setFile] = useState(null);
 
   const [formState, dispatchForm] = useReducer(formReducer, {
-    username: { value: "", isValid: false },
-    password: { value: "", isValid: false },
-    password2: { value: "", isValid: false },
+    username: { value: "", isValid: false, errMsg: null },
+    password: { value: "", isValid: false, errMsg: null},
+    password2: { value: "", isValid: false, errMsg: null},
     firstName: { value: "" },
     middleName: { value: "" },
     lastName: { value: "" },
@@ -143,7 +150,7 @@ export const Register = () => {
     const formData = new FormData();
 
     formData.append("file", file);
-    //all the values below will be part of request body that will 
+    //all the values below will be part of request body that will
     //become createUserDto on back-end.
     formData.append("username", formState.username.value);
     formData.append("password", formState.password.value);
@@ -159,7 +166,7 @@ export const Register = () => {
             method: "POST",
             mode: "cors",
             cache: "no-cache",
-            credentials: "same-origin",            
+            credentials: "same-origin",
             body: formData,
           }
         );
@@ -176,7 +183,7 @@ export const Register = () => {
           });
         }
       } catch (error) {
-        console.error('Error encountered while creating new user:'+error);
+        console.error("Error encountered while creating new user:" + error);
       }
     }
   };
@@ -213,6 +220,16 @@ export const Register = () => {
                 }}
               />
             </Form.Group>
+            {!formState.username.isValid && formState.username.errMsg && (
+              <div className="d-grid gap-2">
+                <Alert
+                  className={styles.centerText}
+                  variant="danger"
+                >
+                  {formState.username.errMsg}
+                </Alert>
+              </div>
+            )}
             <Form.Group className="mb-3" controlId="formGroupPassword">
               <Form.Label>Password:</Form.Label>
               <Form.Control
@@ -231,6 +248,16 @@ export const Register = () => {
                 }}
               />
             </Form.Group>
+            {!formState.password.isValid && formState.password.errMsg && (
+              <div className="d-grid gap-2">
+                <Alert
+                  className={styles.centerText}
+                  variant="danger"
+                >
+                  {formState.password.errMsg}
+                </Alert>
+              </div>
+            )}
             <Form.Group className="mb-3" controlId="formGroupPassword2">
               <Form.Label>Confirm Password:</Form.Label>
               <Form.Control
@@ -249,6 +276,16 @@ export const Register = () => {
                 }}
               />
             </Form.Group>
+            {!formState.password2.isValid && formState.password2.errMsg && (
+              <div className="d-grid gap-2">
+                <Alert
+                  className={styles.centerText}
+                  variant="danger"
+                >
+                  {formState.password2.errMsg}
+                </Alert>
+              </div>
+            )}
             <Form.Group className="mb-3" controlId="formGroupFirstName">
               <Form.Label>First Name:</Form.Label>
               <Form.Control
@@ -315,17 +352,11 @@ export const Register = () => {
                 [Register]
               </Button>
             </div>
-            {formState.validationMessage && (
+            {formState.registationValid && (
               <div className="d-grid gap-2">
-                <Alert
-                  className={styles.centerText}
-                  variant={formState.registrationValid ? "primary" : "danger"}
-                >
-                  {formState.registrationValid
-                    ? formState.validationMessage +
-                      " Redirecting in " +
-                      (redirectCountdown > 0 ? redirectCountdown : "0")
-                    : formState.validationMessage}
+                <Alert className={styles.centerText} variant="primary">
+                  "Account created. Redirecting in " +
+                  {redirectCountdown > 0 ? redirectCountdown : "0"}
                 </Alert>
               </div>
             )}
