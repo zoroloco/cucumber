@@ -34,6 +34,7 @@ export class UserAssociationService extends UserCommonService{
         .where('ua.user.id = :userId', { userId })
         .andWhere('ua.inactivatedTime is null')
         .andWhere('a.inactivatedTime is null')//don't get inactivated friends
+        .orderBy('a.username')
         .getMany();
 
       if (userAssociations) {
@@ -77,9 +78,11 @@ export class UserAssociationService extends UserCommonService{
       userAssociation.setAuditFields(userAssociation.user.username);
 
       //TODO: do i have to fetch the users above or can i create a new user object with just id?
-      const savedUserAssocation = await this.userAssociationRepository.save(userAssociation);
+      const savedUserAssociation = await this.userAssociationRepository.save(userAssociation);
       Logger.log('Successfully linked users:'+userId+' and '+associateUserId);
-      return savedUserAssocation;
+      savedUserAssociation.user.password = '';
+      savedUserAssociation.associate.password = '';
+      return savedUserAssociation;
     }catch(error){
       Logger.error(
         'Error creating association between userIds:' +
@@ -125,6 +128,7 @@ export class UserAssociationService extends UserCommonService{
 
         const savedUserAssociation = await this.userAssociationRepository.save(userAssociation);
         Logger.log('Successfully unlinked users:'+userId+' and '+associateUserId);
+        savedUserAssociation.associate.password = '';
         return savedUserAssociation;
       }
 

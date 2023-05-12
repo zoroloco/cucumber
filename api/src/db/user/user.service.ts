@@ -37,6 +37,9 @@ export class UserService extends UserCommonService{
         where: {
           inactivatedTime: null,
         },
+        order: {
+          username: 'DESC'
+        }
       });
 
       return await Promise.all(users.map(this.hydrateUser.bind(this)));
@@ -85,6 +88,7 @@ export class UserService extends UserCommonService{
         .orWhere('userProfile.lastName LIKE :query', { query: `%${query}%` })
         .orWhere('user.username LIKE :query', { query: `%${query}%` })
         .andWhere('user.inactivatedTime is null')
+        .orderBy('user.username')
         .getMany();
 
       Logger.log(

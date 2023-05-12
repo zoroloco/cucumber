@@ -1,6 +1,6 @@
-CREATE DATABASE IF NOT EXISTS `druidia`;
+-- DDL
 
--- druidia.`user` definition
+CREATE DATABASE IF NOT EXISTS `druidia`;
 
 CREATE TABLE IF NOT EXISTS `user_profile` (
 	id bigint unsigned auto_increment NOT NULL,
@@ -50,6 +50,38 @@ CREATE TABLE IF NOT EXISTS `user_association` (
   KEY `user_association_associateId_IDX` (`associateUserId`) USING BTREE,
   CONSTRAINT `user_association_userid_FK` FOREIGN KEY (`userId`) REFERENCES `user` (`id`),
   CONSTRAINT `user_association__associateuserid_FK` FOREIGN KEY (`associateUserId`) REFERENCES `user` (`id`)
+)
+ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+
+CREATE TABLE IF NOT EXISTS `user_role_ref` (
+	id bigint unsigned auto_increment NOT NULL,
+	roleName varchar(32) CHARACTER SET utf8mb4 NOT NULL,
+	roleDescription varchar(128) CHARACTER SET utf8mb4 NULL,
+	createdTime datetime DEFAULT CURRENT_TIMESTAMP  NOT NULL,
+	createdBy varchar(32) CHARACTER SET utf8mb4 NOT NULL,
+	modifiedTime datetime NULL,
+	modifiedBy varchar(32) CHARACTER SET utf8mb4 NULL,
+	inactivatedTime datetime NULL,
+	inactivatedBy varchar(32) CHARACTER SET utf8mb4 NULL,
+	CONSTRAINT `PRIMARY` PRIMARY KEY (id)
+)
+ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+
+CREATE TABLE IF NOT EXISTS `user_role` (
+	id bigint unsigned auto_increment NOT NULL,
+	userId bigint unsigned NOT NULL,
+	userRoleId bigint unsigned NOT NULL,
+	createdTime datetime DEFAULT CURRENT_TIMESTAMP  NOT NULL,
+	createdBy varchar(32) CHARACTER SET utf8mb4 NOT NULL,
+	modifiedTime datetime NULL,
+	modifiedBy varchar(32) CHARACTER SET utf8mb4 NULL,
+	inactivatedTime datetime NULL,
+	inactivatedBy varchar(32) CHARACTER SET utf8mb4 NULL,
+	CONSTRAINT `PRIMARY` PRIMARY KEY (id),
+	CONSTRAINT `user_role_userid_FK` FOREIGN KEY (`userId`) REFERENCES `user` (`id`),
+	CONSTRAINT `user_role_userroleid_FK` FOREIGN KEY (`userRoleId`) REFERENCES `userRole` (`id`),
 )
 ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4
