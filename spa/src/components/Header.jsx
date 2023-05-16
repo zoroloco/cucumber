@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Container, Nav, Navbar, Card, Button } from "react-bootstrap";
+import { Container, Nav, Navbar, Card } from "react-bootstrap";
 import classes from "./Header.module.css";
 import { AuthContext } from "../context/auth-context";
 
@@ -30,13 +30,19 @@ const Header = () => {
               }}
             >
               {!ctx.loggedIn && (
-                <Nav.Item>
-                  <Nav.Link className={classes.navLink} href="/register">
-                    <Button variant="dark" size="lg">
+                <>
+                  <Nav.Item>
+                    <Nav.Link className={classes.navLink} href="/register">
                       [Sign Up]
-                    </Button>
-                  </Nav.Link>
-                </Nav.Item>
+                    </Nav.Link>
+                  </Nav.Item>
+
+                  <Nav.Item>
+                    <Nav.Link className={classes.navLink} href="/login">
+                      [Sign In]
+                    </Nav.Link>
+                  </Nav.Item>
+                </>
               )}
               {ctx.loggedIn && (
                 <>
@@ -45,11 +51,13 @@ const Header = () => {
                       [Sign Out]
                     </Nav.Link>
                   </Nav.Item>
-                  <Nav.Item>
-                    <Nav.Link className={classes.navLink} href="/chat">
-                      [Chat]
-                    </Nav.Link>
-                  </Nav.Item>
+                  {ctx.user.userRoles.includes("ROLE_CHAT") && (
+                    <Nav.Item>
+                      <Nav.Link className={classes.navLink} href="/chat">
+                        [Chat]
+                      </Nav.Link>
+                    </Nav.Item>
+                  )}
                 </>
               )}
             </Nav>

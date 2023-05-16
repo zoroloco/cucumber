@@ -1,5 +1,6 @@
 export { ErrorPage } from "./ErrorPage";
 export { Login } from "./Login";
-export { Home } from "./Home";
+export { PrivateHome } from "./PrivateHome";
+export { PublicHome } from "./PublicHome";
 export { Register } from "./Register";
 export { Chat } from "./Chat/Chat";

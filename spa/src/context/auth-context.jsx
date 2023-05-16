@@ -8,6 +8,7 @@ export const AuthContextProvider = (props) => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
+  const [tokenExpiration, setTokenExpiration] = useState(null);
 
   //recover the values from local storage because any route change will
   //recreate this provider component and you lose all state such as user.
@@ -19,10 +20,13 @@ export const AuthContextProvider = (props) => {
 
     const token = localStorage.getItem("access-token");
 
+    if (token) {
+      const decoded = jwt_decode(token);
+      setTokenExpiration(decoded.exp);
+    }
+
     setLoggedIn(!!token);
-
     setIsLoading(false);
-
     setAccessToken(token);
   }, []);
 
@@ -30,6 +34,7 @@ export const AuthContextProvider = (props) => {
     console.info("Logging out.");
     localStorage.removeItem("access-token");
     localStorage.removeItem("user");
+
     setLoggedIn(false);
     setUser(null);
     setAccessToken(null);
@@ -38,20 +43,25 @@ export const AuthContextProvider = (props) => {
   const loginHandler = (accessToken) => {
     setLoggedIn(true);
     localStorage.setItem("access-token", accessToken);
-    //TODO: hydrate user from DB.
     try {
       //decode token to check for exp
-      const decoded = jwt_decode(accessToken);      
+      const decoded = jwt_decode(accessToken);
 
       const loggedInUser = {
-        username: decoded.username, 
-        id: decoded.sub
+        username: decoded.username,
+        id: decoded.sub,
+        userRoles: decoded.userRoles,
       };
 
       localStorage.setItem("user", JSON.stringify(loggedInUser));
       setUser(loggedInUser);
       setAccessToken(accessToken);
-      console.info(JSON.stringify(loggedInUser) + " is now logged in!");
+      setTokenExpiration(decoded.exp);
+      console.info(
+        JSON.stringify(loggedInUser) +
+          " is now logged in. Token expiration:" +
+          decoded.exp
+      );
     } catch (error) {
       console.error("Error encountered while decoding access token:" + error);
     }
@@ -63,6 +73,7 @@ export const AuthContextProvider = (props) => {
         accessToken: accessToken,
         isLoading: isLoading,
         loggedIn: loggedIn,
+        tokenExpiration: tokenExpiration,
         user: user,
         onLogIn: loginHandler,
         onLogOut: logoutHandler,

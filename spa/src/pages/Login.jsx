@@ -69,7 +69,7 @@ export const Login = () => {
   return (
     <>
       {accessToken ? (
-        <Navigate to="/" />
+        <Navigate to="/home" />
       ) : (
         <div
           className={

@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/auth-context";
 
-export const Home = () => {
+export const PrivateHome = () => {
   const { user, isLoading } = useContext(AuthContext);
   const [showContent, setShowContent] = useState(false);
 
