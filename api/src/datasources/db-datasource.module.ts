@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User,UserProfile,UserAssociation } from '../db/entities';
+import { User,UserProfile,UserAssociation, UserRole, UserRoleRef } from '../db/entities';
 
 @Module({
   imports: [
@@ -13,7 +13,7 @@ import { User,UserProfile,UserAssociation } from '../db/entities';
       password: process.env.MYSQL_PASSWORD,
       database: process.env.MYSQL_DATABASE,
       logging: ['error'],
-      entities: [User, UserProfile, UserAssociation],
+      entities: [User, UserProfile, UserAssociation, UserRole, UserRoleRef],
     }),
   ],
   exports: [TypeOrmModule],

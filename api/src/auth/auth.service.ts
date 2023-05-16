@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { UserService } from '../db/user';
 import { User } from '../db/entities';
 import { JwtService } from '@nestjs/jwt';
+import { UserRoleService } from '../db/user-role/user-role.service';
 const bcrypt = require('bcrypt');
 
 @Injectable()
@@ -9,6 +10,7 @@ export class AuthService {
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
+    private userRoleService: UserRoleService
   ) {}
 
   async validateUser(username: string, pass: string): Promise<any> {
@@ -40,9 +42,12 @@ export class AuthService {
 
     const updatedUser: User = await this.userService.updateUserPostLogin(user);
 
+    const userRoles = await this.userRoleService.findAllByUserId(updatedUser.id);
+
     const payload = {
       username: updatedUser.username,
-      sub: updatedUser.id
+      sub: updatedUser.id,
+      userRoles: userRoles.map(ur=>{return ur.userRoleRef.roleName})
     };
 
     return {

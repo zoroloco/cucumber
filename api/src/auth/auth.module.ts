@@ -6,6 +6,7 @@ import { UserModule } from '../db/user/user.module';
 import { AuthService } from './auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthController } from './auth.controller';
+import { UserRoleModule } from '../db/user-role/user-role.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { AuthController } from './auth.controller';
       secret: process.env.API_APP_SECRET,
       signOptions: { expiresIn: '86400s' },
     }),
+    UserRoleModule
   ],
   providers: [JwtStrategy, LocalStrategy, AuthService],
   exports: [PassportModule, AuthService],

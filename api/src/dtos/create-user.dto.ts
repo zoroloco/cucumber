@@ -11,7 +11,7 @@ export class CreateUserDto {
   @MaxLength(32)
   readonly username: string;
 
-  @ApiProperty({ required: true, description: '32 char max' })
+  @ApiProperty({ required: true, description: 'User password. 32 char max' })
   @IsNotEmpty()
   @MinLength(10)
   @MaxLength(32)

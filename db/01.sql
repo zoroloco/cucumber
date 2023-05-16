@@ -57,6 +57,7 @@ DEFAULT CHARSET=utf8mb4
 CREATE TABLE IF NOT EXISTS `user_role_ref` (
 	id bigint unsigned auto_increment NOT NULL,
 	roleName varchar(32) CHARACTER SET utf8mb4 NOT NULL,
+	roleLabel varchar(32) CHARACTER SET utf8mb4 NOT NULL,
 	roleDescription varchar(128) CHARACTER SET utf8mb4 NULL,
 	createdTime datetime DEFAULT CURRENT_TIMESTAMP  NOT NULL,
 	createdBy varchar(32) CHARACTER SET utf8mb4 NOT NULL,
@@ -72,7 +73,7 @@ DEFAULT CHARSET=utf8mb4
 CREATE TABLE IF NOT EXISTS `user_role` (
 	id bigint unsigned auto_increment NOT NULL,
 	userId bigint unsigned NOT NULL,
-	userRoleId bigint unsigned NOT NULL,
+	userRoleRefId bigint unsigned NOT NULL,
 	createdTime datetime DEFAULT CURRENT_TIMESTAMP  NOT NULL,
 	createdBy varchar(32) CHARACTER SET utf8mb4 NOT NULL,
 	modifiedTime datetime NULL,
@@ -80,8 +81,11 @@ CREATE TABLE IF NOT EXISTS `user_role` (
 	inactivatedTime datetime NULL,
 	inactivatedBy varchar(32) CHARACTER SET utf8mb4 NULL,
 	CONSTRAINT `PRIMARY` PRIMARY KEY (id),
+	KEY `user_role_userid_FK` (`userId`),
+	KEY `user_role_userrolerefid_FK` (`userRoleRefId`),
 	CONSTRAINT `user_role_userid_FK` FOREIGN KEY (`userId`) REFERENCES `user` (`id`),
-	CONSTRAINT `user_role_userroleid_FK` FOREIGN KEY (`userRoleId`) REFERENCES `userRole` (`id`),
+	CONSTRAINT `user_role_userrolerefid_FK` FOREIGN KEY (`userRoleRefId`) REFERENCES `user_role_ref` (`id`)
 )
 ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4
+
