@@ -55,7 +55,7 @@ export const Friends = (props) => {
    * clear search field and reset list to just existing friends, if any.
    */
   const clearHandler = () => {
-    setSearchParam("");
+    setSearchParam('');
     setSearchResults(
       friends.map((f) => {
         f.isFriend = true;

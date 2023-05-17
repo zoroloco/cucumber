@@ -58,6 +58,13 @@ const Header = () => {
                       </Nav.Link>
                     </Nav.Item>
                   )}
+                  {ctx.user.userRoles.includes("ROLE_USER_ADMIN") && (
+                    <Nav.Item>
+                      <Nav.Link className={classes.navLink} href="/user-admin">
+                        [User Admin]
+                      </Nav.Link>
+                    </Nav.Item>
+                  )}
                 </>
               )}
             </Nav>

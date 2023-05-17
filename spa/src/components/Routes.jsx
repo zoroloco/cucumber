@@ -1,5 +1,13 @@
 import { createBrowserRouter } from "react-router-dom";
-import { PublicHome, PrivateHome, Login, ErrorPage, Register, Chat } from "../pages";
+import {
+  PublicHome,
+  PrivateHome,
+  Login,
+  ErrorPage,
+  Register,
+  Chat,
+  UserAdmin,
+} from "../pages";
 import PrivateRoutes from "./PrivateRoutes";
 import SiteTemplate from "./SiteTemplate";
 
@@ -9,14 +17,18 @@ const AppRouter = createBrowserRouter([
     children: [
       {
         element: <PrivateRoutes />,
-        children: [   
+        children: [
           {
             path: "/home", //you just need an account but no specific role to access this page.
             element: <PrivateHome />,
-          },       
+          },
           {
-            path: "/chat",// requires ROLE_CHAT
+            path: "/chat", // requires ROLE_CHAT
             element: <Chat />,
+          },
+          {
+            path: "/user-admin",
+            element: <UserAdmin />,
           },
         ],
       },
@@ -31,11 +43,11 @@ const AppRouter = createBrowserRouter([
       {
         path: "/register",
         element: <Register />,
-      },      
+      },
       {
         path: "*",
-        element: <ErrorPage/>,
-      }      
+        element: <ErrorPage />,
+      },
     ],
   },
 ]);

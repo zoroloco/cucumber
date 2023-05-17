@@ -66,6 +66,7 @@ export class AppConstants {
 
   //api endpoints
   static FIND_ALL_USERS: string = 'find-all-users';
+  static FIND_ALL_USER_ROLES_HEAVY_BY_SEARCH_PARAMS: string = 'find-all-user-roles-heavy-by-search-params';
   static FIND_USER_BY_USERNAME = 'find-user-by-username';
   static FIND_USERS_BY_SEARCH_PARAMS = 'find-users-by-search-params';
   static CREATE_USER = 'create-user';
@@ -75,13 +76,14 @@ export class AppConstants {
   static CREATE_USER_ASSOCIATION = 'create-user-association';
   static REMOVE_USER_ASSOCIATION = 'remove-user-association';
   static FIND_USER_ROLE_REFS_BY_USER = 'find-user-role-refs-by-user-id/:userid';
+  static FIND_ALL_USER_ROLE_REFS = 'find-all-user-role-refs';
 
   //swagger description
   static LOGIN_DESC =
     'Validates credentials. Returns signed JWT if successful. 401 otherwise. Updates last login time.';
-  static FIND_ALL_USERS_DESC = 'Returns all active users.';
+  static FIND_ALL_USERS_DESC = 'Returns all active users. With user profile info.';
   static FIND_USER_BY_USERNAME_DESC = 'Returns user given a username.';
-  static FIND_USERS_BY_SEARCH_PARAMS_DESC = 'Returns active users matching only the query string in the request. All other parameters are ignored.';
+  static FIND_USERS_BY_SEARCH_PARAMS_DESC = 'Returns active users matching only the query string in the request. All other parameters are ignored. User profile info also returned.';
   static CREATE_USER_DESC = 'Registers a user.';
   static VALIDATE_TOKEN_DESC =
     'Provides a way for clients to see if their token is valid.';
@@ -89,6 +91,8 @@ export class AppConstants {
   static CREATE_USER_ASSOCIATION_DESC = 'Given two user ids, will create a link between them (will you be my frend?).';
   static REMOVE_USER_ASSOCIATION_DESC = 'Deactivates an association between 2 users (unfriend)'
   static FIND_USER_ROLE_REFS_BY_USER_DESC = 'Finds all user role refs for a given user id.'
+  static FIND_ALL_USER_ROLE_REFS_DESC = 'Finds all active user role refs in the application. Returns just the human friendly labels'
+  static FIND_ALL_USER_ROLES_HEAVY_BY_SEARCH_PARAMS_DESC = 'Finds all active user roles matching search criteria. Returns user roles loaded with user, user profile and user role ref.';
 
   //bcrypt
   static BCRYPT_SALT_ROUNDS = 10;

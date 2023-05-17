@@ -28,7 +28,8 @@ const PrivateRoutes = () => {
         // Define the required roles for each route
         const requiredRoles = {
           "/chat": "ROLE_CHAT",
-          "/home": "ROLE_VERIFIED"
+          "/home": "ROLE_VERIFIED",
+          "/user-admin": "ROLE_USER_ADMIN"
         };
 
         const userRoles = decoded.userRoles;
