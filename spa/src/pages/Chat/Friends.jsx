@@ -8,7 +8,7 @@ import classes from "./Friend.module.css";
 import { TiZoom } from "react-icons/ti";
 
 export const Friends = (props) => {
-  const [searchParam, setSearchParam] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [friends, setFriends] = useState([]);
   const searchRef = useRef();
@@ -55,7 +55,7 @@ export const Friends = (props) => {
    * clear search field and reset list to just existing friends, if any.
    */
   const clearHandler = () => {
-    setSearchParam('');
+    setSearchQuery("");
     setSearchResults(
       friends.map((f) => {
         f.isFriend = true;
@@ -65,14 +65,14 @@ export const Friends = (props) => {
   };
 
   /**
-   * If searchParam present then search by those params,
+   * If searchQuery present then search by those params,
    * otherwise search all users.
    */
   const searchHandler = async () => {
     let response = null;
     const userId = props.user.id;
 
-    if (searchParam && searchParam.trim().length > 3) {
+    if (searchQuery && searchQuery.trim().length > 3) {
       response = await fetch(
         config.resourceServer + "/api/find-users-by-search-params",
         {
@@ -85,10 +85,7 @@ export const Friends = (props) => {
             Authorization: `Bearer ${props.accessToken}`,
           },
           body: JSON.stringify({
-            username: "NA",
-            firstName: "NA",
-            lastName: "NA",
-            query: searchParam,
+            searchQuery: searchQuery,
           }),
         }
       );
@@ -107,13 +104,15 @@ export const Friends = (props) => {
     if (response.status === 201 || response.status === 200) {
       //flag the search results as friend or foe
       setSearchResults(
-        responseJson.map((r) => {
-          const isFriend = friends.some((f) => f.id === r.id);
-          return {
-            ...r,
-            isFriend,
-          };
-        }).filter(r=>r.id !== userId)//filter out yourself.
+        responseJson
+          .map((r) => {
+            const isFriend = friends.some((f) => f.id === r.id);
+            return {
+              ...r,
+              isFriend,
+            };
+          })
+          .filter((r) => r.id !== userId) //filter out yourself.
       );
     } else {
       console.error("Error communicating with server.");
@@ -228,15 +227,15 @@ export const Friends = (props) => {
           className="me-2"
           aria-label="Search"
           ref={searchRef}
-          value={searchParam}
-          onChange={(e) => setSearchParam(e.target.value)}
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
         />
         <Container className="d-flex justify-content-center flex-wrap">
           <Button
             variant="dark"
             className="m-2"
             disabled={
-              searchParam.trim().length > 0 && searchParam.trim().length < 3
+              searchQuery.trim().length > 0 && searchQuery.trim().length < 3
             }
             size="lg"
             onClick={searchHandler}

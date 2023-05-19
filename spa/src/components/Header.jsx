@@ -16,7 +16,9 @@ const Header = () => {
         sticky="top"
       >
         <Container fluid>
-          <Navbar.Brand className={classes.navBrandSpacer} href="/">
+          <Navbar.Brand className={classes.navBrandSpacer} href={
+            ctx.loggedIn ? '/home' : '/'
+          }>
             [druidia.net]
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />

@@ -11,17 +11,18 @@ import { UserDetails } from "./UserDetails";
 export const UserAdmin = () => {
   const { accessToken, isLoading } = useContext(AuthContext);
   const [showContent, setShowContent] = useState(false);
-  const [searchParam, setSearchParam] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  const [userRoleRefLabels, setUserRoleRefLabels] = useState([]);
+  const [userRoleRefs, setUserRoleRefs] = useState([]);
+  const [userRoles, setUserRoles] = useState([]);
   const searchRef = useRef();
 
   useEffect(() => {
     setShowContent(!isLoading);
   }, [isLoading]);
 
-  useEffect(()=>{
-    const fetchUserRoleRefLabels = async () =>{
+  useEffect(() => {
+    const fetchUserRoleRefs = async () => {
       const response = await fetch(
         config.resourceServer + "/api/find-all-user-role-refs",
         {
@@ -31,64 +32,82 @@ export const UserAdmin = () => {
           credentials: "same-origin",
           headers: {
             Authorization: `Bearer ${accessToken}`,
-          }
+          },
         }
       );
-  
+
       const responseJson = await response.json();
       if (response.status === 200) {
-        setUserRoleRefLabels(responseJson);
+        setUserRoleRefs(
+          responseJson.map((userRoleRef) => {
+            //just map out the fields we need.
+            return {
+              id: userRoleRef.id,
+              roleName: userRoleRef.roleName,
+              roleLabel: userRoleRef.roleLabel,
+              checked: false //default
+            };
+          })
+        );
       } else {
         console.error("Error communicating with server.");
       }
-    }    
+    };
 
-    if(showContent){
+    if (showContent) {
       searchRef.current.focus();
-      fetchUserRoleRefLabels();
-    }    
-  },[accessToken, showContent])
+      fetchUserRoleRefs();
+    }
+  }, [accessToken, showContent]);
 
   /**
-   * If searchParam present then search by those params,
+   * If searchQuery present then search by those params,
    * otherwise search all users.
    */
   const searchHandler = async () => {
     let response = null;
 
-    if (searchParam && searchParam.trim().length > 3) {
-      response = await fetch(
-        config.resourceServer + "/api/find-all-user-roles-heavy-by-search-params",
-        {
-          method: "POST",
-          mode: "cors",
-          cache: "no-cache",
-          credentials: "same-origin",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-          body: JSON.stringify({
-            username: "NA",
-            firstName: "NA",
-            lastName: "NA",
-            query: searchParam,
-          })
-        }
-      );
-    }
+    response = await fetch(
+      config.resourceServer + "/api/find-all-user-roles-heavy-by-search-params",
+      {
+        method: "POST",
+        mode: "cors",
+        cache: "no-cache",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({
+          searchQuery: searchQuery,
+        }),
+      }
+    );
 
     const responseJson = await response.json();
     if (response.status === 201) {
-      const uniqueUsers = responseJson.reduce((acc, userRole)=>{
-        const { id, user } = userRole;
-        const existingUser = acc.find(u=>u.id === user.id);
-        if(!existingUser){
+      let urMap = []; //build up user roles data structure. key= user id, value = list of user role ref ids.
+      const uniqueUsers = responseJson.reduce((acc, userRole) => {
+        const { id, user, userRoleRef } = userRole;
+
+        if (!urMap[user.id]) {
+          let userRoleList = [];
+          userRoleList.push(userRoleRef.id);
+          urMap[user.id] = userRoleList;
+        }else{
+          let userRoleList = urMap[user.id];
+          userRoleList.push(userRoleRef.id);
+          urMap[user.id] = userRoleList;
+        }
+
+        const existingUser = acc.find((u) => u.id === user.id);
+        if (!existingUser) {
           acc.push(user);
         }
         return acc;
-      },[]);
+      }, []);
 
+      setUserRoles(urMap);
       setSearchResults(uniqueUsers);
     } else {
       console.error("Error communicating with server.");
@@ -96,7 +115,7 @@ export const UserAdmin = () => {
   };
 
   const clearHandler = () => {
-    setSearchParam('');
+    setSearchQuery("");
     setSearchResults([]);
   };
 
@@ -118,16 +137,16 @@ export const UserAdmin = () => {
                 className="me-2"
                 aria-label="Search"
                 ref={searchRef}
-                value={searchParam}
-                onChange={(e) => setSearchParam(e.target.value)}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
               <Container className="d-flex justify-content-center flex-wrap">
                 <Button
                   variant="dark"
                   className="m-2"
                   disabled={
-                    searchParam.trim().length > 0 &&
-                    searchParam.trim().length < 3
+                    searchQuery.trim().length > 0 &&
+                    searchQuery.trim().length < 3
                   }
                   size="lg"
                   onClick={searchHandler}
@@ -153,15 +172,15 @@ export const UserAdmin = () => {
                         className={classes.listGroupItem}
                         key={user.id}
                       >
-                        <UserDetails user={user} userRoleRefLabels={userRoleRefLabels}/>
+                        <UserDetails user={user} userRoleRefs={userRoleRefs.map(urr=>{                     
+                          return {...urr, checked:userRoles[user.id].some(id=>id===urr.id)}
+                        })} />
                       </ListGroup.Item>
                     );
                   })}
                 </ListGroup>
               ) : (
-                <p className={styles.centerText}>
-                  No results found.
-                </p>
+                <p className={styles.centerText}>No results found.</p>
               )}
             </Form>
           </div>

@@ -8,6 +8,8 @@ export const UserDetails = (props) => {
     " " +
     props.user.__userProfile__.lastName;
 
+    const checked = true;
+
   return (
     <Container>
       <Image
@@ -20,8 +22,9 @@ export const UserDetails = (props) => {
         <span>{props.user.username.trim()}</span>
       </div>
       <div key="reverse-switch" className="mb-3">
-        {props.userRoleRefLabels.map((userRoleRefLabel,i) => {
-          return <Form.Check key={i} reverse type="switch" label={userRoleRefLabel} />;
+        {props.userRoleRefs.map((userRoleRef,i) => {
+          console.info(userRoleRef);
+          return <Form.Check key={i} checked={userRoleRef.checked} reverse type="switch" label={userRoleRef.roleLabel} />;
         })}
       </div>
     </Container>

@@ -91,7 +91,7 @@ export class AppConstants {
   static CREATE_USER_ASSOCIATION_DESC = 'Given two user ids, will create a link between them (will you be my frend?).';
   static REMOVE_USER_ASSOCIATION_DESC = 'Deactivates an association between 2 users (unfriend)'
   static FIND_USER_ROLE_REFS_BY_USER_DESC = 'Finds all user role refs for a given user id.'
-  static FIND_ALL_USER_ROLE_REFS_DESC = 'Finds all active user role refs in the application. Returns just the human friendly labels'
+  static FIND_ALL_USER_ROLE_REFS_DESC = 'Finds all active user role refs in the application.'
   static FIND_ALL_USER_ROLES_HEAVY_BY_SEARCH_PARAMS_DESC = 'Finds all active user roles matching search criteria. Returns user roles loaded with user, user profile and user role ref.';
 
   //bcrypt

@@ -41,8 +41,8 @@ export class UserRoleController {
     description: AppConstants.FIND_ALL_USER_ROLE_REFS_DESC
   })
   @ApiOperation({summary: AppConstants.FIND_ALL_USER_ROLE_REFS_DESC})
-  async findAllUserRoleRefLabels(){
-    return this.userRoleService.findAllUserRoleRefLabels();
+  async findAllUserRoleRefs(){
+    return this.userRoleService.findAllUserRoleRefs();
   }
 
     /**
@@ -60,6 +60,6 @@ export class UserRoleController {
     })
     @ApiOperation({ summary: AppConstants.FIND_ALL_USER_ROLES_HEAVY_BY_SEARCH_PARAMS_DESC })
     findAllUserRolesHeavyBySearchParams(@Body() searchUserDto: SearchUserDto) {
-      return this.userRoleService.findAllUserRolesHeavyBySearchParams(searchUserDto.query);
+      return this.userRoleService.findAllUserRolesHeavyBySearchParams(searchUserDto.searchQuery);
     }
 }

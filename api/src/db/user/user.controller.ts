@@ -136,7 +136,7 @@ export class UserController {
   async findOneByUserName(@Body() searchUserDto: SearchUserDto) {
     const user: User = await this.userService.findOneByUserName(
       true,
-      searchUserDto.username,
+      searchUserDto.searchQuery,
     );
     if (null === user) {
       throw new NotFoundException('Not found.');
@@ -160,10 +160,7 @@ export class UserController {
     examples: {
       example: {
         value: {
-          username: 'NA',
-          firstName: 'NA',
-          lastName: 'NA',
-          query: 'john@doe.org',
+          searchQuery: 'john@doe.org',
         },
       },
     },
@@ -187,7 +184,7 @@ export class UserController {
   @ApiOperation({ summary: AppConstants.FIND_USERS_BY_SEARCH_PARAMS_DESC })
   async findUsersBySearchCriteria(@Body() searchUserDto: SearchUserDto) {
     return await this.userService.findUsersBySearchCriteria(
-      searchUserDto.query,
+      searchUserDto.searchQuery,
     );
   }
 }
