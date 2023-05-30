@@ -96,4 +96,7 @@ export class AppConstants {
 
   //bcrypt
   static BCRYPT_SALT_ROUNDS = 10;
+
+  //redis cache keys
+  static APP_CACHE_USER_ROLE_REFS = 'APP_CACHE_USER_ROLE_REFS';
 }

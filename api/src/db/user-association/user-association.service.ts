@@ -1,28 +1,29 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Inject, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User, UserAssociation } from '../entities';
-import { UserCommonService } from '../user-common.service';
+import { ImageProcessingService } from '../../image-processing';
 
 @Injectable()
-export class UserAssociationService extends UserCommonService{
+export class UserAssociationService {
   private readonly logger = new Logger(UserAssociationService.name);
+
+  @Inject(ImageProcessingService)
+  private readonly imageProcessingService: ImageProcessingService;
 
   constructor(
     @InjectRepository(User, 'druidia')
     private readonly userRepository: Repository<User>,
-    
+
     @InjectRepository(UserAssociation, 'druidia')
     private readonly userAssociationRepository: Repository<UserAssociation>,
-  ) {
-    super();
-  }
+  ) {}
 
   /**
    * findUserAssociationsByUserId
-   * 
-   * @param userId 
-   * @returns 
+   *
+   * @param userId
+   * @returns
    */
   public async findUserAssociationsByUserId(userId: number) {
     Logger.log('Attempting to find user associations for user id:' + userId);
@@ -33,7 +34,7 @@ export class UserAssociationService extends UserCommonService{
         .leftJoinAndSelect('ua.associate', 'a')
         .where('ua.user.id = :userId', { userId })
         .andWhere('ua.inactivatedTime is null')
-        .andWhere('a.inactivatedTime is null')//don't get inactivated friends
+        .andWhere('a.inactivatedTime is null') //don't get inactivated friends
         .orderBy('a.username')
         .getMany();
 
@@ -44,12 +45,16 @@ export class UserAssociationService extends UserCommonService{
             ' user assocation(s).',
         );
 
-        const friends = userAssociations.map(ua=>{
+        const friends = userAssociations.map((ua) => {
           return ua.associate;
         });
 
         //return friends;
-        return await Promise.all(friends.map(this.hydrateUser.bind(this)));
+        return await Promise.all(
+          friends.map(
+            this.imageProcessingService.hydrateUserProfilePhoto.bind(this),
+          ),
+        );
       }
     } catch (error) {
       Logger.error('Error finding user associations for user id:' + userId);
@@ -58,12 +63,12 @@ export class UserAssociationService extends UserCommonService{
 
   /**
    * createUserAssociation
-   * 
-   * @param userId 
-   * @param associateUserId 
-   * @returns 
+   *
+   * @param userId
+   * @param associateUserId
+   * @returns
    */
-  public async createUserAssocation(userId:number, associateUserId:number){
+  public async createUserAssocation(userId: number, associateUserId: number) {
     Logger.log(
       'Attempting to create association between userId:' +
         userId +
@@ -71,19 +76,28 @@ export class UserAssociationService extends UserCommonService{
         associateUserId,
     );
 
-    try{
-      const userAssociation: UserAssociation = this.userAssociationRepository.create();
-      userAssociation.user = await this.userRepository.findOne({where:{id:userId}});
-      userAssociation.associate = await this.userRepository.findOne({where:{id:associateUserId}});
+    try {
+      const userAssociation: UserAssociation =
+        this.userAssociationRepository.create();
+      userAssociation.user = await this.userRepository.findOne({
+        where: { id: userId },
+      });
+      userAssociation.associate = await this.userRepository.findOne({
+        where: { id: associateUserId },
+      });
       userAssociation.setAuditFields(userAssociation.user.username);
 
       //TODO: do i have to fetch the users above or can i create a new user object with just id?
-      const savedUserAssociation = await this.userAssociationRepository.save(userAssociation);
-      Logger.log('Successfully linked users:'+userId+' and '+associateUserId);
+      const savedUserAssociation = await this.userAssociationRepository.save(
+        userAssociation,
+      );
+      Logger.log(
+        'Successfully linked users:' + userId + ' and ' + associateUserId,
+      );
       savedUserAssociation.user.password = '';
       savedUserAssociation.associate.password = '';
       return savedUserAssociation;
-    }catch(error){
+    } catch (error) {
       Logger.error(
         'Error creating association between userIds:' +
           userId +
@@ -97,13 +111,17 @@ export class UserAssociationService extends UserCommonService{
 
   /**
    * removeUserAssociation
-   * 
-   * @param username 
-   * @param userId 
-   * @param associateUserId 
-   * @returns 
+   *
+   * @param username
+   * @param userId
+   * @param associateUserId
+   * @returns
    */
-  public async removeUserAssociation(username:string, userId:number, associateUserId:number){
+  public async removeUserAssociation(
+    username: string,
+    userId: number,
+    associateUserId: number,
+  ) {
     Logger.log(
       'Attempting to remove association between userId:' +
         userId +
@@ -111,28 +129,34 @@ export class UserAssociationService extends UserCommonService{
         associateUserId,
     );
 
-    try{
+    try {
       let userAssociation = await this.userAssociationRepository
         .createQueryBuilder('ua')
         .leftJoin('ua.user', 'u')
         .leftJoinAndSelect('ua.associate', 'a')
         .where('ua.user.id = :userId', { userId })
-        .andWhere('ua.associate.id = :associateUserId', {associateUserId})
+        .andWhere('ua.associate.id = :associateUserId', { associateUserId })
         .andWhere('ua.inactivatedTime is null')
         .getOne();
 
-      if(userAssociation){
-        Logger.log('Successfully found user association to remove with id:'+userAssociation.id);
+      if (userAssociation) {
+        Logger.log(
+          'Successfully found user association to remove with id:' +
+            userAssociation.id,
+        );
         userAssociation.inactivatedBy = username;
         userAssociation.inactivatedTime = new Date();
 
-        const savedUserAssociation = await this.userAssociationRepository.save(userAssociation);
-        Logger.log('Successfully unlinked users:'+userId+' and '+associateUserId);
+        const savedUserAssociation = await this.userAssociationRepository.save(
+          userAssociation,
+        );
+        Logger.log(
+          'Successfully unlinked users:' + userId + ' and ' + associateUserId,
+        );
         savedUserAssociation.associate.password = '';
         return savedUserAssociation;
       }
-
-    }catch(error){
+    } catch (error) {
       Logger.error(
         'Error removing association between userIds:' +
           userId +

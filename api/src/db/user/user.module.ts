@@ -1,20 +1,19 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User, UserProfile } from '../entities';
-import { UserCommonService } from '../user-common.service';
-import { UserController,UserService } from '.';
-import { ImageGeneratorService, ImageReaderService } from '../../common';
+import { User, UserProfile, UserRole } from '../entities';
+import { ImageProcessingModule } from '../../image-processing';
+import { UserController, UserService } from '.';
+import { UserRoleModule } from '../user-role/user-role.module';
+import { UserRoleRefModule } from '../user-role-ref/user-role-ref.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, UserProfile], 'druidia'),
+    ImageProcessingModule,
+    UserRoleModule,
+    UserRoleRefModule,
+    TypeOrmModule.forFeature([User, UserProfile, UserRole], 'druidia'),
   ],
-  providers: [
-    UserCommonService,
-    UserService,
-    ImageGeneratorService,
-    ImageReaderService,
-  ],
+  providers: [UserService],
   controllers: [UserController],
   exports: [UserService],
 })

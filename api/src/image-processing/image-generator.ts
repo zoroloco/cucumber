@@ -1,17 +1,16 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { join } from 'path';
 import { existsSync } from 'fs';
 import sharp = require('sharp');
 
-@Injectable()
-export class ImageGeneratorService {
+export class ImageGenerator {
   /**
    * @param - imageFileName - filename example: mydogphoto.jpg
    * @param - width - width of image path to fetch or create.
    *
    * @return - string with file path of the image you want in its size
    */
-  public async generateImage(
+  public static async generateImage(
     imagePath: string,
     width: number,
   ): Promise<string> {

@@ -1,24 +1,40 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Inject,
+  Logger,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AppConstants } from '../../app.constants';
 import { CreateUserDto } from '../../dtos';
 import { Repository } from 'typeorm';
-import { User, UserProfile } from '../entities';
-import { UserCommonService } from '../user-common.service';
+import { User, UserProfile, UserRole } from '../entities';
+import { UserRoleService } from '../user-role';
+import { ImageProcessingService } from 'src/image-processing';
+import { UserRoleRefService } from '../user-role-ref';
 const bcrypt = require('bcrypt');
 
 @Injectable()
-export class UserService extends UserCommonService{
+export class UserService {
   private readonly logger = new Logger(UserService.name);
+
+  @Inject(UserRoleService)
+  private readonly userRoleService: UserRoleService;
+
+  @Inject(UserRoleRefService)
+  private readonly userRoleRefService: UserRoleRefService;
+
+  @Inject(ImageProcessingService)
+  private readonly imageProcessingService: ImageProcessingService;
 
   constructor(
     @InjectRepository(User, 'druidia')
     private readonly userRepository: Repository<User>,
     @InjectRepository(UserProfile, 'druidia')
     private readonly userProfileRepository: Repository<UserProfile>,
-  ) {
-    super();
-  }
+    @InjectRepository(UserRole, 'druidia')
+    private readonly userRoleRepository: Repository<UserRole>,
+  ) {}
 
   /**
    *
@@ -38,11 +54,13 @@ export class UserService extends UserCommonService{
           inactivatedTime: null,
         },
         order: {
-          username: 'DESC'
-        }
+          username: 'DESC',
+        },
       });
 
-      return await Promise.all(users.map(this.hydrateUser.bind(this)));
+      return await Promise.all(
+        users.map(this.imageProcessingService.hydrateUserProfilePhoto.bind(this)),
+      );
     } catch (error) {
       Logger.error('Error finding all users:' + error);
     }
@@ -95,7 +113,9 @@ export class UserService extends UserCommonService{
         users.length + ' user(s) found matching search criteria:' + query,
       );
 
-      return await Promise.all(users.map(this.hydrateUser.bind(this)));
+      return await Promise.all(
+        users.map(this.imageProcessingService.hydrateUserProfilePhoto.bind(this)),
+      );
     } catch (error) {
       Logger.error('Error searching for users:' + error);
       return [];
@@ -161,6 +181,17 @@ export class UserService extends UserCommonService{
 
       const savedUser = await this.userRepository.save(user);
       Logger.log('User successfully created:' + JSON.stringify(savedUser));
+
+      //now save a default user role for the user async
+      const noobUserRole: UserRole = this.userRoleRepository.create();
+      noobUserRole.setAuditFields(savedUser.username);
+      noobUserRole.user = savedUser;
+      const userRoleRefs = await this.userRoleRefService.findAllUserRoleRefs();
+      noobUserRole.userRoleRef = userRoleRefs.find(
+        (urr) => urr.roleName === 'ROLE_NOOB',
+      );
+      this.userRoleService.saveUserRole(noobUserRole);
+      
       const { password, ...userNoPass } = savedUser; //strip password out of user object
       return userNoPass;
     } catch (err) {

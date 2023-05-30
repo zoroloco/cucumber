@@ -2,6 +2,8 @@
 - API
   Please set env variables first.
   
+  Install redis
+
   npm install
   npm run build 
   npm start
