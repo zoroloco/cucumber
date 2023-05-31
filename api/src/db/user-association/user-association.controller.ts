@@ -17,9 +17,8 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 import { AppConstants } from '../../app.constants';
-import { CreateUserAssociationDto } from '../../dtos';
+import { CreateUserAssociationDto, RemoveUserAssociationDto } from '../../dtos';
 import { UserAssociationService } from './user-association.service';
-import { RemoveUserAssociationDto } from '../../dtos/remove-user-association';
 
 @Controller(AppConstants.API_PATH)
 export class UserAssociationController {
@@ -84,10 +83,10 @@ export class UserAssociationController {
 
   /**
    * removeUserAssociation
-   * 
-   * @param req 
-   * @param removeUserAssociationDto 
-   * @returns 
+   *
+   * @param req
+   * @param removeUserAssociationDto
+   * @returns
    */
   @UseGuards(JwtAuthGuard)
   @ApiTags(AppConstants.API_TAG)

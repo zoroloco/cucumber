@@ -45,7 +45,7 @@ export const UserAdmin = () => {
               id: userRoleRef.id,
               roleName: userRoleRef.roleName,
               roleLabel: userRoleRef.roleLabel,
-              checked: false //default
+              checked: false, //default
             };
           })
         );
@@ -94,7 +94,7 @@ export const UserAdmin = () => {
           let userRoleList = [];
           userRoleList.push(userRoleRef.id);
           urMap[user.id] = userRoleList;
-        }else{
+        } else {
           let userRoleList = urMap[user.id];
           userRoleList.push(userRoleRef.id);
           urMap[user.id] = userRoleList;
@@ -172,9 +172,18 @@ export const UserAdmin = () => {
                         className={classes.listGroupItem}
                         key={user.id}
                       >
-                        <UserDetails user={user} userRoleRefs={userRoleRefs.map(urr=>{                     
-                          return {...urr, checked:userRoles[user.id].some(id=>id===urr.id)}
-                        })} />
+                        <UserDetails
+                          accessToken={accessToken}
+                          user={user}
+                          userRoleRefs={userRoleRefs.map((urr) => {
+                            return {
+                              ...urr,
+                              checked: userRoles[user.id].some(
+                                (id) => id === urr.id
+                              ),
+                            };
+                          })}
+                        />
                       </ListGroup.Item>
                     );
                   })}

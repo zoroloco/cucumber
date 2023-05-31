@@ -22,9 +22,9 @@ export class UserRoleService {
   ) {}
 
   /**
-   * 
-   * @param userRole 
-   * @returns 
+   *
+   * @param userRole
+   * @returns
    */
   public async saveUserRole(userRole: UserRole) {
     Logger.log('Saving user role:' + JSON.stringify(userRole));
@@ -79,6 +79,10 @@ export class UserRoleService {
       throw new BadRequestException('Error finding user roles.');
     }
   }
+
+  public async createUserRole(userId: number, userRoleRefId: number) {}
+
+  public async removeUserRole(userId: number, userRoleRefId: number) {}
 
   /**
    * findAllUsersHeavyBySearchParams
@@ -136,7 +140,8 @@ export class UserRoleService {
   }
 
   private async hydrateUserRole(userRole: UserRole) {
-    const hydratedUser = await this.imageProcessingService.hydrateUserProfilePhoto(userRole.user);
+    const hydratedUser =
+      await this.imageProcessingService.hydrateUserProfilePhoto(userRole.user);
     userRole.user = hydratedUser;
     return userRole;
   }

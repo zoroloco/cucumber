@@ -1,14 +1,13 @@
 import { Image } from "react-bootstrap";
-import { Form, Container } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import classes from "./UserAdmin.module.css";
+import { UserDetailsRole } from "./UserDetailsRole";
 
 export const UserDetails = (props) => {
   const fullName =
     props.user.__userProfile__.firstName +
     " " +
     props.user.__userProfile__.lastName;
-
-    const checked = true;
 
   return (
     <Container>
@@ -22,10 +21,14 @@ export const UserDetails = (props) => {
         <span>{props.user.username.trim()}</span>
       </div>
       <div key="reverse-switch" className="mb-3">
-        {props.userRoleRefs.map((userRoleRef,i) => {
-          console.info(userRoleRef);
-          return <Form.Check key={i} checked={userRoleRef.checked} reverse type="switch" label={userRoleRef.roleLabel} />;
-        })}
+        {props.userRoleRefs.map((userRoleRef, i) => (
+          <UserDetailsRole
+            key={i}
+            userId={props.user.id}
+            userRoleRef={userRoleRef}
+            accessToken={props.accessToken}
+          />
+        ))}
       </div>
     </Container>
   );

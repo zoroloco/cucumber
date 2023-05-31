@@ -8,7 +8,7 @@ import {
 import { AppConstants } from '../../app.constants';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UserRoleService } from './user-role.service';
-import { SearchUserDto } from '../../dtos';
+import { AddRemoveUserRoleDto, SearchUserDto } from '../../dtos';
 import { UserRoleRefService } from '../user-role-ref';
 
 @Controller(AppConstants.API_PATH)
@@ -68,6 +68,54 @@ export class UserRoleController {
   findAllUserRolesHeavyBySearchParams(@Body() searchUserDto: SearchUserDto) {
     return this.userRoleService.findAllUserRolesHeavyBySearchParams(
       searchUserDto.searchQuery,
+    );
+  }
+
+  /**
+   * createUserRole
+   *
+   * @param AddRemoveUserRoleDto
+   * @returns
+   */
+  @UseGuards(JwtAuthGuard)
+  @Post(AppConstants.CREATE_USER_ROLE)
+  @ApiTags(AppConstants.API_TAG)
+  @ApiBearerAuth()
+  @ApiResponse({
+    status: 201,
+    description: AppConstants.CREATE_USER_ROLE_DESC,
+  })
+  @ApiOperation({
+    summary: AppConstants.CREATE_USER_ROLE_DESC,
+  })
+  createUserRole(@Body() addRemoveUserRoleDto: AddRemoveUserRoleDto) {
+    return this.userRoleService.createUserRole(
+      addRemoveUserRoleDto.userId,
+      addRemoveUserRoleDto.userRoleRefId,
+    );
+  }
+
+  /**
+   * removeUserRole
+   *
+   * @param AddRemoveUserRoleDto
+   * @returns
+   */
+  @UseGuards(JwtAuthGuard)
+  @Post(AppConstants.REMOVE_USER_ROLE)
+  @ApiTags(AppConstants.API_TAG)
+  @ApiBearerAuth()
+  @ApiResponse({
+    status: 201,
+    description: AppConstants.REMOVE_USER_ROLE_DESC,
+  })
+  @ApiOperation({
+    summary: AppConstants.REMOVE_USER_ROLE_DESC,
+  })
+  removeUserRole(@Body() addRemoveUserRoleDto: AddRemoveUserRoleDto) {
+    return this.userRoleService.removeUserRole(
+      addRemoveUserRoleDto.userId,
+      addRemoveUserRoleDto.userRoleRefId,
     );
   }
 }
