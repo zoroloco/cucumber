@@ -64,11 +64,12 @@ export class UserAssociationService {
   /**
    * createUserAssociation
    *
+   * @param reqUserId
    * @param userId
    * @param associateUserId
    * @returns
    */
-  public async createUserAssocation(userId: number, associateUserId: number) {
+  public async createUserAssocation(reqUserId:number, userId: number, associateUserId: number) {
     Logger.log(
       'Attempting to create association between userId:' +
         userId +
@@ -85,9 +86,8 @@ export class UserAssociationService {
       userAssociation.associate = await this.userRepository.findOne({
         where: { id: associateUserId },
       });
-      userAssociation.setAuditFields(userAssociation.user.username);
-
-      //TODO: do i have to fetch the users above or can i create a new user object with just id?
+      userAssociation.setAuditFields(reqUserId+'');
+      
       const savedUserAssociation = await this.userAssociationRepository.save(
         userAssociation,
       );
@@ -112,13 +112,13 @@ export class UserAssociationService {
   /**
    * removeUserAssociation
    *
-   * @param username
+   * @param reqUserId
    * @param userId
    * @param associateUserId
    * @returns
    */
   public async removeUserAssociation(
-    username: string,
+    reqUserId: number,
     userId: number,
     associateUserId: number,
   ) {
@@ -144,7 +144,7 @@ export class UserAssociationService {
           'Successfully found user association to remove with id:' +
             userAssociation.id,
         );
-        userAssociation.inactivatedBy = username;
+        userAssociation.inactivatedBy = reqUserId+'';
         userAssociation.inactivatedTime = new Date();
 
         const savedUserAssociation = await this.userAssociationRepository.save(

@@ -5,10 +5,12 @@ import { UserRole } from '../entities';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ImageProcessingModule } from '../../image-processing';
 import { UserRoleRefModule } from '../user-role-ref/user-role-ref.module';
+import { CacheModule } from '../../cache/cache.module';
 
 @Module({
   imports: [
     UserRoleRefModule,
+    CacheModule,
     ImageProcessingModule,
     TypeOrmModule.forFeature([UserRole], 'druidia'),
   ],

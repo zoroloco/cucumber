@@ -1,6 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import * as Redis from 'ioredis';
 
+/**
+ * Provides access to the redisClient
+ *
+ */
 @Injectable()
 export class RedisService {
   public readonly redisClient: Redis.Redis;
@@ -12,5 +16,12 @@ export class RedisService {
       host: process.env.REDIS_HOST,
       port: this.redisPort,
     });
+
+    Logger.log(
+      'Redis Client initialized on host:' +
+        process.env.REDIS_HOST +
+        ' and port:' +
+        this.redisPort,
+    );
   }
 }

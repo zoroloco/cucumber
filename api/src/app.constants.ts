@@ -103,4 +103,5 @@ export class AppConstants {
 
   //redis cache keys
   static APP_CACHE_USER_ROLE_REFS = 'APP_CACHE_USER_ROLE_REFS';
+  static APP_CACHE_USERNAME_BY_USERID = 'APP_CACHE_USERNAME_BY_USERID';
 }

@@ -12,6 +12,7 @@ import { User, UserProfile, UserRole } from '../entities';
 import { UserRoleService } from '../user-role';
 import { ImageProcessingService } from 'src/image-processing';
 import { UserRoleRefService } from '../user-role-ref';
+import { RedisService } from '../../cache/redis.service';
 const bcrypt = require('bcrypt');
 
 @Injectable()
@@ -27,6 +28,9 @@ export class UserService {
   @Inject(ImageProcessingService)
   private readonly imageProcessingService: ImageProcessingService;
 
+  @Inject(RedisService)
+  private readonly redisService: RedisService;
+
   constructor(
     @InjectRepository(User, 'druidia')
     private readonly userRepository: Repository<User>,
@@ -34,7 +38,9 @@ export class UserService {
     private readonly userProfileRepository: Repository<UserProfile>,
     @InjectRepository(UserRole, 'druidia')
     private readonly userRoleRepository: Repository<UserRole>,
-  ) {}
+  ) {
+    this.initCache();
+  }
 
   /**
    *
@@ -59,10 +65,13 @@ export class UserService {
       });
 
       return await Promise.all(
-        users.map(this.imageProcessingService.hydrateUserProfilePhoto.bind(this)),
+        users.map(
+          this.imageProcessingService.hydrateUserProfilePhoto.bind(this),
+        ),
       );
     } catch (error) {
       Logger.error('Error finding all users:' + error);
+      throw new BadRequestException('Error encountered while finding all users.');
     }
   }
 
@@ -114,11 +123,13 @@ export class UserService {
       );
 
       return await Promise.all(
-        users.map(this.imageProcessingService.hydrateUserProfilePhoto.bind(this)),
+        users.map(
+          this.imageProcessingService.hydrateUserProfilePhoto.bind(this),
+        ),
       );
     } catch (error) {
       Logger.error('Error searching for users:' + error);
-      return [];
+      throw new BadRequestException('Error encountered searching users by search criteria.');
     }
   }
 
@@ -136,6 +147,7 @@ export class UserService {
       });
     } catch (error) {
       Logger.error('Error updating user:' + error);
+      throw new BadRequestException('Error encountered while updating user login information.');
     }
   }
 
@@ -191,7 +203,7 @@ export class UserService {
         (urr) => urr.roleName === 'ROLE_NOOB',
       );
       this.userRoleService.saveUserRole(noobUserRole);
-      
+
       const { password, ...userNoPass } = savedUser; //strip password out of user object
       return userNoPass;
     } catch (err) {
@@ -203,6 +215,45 @@ export class UserService {
 
         throw new BadRequestException('Error encountered while creating user.');
       }
+    }
+  }
+
+  /**
+   * Init useful cache for users.
+   */
+  public async initCache() {
+    //fetch all active users from DB and put them in redis with key=userId and value=username
+    //this is used for auditing.
+    Logger.log('Attempting to cache user names by user ids.');
+    try {
+      const usersSkinny = await this.userRepository.find({
+        select: {
+          username: true,
+          id: true,
+        },
+        where: {
+          inactivatedTime: null,
+        },
+      });
+
+      if (usersSkinny && usersSkinny.length > 0) {
+        Logger.log(usersSkinny.length + ' users found in system to cache.');
+
+        const userNameUserIdMap = [];
+        usersSkinny.forEach(userSkinny=>{
+          userNameUserIdMap[userSkinny.id] = userSkinny.username;
+          Logger.log('Storing in cache userId:'+userSkinny.id+' value:'+userSkinny.username);
+        });
+
+        this.redisService.redisClient.set(
+          AppConstants.APP_CACHE_USERNAME_BY_USERID,
+          JSON.stringify(userNameUserIdMap),
+        );
+      }else{
+        Logger.warn('No users found to cache by user ids.');
+      }
+    } catch (error) {
+      Logger.error('Error encountered while initializing user cache:' + error);
     }
   }
 }

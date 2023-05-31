@@ -5,9 +5,11 @@ import {
   Logger,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserRole } from '../entities';
+import { UserRole, User, UserRoleRef } from '../entities';
 import { Repository } from 'typeorm';
 import { ImageProcessingService } from 'src/image-processing';
+import { RedisService } from '../../cache/redis.service';
+import { AppConstants } from 'src/app.constants';
 
 @Injectable()
 export class UserRoleService {
@@ -15,6 +17,11 @@ export class UserRoleService {
 
   @Inject(ImageProcessingService)
   private readonly imageProcessingService: ImageProcessingService;
+
+  @Inject(RedisService)
+  private readonly redisService: RedisService;
+
+  private userNameCache = [];
 
   constructor(
     @InjectRepository(UserRole, 'druidia')
@@ -80,9 +87,101 @@ export class UserRoleService {
     }
   }
 
-  public async createUserRole(userId: number, userRoleRefId: number) {}
+  /**
+   *
+   * @param reqUserId
+   * @param userId
+   * @param userRoleRefId
+   */
+  public async createUserRole(
+    reqUserId: number,
+    userId: number,
+    userRoleRefId: number,
+  ) {
+    Logger.log(
+      'Attempting to create user role for userId:' +
+        userId +
+        ' and userRoleRefId:' +
+        userRoleRefId,
+    );
+    try {
+      const userRole: UserRole = this.userRoleRepository.create();
 
-  public async removeUserRole(userId: number, userRoleRefId: number) {}
+      userRole.setAuditFields(reqUserId + '');
+
+      const user: User = new User();
+      user.id = userId;
+
+      const userRoleRef: UserRoleRef = new UserRoleRef();
+      userRoleRef.id = userRoleRefId;
+
+      userRole.user = user;
+      userRole.userRoleRef = userRoleRef;
+
+      this.userRoleRepository.save(userRole); //async, lets no wait for this and just return.
+      Logger.log('Saving new user role.');
+    } catch (error) {
+      Logger.error(
+        'Error creating user role with userId:' +
+          userId +
+          ' and userRoleRefId:' +
+          userRoleRefId +
+          ' with error:' +
+          error,
+      );
+      throw new BadRequestException('Error encountered creating user role.');
+    }
+  }
+
+  /**
+   *
+   * @param reqUserId
+   * @param userId
+   * @param userRoleRefId
+   */
+  public async removeUserRole(
+    reqUserId: number,
+    userId: number,
+    userRoleRefId: number,
+  ) {
+    Logger.log(
+      'Attempting to remove user role ref id:' +
+        userRoleRefId +
+        ' from userId:' +
+        userId,
+    );
+
+    try {
+      const userRole = await this.userRoleRepository.findOne({
+        where: {
+          user: { id: userId },
+          userRoleRef: { id: userRoleRefId },
+        },
+      });
+
+      if(userRole){
+        Logger.log('Successfully found user role to deactivate with user role id:'+userRole.id);
+
+        userRole.inactivatedBy = reqUserId+'';
+        userRole.inactivatedTime = new Date();
+
+        const savedUserRole = await this.userRoleRepository.save(userRole);
+        if(savedUserRole){
+          Logger.log('Successfully deactivated user role id:'+savedUserRole.id);
+        }
+      }
+    } catch (error) {
+      Logger.error(
+        'Error removing user role ref id:' +
+          userRoleRefId +
+          ' for userId' +
+          userId +
+          ' with error:' +
+          error,
+      );
+      throw new BadRequestException('Error encountered removing user role.');
+    }
+  }
 
   /**
    * findAllUsersHeavyBySearchParams

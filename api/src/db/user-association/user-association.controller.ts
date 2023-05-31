@@ -73,9 +73,11 @@ export class UserAssociationController {
   @ApiBearerAuth()
   @Post(AppConstants.CREATE_USER_ASSOCIATION)
   async createUserAssociation(
+    @Request() req,
     @Body() createUserAssociationDto: CreateUserAssociationDto,
   ) {
     return await this.userAssociationService.createUserAssocation(
+      req.user.userId,
       createUserAssociationDto.userId,
       createUserAssociationDto.associateUserId,
     );
@@ -113,9 +115,8 @@ export class UserAssociationController {
     @Request() req,
     @Body() removeUserAssociationDto: RemoveUserAssociationDto,
   ) {
-    Logger.log('here is user:' + JSON.stringify(req.user));
     return await this.userAssociationService.removeUserAssociation(
-      '',
+      req.user.userId,
       removeUserAssociationDto.userId,
       removeUserAssociationDto.associateUserId,
     );

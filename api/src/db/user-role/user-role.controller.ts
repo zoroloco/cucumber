@@ -1,4 +1,12 @@
-import { Controller, Param, Body, Get, Post, UseGuards } from '@nestjs/common';
+import {
+  Request,
+  Controller,
+  Param,
+  Body,
+  Get,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiTags,
@@ -88,8 +96,12 @@ export class UserRoleController {
   @ApiOperation({
     summary: AppConstants.CREATE_USER_ROLE_DESC,
   })
-  createUserRole(@Body() addRemoveUserRoleDto: AddRemoveUserRoleDto) {
+  createUserRole(
+    @Request() req,
+    @Body() addRemoveUserRoleDto: AddRemoveUserRoleDto,
+  ) {
     return this.userRoleService.createUserRole(
+      req.user.userId,
       addRemoveUserRoleDto.userId,
       addRemoveUserRoleDto.userRoleRefId,
     );
@@ -112,8 +124,12 @@ export class UserRoleController {
   @ApiOperation({
     summary: AppConstants.REMOVE_USER_ROLE_DESC,
   })
-  removeUserRole(@Body() addRemoveUserRoleDto: AddRemoveUserRoleDto) {
+  removeUserRole(
+    @Request() req,
+    @Body() addRemoveUserRoleDto: AddRemoveUserRoleDto,
+  ) {
     return this.userRoleService.removeUserRole(
+      req.user.userId,
       addRemoveUserRoleDto.userId,
       addRemoveUserRoleDto.userRoleRefId,
     );
