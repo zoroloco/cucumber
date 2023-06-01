@@ -152,22 +152,29 @@ export class UserRoleService {
     );
 
     try {
-      const userRole = await this.userRoleRepository.findOne({
-        where: {
-          user: { id: userId },
-          userRoleRef: { id: userRoleRefId },
-        },
-      });
+      const userRole = await this.userRoleRepository
+        .createQueryBuilder('userRole')
+        .where('userRole.user.id LIKE :userId', { userId: `%${userId}%` })
+        .where('userRole.userRoleRef.id LIKE :userRoleRefId', {
+          userRoleRefId: `%${userRoleRefId}%`,
+        })
+        .andWhere('userRole.inactivatedTime is null')
+        .getOne();
 
-      if(userRole){
-        Logger.log('Successfully found user role to deactivate with user role id:'+userRole.id);
+      if (userRole) {
+        Logger.log(
+          'Successfully found active user role to deactivate with user role id:' +
+            userRole.id,
+        );
 
-        userRole.inactivatedBy = reqUserId+'';
+        userRole.inactivatedBy = reqUserId + '';
         userRole.inactivatedTime = new Date();
 
         const savedUserRole = await this.userRoleRepository.save(userRole);
-        if(savedUserRole){
-          Logger.log('Successfully deactivated user role id:'+savedUserRole.id);
+        if (savedUserRole) {
+          Logger.log(
+            'Successfully deactivated user role id:' + savedUserRole.id,
+          );
         }
       }
     } catch (error) {
