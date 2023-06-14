@@ -172,14 +172,14 @@ export class UserService {
     const user: User = this.userRepository.create();
     user.username = createUserDto.username;
     user.password = saltedPassword;
-    user.setAuditFields(createUserDto.username);
+    user.setAuditFields(0);
 
     const userProfile: UserProfile = this.userProfileRepository.create();
     userProfile.firstName = createUserDto.firstName;
     userProfile.middleName = createUserDto.middleName;
     userProfile.lastName = createUserDto.lastName;
     userProfile.profilePhotoPath = profilePhotoPath;
-    userProfile.setAuditFields(createUserDto.username);
+    userProfile.setAuditFields(0);
 
     try {
       const savedUserProfile = await this.userProfileRepository.save(
@@ -196,13 +196,18 @@ export class UserService {
 
       //now save a default user role for the user async
       const noobUserRole: UserRole = this.userRoleRepository.create();
-      noobUserRole.setAuditFields(savedUser.username);
+      noobUserRole.setAuditFields(savedUser.id);
       noobUserRole.user = savedUser;
       const userRoleRefs = await this.userRoleRefService.findAllUserRoleRefs();
       noobUserRole.userRoleRef = userRoleRefs.find(
         (urr) => urr.roleName === 'ROLE_NOOB',
       );
-      this.userRoleService.saveUserRole(noobUserRole);
+      
+      //NOTE: This can be async. Why wait? User won't be logging in so fast now.
+      const savedNoobUserRole = await this.userRoleService.saveUserRole(noobUserRole);
+      if(savedNoobUserRole){
+        Logger.log('Successfully saved a noob.');
+      }
 
       const { password, ...userNoPass } = savedUser; //strip password out of user object
       return userNoPass;

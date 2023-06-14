@@ -9,6 +9,7 @@ import { CommonEntity } from './common.entity';
 
 @Entity('user_role')
 export class UserRole extends CommonEntity {
+  
   @ApiProperty({description: 'The user context.'})
   @ManyToOne(() => User)
   @JoinColumn({name:'userId'})

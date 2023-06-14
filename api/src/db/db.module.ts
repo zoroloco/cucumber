@@ -4,6 +4,7 @@ import { UserModule } from './user/user.module';
 import { UserAssociationModule } from './user-association/user-association.module';
 import { UserRoleModule } from './user-role/user-role.module';
 import { UserRoleRefModule } from './user-role-ref/user-role-ref.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -11,7 +12,8 @@ import { UserRoleRefModule } from './user-role-ref/user-role-ref.module';
     UserModule,
     UserAssociationModule,
     UserRoleModule,
-    UserRoleRefModule
+    UserRoleRefModule,
+    ChatModule
   ],
   providers: [],
   controllers: [],

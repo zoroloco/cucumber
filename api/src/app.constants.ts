@@ -79,6 +79,8 @@ export class AppConstants {
   static FIND_ALL_USER_ROLE_REFS = 'find-all-user-role-refs';
   static CREATE_USER_ROLE = 'create-user-role';
   static REMOVE_USER_ROLE = 'remove-user-role';
+  static CREATE_CHAT = 'create-chat';
+  static FIND_ALL_CHATS_BY_USER = 'find-user-chats-by-user-id/:userid';
 
   //swagger description
   static LOGIN_DESC =
@@ -91,12 +93,14 @@ export class AppConstants {
     'Provides a way for clients to see if their token is valid.';
   static FIND_USER_ASSOCIATIONS_BY_USER_DESC = 'Returns all active user associations given a user id. This is the friend list.';
   static CREATE_USER_ASSOCIATION_DESC = 'Given two user ids, will create a link between them (will you be my frend?).';
-  static REMOVE_USER_ASSOCIATION_DESC = 'Deactivates an association between 2 users (unfriend)'
-  static FIND_USER_ROLE_REFS_BY_USER_DESC = 'Finds all user role refs for a given user id.'
+  static REMOVE_USER_ASSOCIATION_DESC = 'Deactivates an association between 2 users (unfriend).'
+  static FIND_USER_ROLE_REFS_BY_USER_DESC = 'Finds all active user role refs for a given user id.'
   static FIND_ALL_USER_ROLE_REFS_DESC = 'Finds all active user role refs in the application.'
   static FIND_ALL_USER_ROLES_HEAVY_BY_SEARCH_PARAMS_DESC = 'Finds all active user roles matching search criteria. Returns user roles loaded with user, user profile and user role ref.';
-  static CREATE_USER_ROLE_DESC = 'Creates a user role for a user given a userId and userRoleRefId'
-  static REMOVE_USER_ROLE_DESC = 'Deactivates the user role with the given user role ref id and user id'
+  static CREATE_USER_ROLE_DESC = 'Creates a user role for a user given a userId and userRoleRefId.'
+  static REMOVE_USER_ROLE_DESC = 'Deactivates the user role with the given user role ref id and user id.'
+  static CREATE_CHAT_DESC = 'Creates a chat conversation with the optional name for the given user ids.'
+  static FIND_ALL_CHATS_BY_USER_DESC = 'Finds all active chats for a user.'
 
   //bcrypt
   static BCRYPT_SALT_ROUNDS = 10;

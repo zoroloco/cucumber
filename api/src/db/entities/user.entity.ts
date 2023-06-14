@@ -5,6 +5,7 @@ import { UserProfile } from '.';
 
 @Entity('user')
 export class User extends CommonEntity {
+
   @ApiProperty({
     description: 'Valid email format no more than 32 chars long.',
   })

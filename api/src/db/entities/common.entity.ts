@@ -11,7 +11,7 @@ export class CommonEntity {
     /**
      * Sets the entity's createdTime and createdBy fields.
      */
-    public setAuditFields(createdBy: string){
+    public setAuditFields(createdBy: number){
         this.createdBy = createdBy;
         this.createdTime = new Date();
     }
@@ -21,18 +21,18 @@ export class CommonEntity {
     public createdTime!: Date;
 
     @IsNotEmpty()
-    @Column({type: 'varchar', length: 32})
-    public createdBy!: string;
+    @Column({type: 'bigint'})
+    public createdBy!: number;
 
     @Column({type: 'timestamp'})
     public modifiedTime!: Date;
 
-    @Column({type: 'varchar', length: 32})
-    public modifiedBy!: string;
+    @Column({type: 'bigint'})
+    public modifiedBy!: number;
 
     @Column({type: 'timestamp'})
     public inactivatedTime!: Date;
 
-    @Column({type: 'varchar', length: 32})
-    public inactivatedBy!: string;
+    @Column({type: 'bigint'})
+    public inactivatedBy!: number;
 }

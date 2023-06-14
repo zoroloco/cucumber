@@ -8,8 +8,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserRole, User, UserRoleRef } from '../entities';
 import { Repository } from 'typeorm';
 import { ImageProcessingService } from 'src/image-processing';
-import { RedisService } from '../../cache/redis.service';
-import { AppConstants } from 'src/app.constants';
 
 @Injectable()
 export class UserRoleService {
@@ -18,14 +16,14 @@ export class UserRoleService {
   @Inject(ImageProcessingService)
   private readonly imageProcessingService: ImageProcessingService;
 
-  @Inject(RedisService)
-  private readonly redisService: RedisService;
 
   private userNameCache = [];
 
   constructor(
     @InjectRepository(UserRole, 'druidia')
     private readonly userRoleRepository: Repository<UserRole>,
+    @InjectRepository(User, 'druidia')
+    private readonly userRepository: Repository<User>,
   ) {}
 
   /**
@@ -107,9 +105,9 @@ export class UserRoleService {
     try {
       const userRole: UserRole = this.userRoleRepository.create();
 
-      userRole.setAuditFields(reqUserId + '');
+      userRole.setAuditFields(reqUserId);
 
-      const user: User = new User();
+      const user: User = this.userRepository.create();
       user.id = userId;
 
       const userRoleRef: UserRoleRef = new UserRoleRef();
@@ -167,7 +165,7 @@ export class UserRoleService {
             userRole.id,
         );
 
-        userRole.inactivatedBy = reqUserId + '';
+        userRole.inactivatedBy = reqUserId;
         userRole.inactivatedTime = new Date();
 
         const savedUserRole = await this.userRoleRepository.save(userRole);

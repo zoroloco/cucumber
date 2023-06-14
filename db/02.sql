@@ -1,8 +1,24 @@
--- DML
+-- DML to wipe all data
+use druidia;
 
-insert into user_role_ref (roleName,roleLabel,roleDescription,createdTime,createdBy)
-values
-("ROLE_ADMIN","Admin", "Can do whatevs.", CURRENT_TIMESTAMP,"druidia"),
-("ROLE_NOOB", "Noob", "Can't do shit.", CURRENT_TIMESTAMP, "druidia"),
-("ROLE_USER_ADMIN", "User Admin", "Can manipulate user settings.", CURRENT_TIMESTAMP,"druidia"),
-("ROLE_CHAT", "Chat User", "Can access the chat-related pages.", CURRENT_TIMESTAMP,"druidia");
+-- NOTE. Please clear out Redis cache too.
+
+delete from chat_message;
+delete from user_association;
+delete from user_chat;
+delete from user_role;
+delete from user_role_ref;
+delete from message;
+delete from chat;
+delete from user;
+delete from user_profile;
+
+drop table if exists chat_message;
+drop table if exists user_association;
+drop table if exists user_chat;
+drop table if exists user_role;
+drop table if exists user_role_ref;
+drop table if exists message;
+drop table if exists chat;
+drop table if exists user;
+drop table if exists user_profile;

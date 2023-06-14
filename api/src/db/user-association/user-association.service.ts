@@ -86,7 +86,7 @@ export class UserAssociationService {
       userAssociation.associate = await this.userRepository.findOne({
         where: { id: associateUserId },
       });
-      userAssociation.setAuditFields(reqUserId+'');
+      userAssociation.setAuditFields(reqUserId);
       
       const savedUserAssociation = await this.userAssociationRepository.save(
         userAssociation,
@@ -144,7 +144,7 @@ export class UserAssociationService {
           'Successfully found user association to remove with id:' +
             userAssociation.id,
         );
-        userAssociation.inactivatedBy = reqUserId+'';
+        userAssociation.inactivatedBy = reqUserId;
         userAssociation.inactivatedTime = new Date();
 
         const savedUserAssociation = await this.userAssociationRepository.save(

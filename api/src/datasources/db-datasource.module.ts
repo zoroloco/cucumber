@@ -6,6 +6,10 @@ import {
   UserAssociation,
   UserRole,
   UserRoleRef,
+  Chat,
+  Message,
+  UserChat,
+  ChatMessage,
 } from '../db/entities';
 
 @Module({
@@ -19,7 +23,17 @@ import {
       password: process.env.MYSQL_PASSWORD,
       database: process.env.MYSQL_DATABASE,
       logging: ['error'],
-      entities: [User, UserProfile, UserAssociation, UserRole, UserRoleRef],
+      entities: [
+        User,
+        UserProfile,
+        UserAssociation,
+        UserRole,
+        UserRoleRef,
+        Chat,
+        Message,
+        UserChat,
+        ChatMessage,
+      ],
     }),
   ],
   exports: [TypeOrmModule],
