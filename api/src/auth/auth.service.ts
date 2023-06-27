@@ -1,8 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { UserService } from '../db/user';
-import { User } from '../db/entities';
+import { UserService } from '../user';
+import { User } from '../entities';
 import { JwtService } from '@nestjs/jwt';
-import { UserRoleService } from '../db/user-role/user-role.service';
+import { UserRoleService } from '../user-role/user-role.service';
 const bcrypt = require('bcrypt');
 
 @Injectable()

@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User, UserAssociation } from '../entities';
 import { UserAssociationController, UserAssociationService } from '.';
-import { ImageProcessingModule } from '../../image-processing';
+import { ImageProcessingModule } from '../image-processing';
 
 @Module({
   imports: [

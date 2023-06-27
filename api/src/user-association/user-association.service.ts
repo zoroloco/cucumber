@@ -2,7 +2,7 @@ import { Injectable, Inject, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User, UserAssociation } from '../entities';
-import { ImageProcessingService } from '../../image-processing';
+import { ImageProcessingService } from '../image-processing';
 
 @Injectable()
 export class UserAssociationService {

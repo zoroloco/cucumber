@@ -2,11 +2,11 @@ import { Module } from '@nestjs/common';
 import { JwtStrategy } from './jwt.strategy';
 import { LocalStrategy } from './local.strategy';
 import { PassportModule } from '@nestjs/passport';
-import { UserModule } from '../db/user/user.module';
+import { UserModule } from '../user/user.module';
 import { AuthService } from './auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthController } from './auth.controller';
-import { UserRoleModule } from '../db/user-role/user-role.module';
+import { UserRoleModule } from '../user-role/user-role.module';
 
 @Module({
   imports: [

@@ -11,7 +11,7 @@ import {
   UseInterceptors,
   Logger,
 } from '@nestjs/common';
-import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -20,8 +20,8 @@ import {
   ApiBody,
   getSchemaPath,
 } from '@nestjs/swagger';
-import { AppConstants } from '../../app.constants';
-import { SearchUserDto, CreateUserDto } from '../../dtos';
+import { AppConstants } from '../app.constants';
+import { SearchUserDto, CreateUserDto } from '../dtos';
 import { User } from '../entities';
 import { UserService } from './user.service';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -39,7 +39,6 @@ export class UserController {
    * @returns - created user object with password ommitted.
    */
   @ApiTags(AppConstants.API_TAG)
-  @ApiBearerAuth()
   @ApiBody({
     type: CreateUserDto,
     examples: {

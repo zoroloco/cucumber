@@ -10,7 +10,7 @@ import {
   Message,
   UserChat,
   ChatMessage,
-} from '../db/entities';
+} from '../entities';
 
 @Module({
   imports: [

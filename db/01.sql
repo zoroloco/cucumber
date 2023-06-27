@@ -157,3 +157,20 @@ CREATE TABLE IF NOT EXISTS `chat_message` (
 )
 ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `user_role_ref_endpoint` (
+	id bigint unsigned auto_increment NOT NULL,
+	userRoleRefId bigint unsigned NOT NULL,
+	endpoint varchar(128) NOT NULL,
+	createdTime datetime DEFAULT CURRENT_TIMESTAMP  NOT NULL,
+	createdBy bigint unsigned NOT NULL,
+	modifiedTime datetime NULL,
+	modifiedBy bigint unsigned DEFAULT NULL,
+	inactivatedTime datetime NULL,
+	inactivatedBy bigint unsigned DEFAULT NULL,
+	CONSTRAINT `PRIMARY` PRIMARY KEY (id),
+	KEY `user_role_ref_endpoint_roleid_FK` (`userRoleRefId`),
+	CONSTRAINT `user_role_ref_endpoint_roleid_FK` FOREIGN KEY (`userRoleRefId`) REFERENCES `user_role_ref` (`id`)
+)
+ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4;

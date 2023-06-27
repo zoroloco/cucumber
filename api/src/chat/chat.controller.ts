@@ -8,7 +8,7 @@ import {
   Body,
   Logger,
 } from '@nestjs/common';
-import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -16,8 +16,8 @@ import {
   ApiTags,
   ApiBody,
 } from '@nestjs/swagger';
-import { AppConstants } from '../../app.constants';
-import { CreateChatDto } from '../../dtos';
+import { AppConstants } from '../app.constants';
+import { CreateChatDto } from '../dtos';
 import { ChatService } from './chat.service';
 import { Chat } from '../entities';
 

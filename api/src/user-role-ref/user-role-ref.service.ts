@@ -6,9 +6,9 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserRoleRef } from '../entities';
-import { AppConstants } from '../../app.constants';
+import { AppConstants } from '../app.constants';
 import { Repository } from 'typeorm';
-import { RedisService } from '../../cache';
+import { RedisService } from '../cache';
 
 @Injectable()
 export class UserRoleRefService {

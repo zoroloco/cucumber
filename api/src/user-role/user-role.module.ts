@@ -3,7 +3,7 @@ import { UserRoleController } from './user-role.controller';
 import { UserRoleService } from './user-role.service';
 import { UserRole, User } from '../entities';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ImageProcessingModule } from '../../image-processing';
+import { ImageProcessingModule } from '../image-processing';
 import { UserRoleRefModule } from '../user-role-ref/user-role-ref.module';
 
 @Module({

@@ -8,7 +8,7 @@ import {
   Body,
   Logger,
 } from '@nestjs/common';
-import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -16,8 +16,8 @@ import {
   ApiTags,
   ApiBody,
 } from '@nestjs/swagger';
-import { AppConstants } from '../../app.constants';
-import { CreateUserAssociationDto, RemoveUserAssociationDto } from '../../dtos';
+import { AppConstants } from '../app.constants';
+import { CreateUserAssociationDto, RemoveUserAssociationDto } from '../dtos';
 import { UserAssociationService } from './user-association.service';
 
 @Controller(AppConstants.API_PATH)

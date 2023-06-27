@@ -5,14 +5,14 @@ import {
   Logger,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AppConstants } from '../../app.constants';
-import { CreateUserDto } from '../../dtos';
+import { AppConstants } from '../app.constants';
+import { CreateUserDto } from '../dtos';
 import { Repository } from 'typeorm';
 import { User, UserProfile, UserRole } from '../entities';
 import { UserRoleService } from '../user-role';
 import { ImageProcessingService } from 'src/image-processing';
 import { UserRoleRefService } from '../user-role-ref';
-import { RedisService } from '../../cache/redis.service';
+import { RedisService } from '../cache/redis.service';
 const bcrypt = require('bcrypt');
 
 @Injectable()

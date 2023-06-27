@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { User } from '../db/entities';
+import { User } from '../entities';
 import { ImageGenerator, ImageReader } from '../image-processing';
 
 /**

@@ -13,10 +13,10 @@ import {
   ApiResponse,
   ApiOperation,
 } from '@nestjs/swagger';
-import { AppConstants } from '../../app.constants';
+import { AppConstants } from '../app.constants';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UserRoleService } from './user-role.service';
-import { AddRemoveUserRoleDto, SearchUserDto } from '../../dtos';
+import { AddRemoveUserRoleDto, SearchUserDto } from '../dtos';
 import { UserRoleRefService } from '../user-role-ref';
 
 @Controller(AppConstants.API_PATH)

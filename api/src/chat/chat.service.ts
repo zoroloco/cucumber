@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { AppConstants } from '../../app.constants';
 import { Chat, ChatMessage, UserChat, Message, User } from '../entities';
 
 @Injectable()
@@ -110,5 +109,14 @@ export class ChatService {
       );
       throw new BadRequestException('Error creating chat conversation');
     }
+  }
+
+  /**
+   * Given a user ID and chat ID (usually from a user chat), will give back 
+   * a list of messages.
+   * 
+   */
+  public async findAllMessagesByUserIdChatId(userId:number, chatId:number){
+
   }
 }
