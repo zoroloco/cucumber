@@ -4,15 +4,14 @@ import { UserRoleService } from './user-role.service';
 import { UserRole, User } from '../entities';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ImageProcessingModule } from '../image-processing';
-import { UserRoleRefModule } from '../user-role-ref/user-role-ref.module';
+import { AuthUserRoleGuard } from '../auth';
 
 @Module({
   imports: [
-    UserRoleRefModule,
     ImageProcessingModule,
     TypeOrmModule.forFeature([UserRole, User], 'druidia'),
   ],
-  providers: [UserRoleService],
+  providers: [UserRoleService, AuthUserRoleGuard],
   controllers: [UserRoleController],
   exports: [UserRoleService],
 })

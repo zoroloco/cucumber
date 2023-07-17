@@ -10,6 +10,7 @@ import {
   Message,
   UserChat,
   ChatMessage,
+  UserRoleRefEndpoint,
 } from '../entities';
 
 @Module({
@@ -29,6 +30,7 @@ import {
         UserAssociation,
         UserRole,
         UserRoleRef,
+        UserRoleRefEndpoint,
         Chat,
         Message,
         UserChat,

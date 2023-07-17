@@ -15,7 +15,7 @@ export class UserRole extends CommonEntity {
   @JoinColumn({name:'userId'})
   user: User;
 
-  @ApiProperty({description: 'The user role assigned for this user.'})
+  @ApiProperty({description: 'The user role ref assigned for this user.'})
   @ManyToOne(() => UserRoleRef)
   @JoinColumn({name:'userRoleRefId'})
   userRoleRef: UserRoleRef;

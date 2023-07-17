@@ -1,8 +1,9 @@
 
 npm install -g @nestjs/cli
 
-TODO:
 
-strip password off all responses
+## Redis commands
 
-
+./redis-cli
+key *
+GET APP_CACHE_USER_ROLE_REFS

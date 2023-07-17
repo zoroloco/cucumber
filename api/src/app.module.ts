@@ -4,17 +4,10 @@ import helmet from 'helmet';
 import { DbModule } from './db/db.module';
 import { AuthModule } from './auth/auth.module';
 import { LoginModule } from './login/login.module';
-import { APP_INTERCEPTOR } from '@nestjs/core';
-import { AuthUserGuard } from './auth/auth.user.guard';
 
 @Module({
   imports: [AuthModule, DbModule, LoginModule],
-  providers: [
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: AuthUserGuard,
-    },
-  ],
+  providers: [],
   controllers: [],
 })
 export class AppModule implements NestModule {

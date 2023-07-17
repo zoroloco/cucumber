@@ -11,7 +11,7 @@ import {
   UseInterceptors,
   Logger,
 } from '@nestjs/common';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { JwtAuthGuard, AuthUserRoleGuard } from '../auth';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -48,7 +48,7 @@ export class UserController {
           password: 'password',
           firstName: 'John',
           middleName: 'Jacob',
-          lastName: 'Jingleheimer',
+          lastName: 'Jingleheimer-Schmidt',
         },
       },
     },
@@ -102,7 +102,7 @@ export class UserController {
    *
    * @returns - All users in system.
    */
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard,AuthUserRoleGuard)
   @Get(AppConstants.FIND_ALL_USERS)
   @ApiTags(AppConstants.API_TAG)
   @ApiBearerAuth()
@@ -122,7 +122,7 @@ export class UserController {
    * @param searchUserDto
    * @returns - The user if found. NotFoundException otherwise.
    */
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard,AuthUserRoleGuard)
   @Post(AppConstants.FIND_USER_BY_USERNAME)
   @ApiBearerAuth()
   @ApiTags(AppConstants.API_TAG)
@@ -150,7 +150,7 @@ export class UserController {
    * @param string
    * @returns - List of users matching search criteria.
    */
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard,AuthUserRoleGuard)
   @Post(AppConstants.FIND_USERS_BY_SEARCH_PARAMS)
   @ApiBearerAuth()
   @ApiTags(AppConstants.API_TAG)

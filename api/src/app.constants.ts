@@ -76,7 +76,8 @@ export class AppConstants {
   static CREATE_USER_ASSOCIATION = 'create-user-association';
   static REMOVE_USER_ASSOCIATION = 'remove-user-association';
   static FIND_USER_ROLE_REFS_BY_USER = 'find-user-role-refs-by-user-id/:userid';
-  static FIND_ALL_USER_ROLE_REFS = 'find-all-user-role-refs';
+  static FIND_ALL_CACHED_USER_ROLE_REFS = 'find-all-cached-user-role-refs';
+  static FIND_ALL_CACHED_USER_ROLE_REF_ENDPOINTS = 'find-all-cached-user-role-ref-endpoints';
   static CREATE_USER_ROLE = 'create-user-role';
   static REMOVE_USER_ROLE = 'remove-user-role';
   static CREATE_CHAT = 'create-chat';
@@ -95,7 +96,8 @@ export class AppConstants {
   static CREATE_USER_ASSOCIATION_DESC = 'Given two user ids, will create a link between them (will you be my frend?).';
   static REMOVE_USER_ASSOCIATION_DESC = 'Deactivates an association between 2 users (unfriend).'
   static FIND_USER_ROLE_REFS_BY_USER_DESC = 'Finds all active user role refs for a given user id.'
-  static FIND_ALL_USER_ROLE_REFS_DESC = 'Finds all active user role refs in the application.'
+  static FIND_ALL_CACHED_USER_ROLE_REFS_DESC = 'Finds all active user role refs in the application that are cached.'
+  static FIND_ALL_CACHED_USER_ROLE_REF_ENDPOINTS_DESC = 'Finds all active user role ref endpoints in the application that are cached.'
   static FIND_ALL_USER_ROLES_HEAVY_BY_SEARCH_PARAMS_DESC = 'Finds all active user roles matching search criteria. Returns user roles loaded with user, user profile and user role ref.';
   static CREATE_USER_ROLE_DESC = 'Creates a user role for a user given a userId and userRoleRefId.'
   static REMOVE_USER_ROLE_DESC = 'Deactivates the user role with the given user role ref id and user id.'
@@ -107,5 +109,5 @@ export class AppConstants {
 
   //redis cache keys
   static APP_CACHE_USER_ROLE_REFS = 'APP_CACHE_USER_ROLE_REFS';
-  static APP_CACHE_USERNAME_BY_USERID = 'APP_CACHE_USERNAME_BY_USERID';
+  static APP_CACHE_USER_ROLE_REF_ENDPOINTS = 'APP_CACHE_USER_ROLE_REF_ENDPOINTS';
 }

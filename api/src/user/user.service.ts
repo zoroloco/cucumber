@@ -11,7 +11,6 @@ import { Repository } from 'typeorm';
 import { User, UserProfile, UserRole } from '../entities';
 import { UserRoleService } from '../user-role';
 import { ImageProcessingService } from 'src/image-processing';
-import { UserRoleRefService } from '../user-role-ref';
 import { RedisService } from '../cache/redis.service';
 const bcrypt = require('bcrypt');
 
@@ -21,9 +20,6 @@ export class UserService {
 
   @Inject(UserRoleService)
   private readonly userRoleService: UserRoleService;
-
-  @Inject(UserRoleRefService)
-  private readonly userRoleRefService: UserRoleRefService;
 
   @Inject(ImageProcessingService)
   private readonly imageProcessingService: ImageProcessingService;
@@ -38,9 +34,7 @@ export class UserService {
     private readonly userProfileRepository: Repository<UserProfile>,
     @InjectRepository(UserRole, 'druidia')
     private readonly userRoleRepository: Repository<UserRole>,
-  ) {
-    this.initCache();
-  }
+  ) {}
 
   /**
    *
@@ -198,7 +192,7 @@ export class UserService {
       const noobUserRole: UserRole = this.userRoleRepository.create();
       noobUserRole.setAuditFields(savedUser.id);
       noobUserRole.user = savedUser;
-      const userRoleRefs = await this.userRoleRefService.findAllUserRoleRefs();
+      const userRoleRefs = await this.redisService.fetchCachedData(AppConstants.APP_CACHE_USER_ROLE_REFS);
       noobUserRole.userRoleRef = userRoleRefs.find(
         (urr) => urr.roleName === 'ROLE_NOOB',
       );
@@ -220,45 +214,6 @@ export class UserService {
 
         throw new BadRequestException('Error encountered while creating user.');
       }
-    }
-  }
-
-  /**
-   * Init useful cache for users.
-   */
-  public async initCache() {
-    //fetch all active users from DB and put them in redis with key=userId and value=username
-    //this is used for auditing.
-    Logger.log('Attempting to cache user names by user ids.');
-    try {
-      const usersSkinny = await this.userRepository.find({
-        select: {
-          username: true,
-          id: true,
-        },
-        where: {
-          inactivatedTime: null,
-        },
-      });
-
-      if (usersSkinny && usersSkinny.length > 0) {
-        Logger.log(usersSkinny.length + ' users found in system to cache.');
-
-        const userNameUserIdMap = [];
-        usersSkinny.forEach(userSkinny=>{
-          userNameUserIdMap[userSkinny.id] = userSkinny.username;
-          Logger.log('Storing in cache userId:'+userSkinny.id+' value:'+userSkinny.username);
-        });
-
-        this.redisService.redisClient.set(
-          AppConstants.APP_CACHE_USERNAME_BY_USERID,
-          JSON.stringify(userNameUserIdMap),
-        );
-      }else{
-        Logger.warn('No users found to cache by user ids.');
-      }
-    } catch (error) {
-      Logger.error('Error encountered while initializing user cache:' + error);
     }
   }
 }

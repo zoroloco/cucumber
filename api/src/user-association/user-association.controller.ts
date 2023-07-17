@@ -8,7 +8,7 @@ import {
   Body,
   Logger,
 } from '@nestjs/common';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { JwtAuthGuard,AuthUserRoleGuard } from '../auth';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -32,7 +32,7 @@ export class UserAssociationController {
    * @param id - id of the user
    * @returns - list of user associates for given user id
    */
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, AuthUserRoleGuard)
   @ApiTags(AppConstants.API_TAG)
   @ApiResponse({
     status: 200,
@@ -51,7 +51,7 @@ export class UserAssociationController {
    * @param createUserAssocationDto
    * @returns - creates friends. :)
    */
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, AuthUserRoleGuard)
   @ApiTags(AppConstants.API_TAG)
   @ApiBody({
     type: CreateUserAssociationDto,
@@ -90,7 +90,7 @@ export class UserAssociationController {
    * @param removeUserAssociationDto
    * @returns
    */
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, AuthUserRoleGuard)
   @ApiTags(AppConstants.API_TAG)
   @ApiBody({
     type: RemoveUserAssociationDto,

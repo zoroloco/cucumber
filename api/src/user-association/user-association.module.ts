@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User, UserAssociation } from '../entities';
 import { UserAssociationController, UserAssociationService } from '.';
 import { ImageProcessingModule } from '../image-processing';
+import { AuthUserRoleGuard } from '../auth';
 
 @Module({
   imports: [
@@ -10,7 +11,7 @@ import { ImageProcessingModule } from '../image-processing';
     TypeOrmModule.forFeature([User, UserAssociation], 'druidia'),
   ],
   providers: [
-    UserAssociationService
+    UserAssociationService, AuthUserRoleGuard
   ],
   controllers: [UserAssociationController],
   exports: [UserAssociationService],
