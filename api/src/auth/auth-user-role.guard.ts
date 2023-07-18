@@ -44,8 +44,16 @@ export class AuthUserRoleGuard implements CanActivate {
       this.logger.log('User id from request:' + request.user.userId);
       this.logger.log('User roles from request:' + request.user.userRoles);
       const urlPath: string = request.url;
-      const endPointPath: string = urlPath.substring(4, urlPath.length);
+
       if (urlPath && urlPath.trim().length > 4) {
+        //chop off /api
+        let endPointPath: string = urlPath.substring(4, urlPath.length);
+        
+        //chop off everything after second slash if exists
+        if(-1 != endPointPath.indexOf('/',1)){
+          endPointPath = endPointPath.substring(0, endPointPath.indexOf('/', 1));
+        }        
+
         this.logger.log('Parsed URL:' + endPointPath);
 
         const guardResult: boolean =
@@ -68,9 +76,7 @@ export class AuthUserRoleGuard implements CanActivate {
         return guardResult;
       }
     } else {
-      Logger.error(
-        'User is not authorized to make this request.',
-      );
+      Logger.error('User is not authorized to make this request.');
       throw new UnauthorizedException();
     }
 
