@@ -7,10 +7,14 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Chat, ChatMessage, UserChat, Message, User } from '../entities';
+import { ImageProcessingService } from '../image-processing';
 
 @Injectable()
 export class ChatService {
   private readonly logger = new Logger(ChatService.name);
+
+  @Inject(ImageProcessingService)
+  private readonly imageProcessingService: ImageProcessingService;
 
   constructor(
     @InjectRepository(Chat, 'druidia')
@@ -26,19 +30,62 @@ export class ChatService {
   ) {}
 
   /**
+   * Given a chat id, will return all active users involved in the chat.
+   *
+   * @param chatId
+   *
+   */
+  public async findAllUsersByChatId(chatId: number) {
+    Logger.log('Attempting to find all active users for chat id:' + chatId);
+    try {
+      const userChats = await this.userChatRepository
+        .createQueryBuilder('userChat')
+        .leftJoinAndSelect('userChat.user', 'u')
+        .where('userChat.inactivatedTime is null')
+        .andWhere('userChat.chat.id = :chatId', { chatId })
+        .andWhere('u.inactivatedTime is null')
+        .getMany();
+
+      if (userChats) {
+        Logger.log(
+          'Successfully found ' + userChats.length + ' for chat id:' + chatId,
+        );
+
+        const users = userChats.map((uc) => uc.user);
+
+        //return friends;
+        return await Promise.all(
+          users.map(
+            this.imageProcessingService.hydrateUserProfilePhoto.bind(this),
+          ),
+        );
+      }
+    } catch (error) {
+      this.logger.error(
+        'Error finding users by chat id:' + chatId + ' with error:' + error,
+      );
+      throw new BadRequestException(
+        'Error encountered finding users for chat.',
+      );
+    }
+  }
+
+  /**
    *
    * @param userId
    *
    * @returns - list of active Chats for given user ID.
    */
-  public async findAllChatByUserId(userId: number) {
+  public async findAllChatsByUserId(userId: number) {
     Logger.log('Attempting to find all active chats for user id:' + userId);
     try {
       const userChats = await this.userChatRepository
         .createQueryBuilder('userChat')
         .leftJoin('userChat.user', 'u')
+        .leftJoinAndSelect('userChat.chat', 'c')
         .where('userChat.inactivatedTime is null')
         .andWhere('u.id = :userId', { userId })
+        .orderBy('userChat.createdTime')
         .getMany();
 
       if (userChats) {
@@ -58,65 +105,73 @@ export class ChatService {
           ' with error:' +
           error,
       );
-      throw new BadRequestException('Error finding user chats.');
+      throw new BadRequestException('Error encountered finding user chats.');
     }
   }
 
   /**
    * Create the chat to user association.  Create a chat object given the
-   * list of user ids.
-   * 
-   * @param reqUserId 
-   * @param name 
-   * @param userIds 
+   * list of user ids, name and publicFlag.
+   *
+   * @param reqUserId
+   * @param name
+   * @param userIds
+   * @param publicFlag
    */
-  public async createUserChat(reqUserId: number, name: string, userIds: Array<number>) {
+  public async createUserChat(
+    reqUserId: number,
+    name: string,
+    userIds: Array<number>,
+    publicFlag: boolean,
+  ) {
     Logger.log(
       'Attempting to create a chat conversation with name:' +
         name +
+        ' publicFlag:' +
+        publicFlag +
         ' and user ids:' +
         JSON.stringify(userIds),
     );
 
     try {
-        const chat = this.chatRepository.create();
-        chat.setAuditFields(reqUserId);
-        chat.name = name;
-        
-        const savedChat = await this.chatRepository.save(chat);
-        if(savedChat){
-            Logger.log('Successfully saved chat with id:'+savedChat.id);
+      const chat = this.chatRepository.create();
+      chat.setAuditFields(reqUserId);
+      chat.name = name;
+      chat.public = publicFlag;
 
-            userIds.forEach(async (userId)=>{
-                const userChat = this.userChatRepository.create();
-                userChat.chat = savedChat;
-                userChat.user = this.userRepository.create();
-                userChat.user.id = userId;
+      const savedChat = await this.chatRepository.save(chat);
+      if (savedChat) {
+        Logger.log('Successfully saved chat with id:' + savedChat.id);
 
-                userChat.setAuditFields(reqUserId);
+        userIds.forEach(async (userId) => {
+          const userChat = this.userChatRepository.create();
+          userChat.chat = savedChat;
+          userChat.user = this.userRepository.create();
+          userChat.user.id = userId;
 
-                Logger.log('Saving user chat:'+JSON.stringify(userChat));
+          userChat.setAuditFields(reqUserId);
 
-                this.userChatRepository.save(userChat);//async
-            });
+          Logger.log('Saving user chat:' + JSON.stringify(userChat));
 
-            return savedChat;
-        }
+          this.userChatRepository.save(userChat); //async
+        });
 
+        return savedChat;
+      }
     } catch (error) {
       this.logger.error(
         'Error creating new chat conversation with error:' + error,
       );
-      throw new BadRequestException('Error creating chat conversation');
+      throw new BadRequestException(
+        'Error encountered creating chat conversation',
+      );
     }
   }
 
   /**
-   * Given a user ID and chat ID (usually from a user chat), will give back 
+   * Given a user ID and chat ID (usually from a user chat), will give back
    * a list of messages.
-   * 
+   *
    */
-  public async findAllMessagesByUserIdChatId(userId:number, chatId:number){
-
-  }
+  public async findAllMessagesByUserIdChatId(userId: number, chatId: number) {}
 }

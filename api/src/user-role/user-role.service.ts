@@ -5,9 +5,9 @@ import {
   Logger,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserRole, User, UserRoleRef } from '../entities';
-import { Repository } from 'typeorm';
 import { ImageProcessingService } from 'src/image-processing';
+import { Repository } from 'typeorm';
+import { User, UserRole, UserRoleRef } from '../entities';
 
 @Injectable()
 export class UserRoleService {
@@ -239,7 +239,7 @@ export class UserRoleService {
       );
     } catch (error) {
       Logger.error('Error searching for users:' + error);
-      return [];
+      throw new BadRequestException('Error encountered searching for user roles heavy by search params.');     
     }
   }
 

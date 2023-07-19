@@ -92,6 +92,7 @@ DEFAULT CHARSET=utf8mb4;
 CREATE TABLE IF NOT EXISTS `chat` (
 	id bigint unsigned auto_increment NOT NULL,
 	name varchar(64) DEFAULT NULL,
+	public bit(1) NOT NULL DEFAULT b'0' COMMENT '1= chat is public. 0= chat is private.',
 	createdTime datetime DEFAULT CURRENT_TIMESTAMP  NOT NULL,
 	createdBy bigint unsigned NOT NULL,
 	modifiedTime datetime NULL,

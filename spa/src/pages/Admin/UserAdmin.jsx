@@ -24,7 +24,7 @@ export const UserAdmin = () => {
   useEffect(() => {
     const fetchUserRoleRefs = async () => {
       const response = await fetch(
-        config.resourceServer + "/api/find-all-user-role-refs",
+        config.resourceServer + "/api/find-all-cached-user-role-refs",
         {
           method: "GET",
           mode: "cors",

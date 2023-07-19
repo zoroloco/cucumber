@@ -9,6 +9,11 @@ export class CreateChatDto {
   })
   readonly name: string;
 
+  @ApiProperty({
+    description: 'Bit if set to 1=chat is public. 0=chat is private.',
+  })
+  readonly publicFlag: boolean;
+
   @IsNotEmpty()
   @ApiProperty({
     required: true,

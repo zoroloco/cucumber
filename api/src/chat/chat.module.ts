@@ -3,9 +3,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserChat, Chat, ChatMessage, User, Message } from '../entities';
 import { ChatController } from './chat.controller';
 import { ChatService } from './chat.service';
+import { ImageProcessingModule } from '../image-processing';
 
 @Module({
   imports: [
+    ImageProcessingModule,
     TypeOrmModule.forFeature(
       [User, Chat, Message, ChatMessage, UserChat],
       'druidia',

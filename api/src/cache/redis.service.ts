@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as Redis from 'ioredis';
 import { Repository } from 'typeorm';
@@ -131,6 +131,7 @@ export class RedisService {
           ' with error:' +
           error,
       );
+      throw new BadRequestException('Error encountered while fetching cached data.');
     }
   }
 }

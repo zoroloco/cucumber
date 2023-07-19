@@ -1,4 +1,4 @@
-import { Injectable, Inject, Logger } from '@nestjs/common';
+import { Injectable, Inject, Logger, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User, UserAssociation } from '../entities';
@@ -58,6 +58,7 @@ export class UserAssociationService {
       }
     } catch (error) {
       Logger.error('Error finding user associations for user id:' + userId);
+      throw new BadRequestException('Error encountered finding user associations.');
     }
   }
 
@@ -106,6 +107,7 @@ export class UserAssociationService {
           ' with error:' +
           error,
       );
+      throw new BadRequestException('Error encountered creating user association.');
     }
   }
 
@@ -165,6 +167,7 @@ export class UserAssociationService {
           ' with error:' +
           error,
       );
+      throw new BadRequestException('Error encountered removing user association.');
     }
   }
 }

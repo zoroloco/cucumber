@@ -23,7 +23,7 @@ form {
   background-color: #212529;
   color: white;
   box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
-  width:auto;
+  width:100%;
 }
 
 .centerText {

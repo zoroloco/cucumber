@@ -56,7 +56,7 @@ const Header = () => {
                   {ctx.user.userRoles.includes("ROLE_CHAT") && (
                     <Nav.Item>
                       <Nav.Link className={classes.navLink} href="/chat">
-                        [Chat]
+                        [Chats]
                       </Nav.Link>
                     </Nav.Item>
                   )}

@@ -3,6 +3,7 @@ import { AuthContext } from "../../context/auth-context";
 import { Tabs, Tab } from "react-bootstrap";
 import styles from "../../global.module.css";
 import { Friends } from "./Friends";
+import { Conversations } from "./Conversations";
 
 export const Chat = () => {
   const { accessToken, user, isLoading } = useContext(AuthContext);
@@ -23,8 +24,8 @@ export const Chat = () => {
           <Tab eventKey="friends" title="[Friends]">
             <Friends user={user} accessToken={accessToken} />
           </Tab>
-          <Tab eventKey="chat" title="[Chat]">
-            Active chat goes here
+          <Tab eventKey="chat" title="[Chats]">
+            <Conversations user={user} accessToken={accessToken} />
           </Tab>
         </Tabs>
       ) : (
