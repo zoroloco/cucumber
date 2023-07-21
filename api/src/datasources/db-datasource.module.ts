@@ -7,9 +7,8 @@ import {
   UserRole,
   UserRoleRef,
   Chat,
-  Message,
-  UserChat,
   ChatMessage,
+  ChatUser,
   UserRoleRefEndpoint,
 } from '../entities';
 
@@ -32,8 +31,7 @@ import {
         UserRoleRef,
         UserRoleRefEndpoint,
         Chat,
-        Message,
-        UserChat,
+        ChatUser,
         ChatMessage,
       ],
     }),

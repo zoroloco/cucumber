@@ -13,7 +13,7 @@ export const Conversations = (props) => {
       const userId = props.user.id;
 
       const response = await fetch(
-        `${config.resourceServer}/api/find-user-chats-by-user-id/${userId}`,
+        `${config.resourceServer}/api/find-chats-by-user-id/${userId}`,
         {
           method: "GET",
           mode: "cors",
@@ -27,7 +27,8 @@ export const Conversations = (props) => {
 
       const responseJson = await response.json();
       if (response.status === 200) {
-        setUserChats(responseJson.map((f) => f.chat));
+        console.info('got 200 for chats:'+JSON.stringify(responseJson));
+        setUserChats(responseJson);
       } else {
         console.error("Error communicating with server.");
       }
@@ -48,6 +49,7 @@ export const Conversations = (props) => {
         {userChats.length > 0 ? (
           <ListGroup className={classes.listGroup}>
             {userChats.map((chat) => {
+              console.info('got chat:'+JSON.stringify(chat));
               return (
                 <ListGroup.Item className={classes.listGroupItem} key={chat.id}>
                   {chat.name}

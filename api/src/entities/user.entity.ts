@@ -1,11 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Column, Entity, OneToOne, JoinColumn } from 'typeorm';
-import { CommonEntity } from './common.entity';
-import { UserProfile } from '.';
+import { CommonEntity, UserProfile } from '.';
 
 @Entity('user')
 export class User extends CommonEntity {
-
   @ApiProperty({
     description: 'Valid email format no more than 32 chars long.',
   })
@@ -26,6 +24,7 @@ export class User extends CommonEntity {
   @JoinColumn({ name: 'userProfileId' })
   userProfile: UserProfile;
 
+  //Transient property
   @ApiProperty({ description: 'Base64 encoded string with the profile photo.' })
   profilePhotoFile: string;
 }

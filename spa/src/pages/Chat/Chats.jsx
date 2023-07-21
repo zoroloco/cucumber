@@ -5,7 +5,7 @@ import styles from "../../global.module.css";
 import { Friends } from "./Friends";
 import { Conversations } from "./Conversations";
 
-export const Chat = () => {
+export const Chats = () => {
   const { accessToken, user, isLoading } = useContext(AuthContext);
   const [showContent, setShowContent] = useState(false);
 

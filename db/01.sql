@@ -104,7 +104,7 @@ CREATE TABLE IF NOT EXISTS `chat` (
 ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE IF NOT EXISTS `user_chat` (
+CREATE TABLE IF NOT EXISTS `chat_user` (
 	id bigint unsigned auto_increment NOT NULL,
 	userId bigint unsigned NOT NULL,
 	chatId bigint unsigned NOT NULL,
@@ -115,35 +115,19 @@ CREATE TABLE IF NOT EXISTS `user_chat` (
 	inactivatedTime datetime NULL,
 	inactivatedBy bigint unsigned DEFAULT NULL,
 	CONSTRAINT `PRIMARY` PRIMARY KEY (id),
-	KEY `user_chat_userid_FK` (`userId`),
-	KEY `user_chat_chatid_FK` (`chatId`),
-	CONSTRAINT `user_chat_userid_FK` FOREIGN KEY (`userId`) REFERENCES `user` (`id`),
-	CONSTRAINT `user_chat_chatid_FK` FOREIGN KEY (`chatId`) REFERENCES `chat` (`id`)
-)
-ENGINE=InnoDB
-DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE IF NOT EXISTS `message` (
-	id bigint unsigned auto_increment NOT NULL,
-	userId bigint unsigned NOT NULL,
-	message varchar(2048) NOT NULL, 
-	createdTime datetime DEFAULT CURRENT_TIMESTAMP  NOT NULL,
-	createdBy bigint unsigned NOT NULL,
-	modifiedTime datetime NULL,
-	modifiedBy bigint unsigned DEFAULT NULL,
-	inactivatedTime datetime NULL,
-	inactivatedBy bigint unsigned DEFAULT NULL,
-	CONSTRAINT `PRIMARY` PRIMARY KEY (id),
-	KEY `message_fromUserid_FK` (`userId`),
-	CONSTRAINT `message_fromUserid_FK` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
+	KEY `chat_user_userid_FK` (`userId`),
+	KEY `chat_user_chatid_FK` (`chatId`),
+	CONSTRAINT `chat_user_userid_FK` FOREIGN KEY (`userId`) REFERENCES `user` (`id`),
+	CONSTRAINT `chat_user_chatid_FK` FOREIGN KEY (`chatId`) REFERENCES `chat` (`id`)
 )
 ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `chat_message` (
 	id bigint unsigned auto_increment NOT NULL,
+	userId bigint unsigned NOT NULL,
 	chatId bigint unsigned NOT NULL,
-	messageId bigint unsigned NOT NULL,
+	content varchar(2048) NOT NULL, 
 	createdTime datetime DEFAULT CURRENT_TIMESTAMP  NOT NULL,
 	createdBy bigint unsigned NOT NULL,
 	modifiedTime datetime NULL,
@@ -152,9 +136,9 @@ CREATE TABLE IF NOT EXISTS `chat_message` (
 	inactivatedBy bigint unsigned DEFAULT NULL,
 	CONSTRAINT `PRIMARY` PRIMARY KEY (id),
 	KEY `chat_message_chatid_FK` (`chatId`),
-	KEY `chat_message_messageid_FK` (`messageId`),
+	KEY `chat_message_userid_FK` (`userId`),
 	CONSTRAINT `chat_message_chatid_FK` FOREIGN KEY (`chatId`) REFERENCES `chat` (`id`),
-	CONSTRAINT `chat_message_messageid_FK` FOREIGN KEY (`messageId`) REFERENCES `message` (`id`)
+	CONSTRAINT `chat_message_userid_FK` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
 )
 ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4;

@@ -5,7 +5,7 @@ import {
   Login,
   ErrorPage,
   Register,
-  Chat,
+  Chats,
   UserAdmin,
 } from "../pages";
 import PrivateRoutes from "./PrivateRoutes";
@@ -23,8 +23,8 @@ const AppRouter = createBrowserRouter([
             element: <PrivateHome />,
           },
           {
-            path: "/chat", // requires ROLE_CHAT
-            element: <Chat />,
+            path: "/chats", // requires ROLE_CHAT
+            element: <Chats />,
           },
           {
             path: "/user-admin",

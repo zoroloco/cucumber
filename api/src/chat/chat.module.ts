@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserChat, Chat, ChatMessage, User, Message } from '../entities';
+import { Chat, ChatUser, ChatMessage, User } from '../entities';
 import { ChatController } from './chat.controller';
 import { ChatService } from './chat.service';
 import { ImageProcessingModule } from '../image-processing';
@@ -9,7 +9,7 @@ import { ImageProcessingModule } from '../image-processing';
   imports: [
     ImageProcessingModule,
     TypeOrmModule.forFeature(
-      [User, Chat, Message, ChatMessage, UserChat],
+      [User, Chat, ChatMessage, ChatUser],
       'druidia',
     ),
   ],

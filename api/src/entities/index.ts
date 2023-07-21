@@ -1,3 +1,4 @@
+export { CommonEntity } from './common.entity';
 export { User } from './user.entity';
 export { UserProfile } from './user-profile.entity';
 export { UserAssociation } from './user-association.entity';
@@ -5,6 +6,5 @@ export { UserRole } from './user-role.entity';
 export { UserRoleRef } from './user-role-ref.entity';
 export { UserRoleRefEndpoint } from './user-role-ref-endpoint.entity';
 export { Chat } from './chat.entity';
-export { Message } from './message.entity';
-export { UserChat } from './user-chat.entity';
+export { ChatUser } from './chat-user.entity';
 export { ChatMessage } from './chat-message.entity';

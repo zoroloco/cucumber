@@ -81,8 +81,7 @@ export class AppConstants {
   static CREATE_USER_ROLE = 'create-user-role';
   static REMOVE_USER_ROLE = 'remove-user-role';
   static CREATE_CHAT = 'create-chat';
-  static FIND_ALL_CHATS_BY_USER = 'find-user-chats-by-user-id/:userid';
-  static FIND_ALL_USERS_BY_CHAT = 'find-users-by-chat-id/:chatId';
+  static FIND_ALL_CHATS_BY_USER = 'find-chats-by-user-id/:userid';
 
   //swagger description
   static LOGIN_DESC =
@@ -103,8 +102,7 @@ export class AppConstants {
   static CREATE_USER_ROLE_DESC = 'Creates a user role for a user given a userId and userRoleRefId.'
   static REMOVE_USER_ROLE_DESC = 'Deactivates the user role with the given user role ref id and user id.'
   static CREATE_CHAT_DESC = 'Creates a chat conversation with the optional name for the given user ids.'
-  static FIND_ALL_CHATS_BY_USER_DESC = 'Finds all active chats for a user.'
-  static FIND_ALL_USERS_BY_CHAT_DESC = 'Finds all active users associated to the chat with the given id.'
+  static FIND_ALL_CHATS_BY_USER_DESC = 'Finds all active chats for a user. Also returns the list of chat users associated to the chat. Each chat user will have its user populated with user profile and profile photo.'
 
   //bcrypt
   static BCRYPT_SALT_ROUNDS = 10;

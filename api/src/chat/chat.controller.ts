@@ -66,10 +66,10 @@ export class ChatController {
   }
 
   /**
-   * findUserRoleRefsByUserId
+   * findAllChatsByUserId
    *
    * @param string
-   * @returns - List of user role refs matching given user id.
+   * @returns - all chats associated to the user given the user id.
    */
   @UseGuards(JwtAuthGuard, AuthUserRoleGuard)
   @Get(AppConstants.FIND_ALL_CHATS_BY_USER)
@@ -82,25 +82,5 @@ export class ChatController {
   @ApiOperation({ summary: AppConstants.FIND_ALL_CHATS_BY_USER_DESC})
   async findAllChatsByUserId(@Param('userid') userId: number) {
     return this.chatService.findAllChatsByUserId(userId);
-  }
-
-
-  /**
-   * findAllUsersByChatId
-   *
-   * @param string
-   * @returns - List of active users given a chat id.
-   */
-  @UseGuards(JwtAuthGuard, AuthUserRoleGuard)
-  @Get(AppConstants.FIND_ALL_USERS_BY_CHAT)
-  @ApiBearerAuth()
-  @ApiTags(AppConstants.API_TAG)
-  @ApiResponse({
-    status: 201,
-    description: AppConstants.FIND_ALL_USERS_BY_CHAT_DESC,
-  })
-  @ApiOperation({ summary: AppConstants.FIND_ALL_USERS_BY_CHAT_DESC})
-  async findAllUsersByChatId(@Param('chatId') chatId: number) {
-    return this.chatService.findAllUsersByChatId(chatId);
   }
 }

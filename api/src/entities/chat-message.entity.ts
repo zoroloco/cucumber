@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ManyToOne, Entity, JoinColumn } from 'typeorm';
-import { Message, Chat } from '.';
+import { Column, ManyToOne, Entity, JoinColumn } from 'typeorm';
+import { User, Chat } from '.';
 import { CommonEntity } from './common.entity';
 
 /**
@@ -15,8 +15,14 @@ export class ChatMessage extends CommonEntity {
   @JoinColumn({name:'chatId'})
   chat: Chat;
 
-  @ApiProperty({description: 'The message context.'})
-  @ManyToOne(() => Message)
-  @JoinColumn({name:'messageId'})
-  message: Message;
+  @ApiProperty({description: 'The user context that created the message.'})
+  @ManyToOne(() => User)
+  @JoinColumn({name:'userId'})
+  user: User;
+
+  @ApiProperty({
+    description: 'The actual chat message content.',
+  })
+  @Column({ type: 'varchar', length: 2048 })
+  public content!: string;
 }

@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Chat, ChatMessage, UserChat, Message, User } from '../entities';
+import { Chat, ChatMessage, ChatUser, User } from '../entities';
 import { ImageProcessingService } from '../image-processing';
 
 @Injectable()
@@ -21,82 +21,54 @@ export class ChatService {
     private readonly chatRepository: Repository<Chat>,
     @InjectRepository(ChatMessage, 'druidia')
     private readonly chatMessageRepository: Repository<ChatMessage>,
-    @InjectRepository(UserChat, 'druidia')
-    private readonly userChatRepository: Repository<UserChat>,
-    @InjectRepository(Message, 'druidia')
-    private readonly messageRepository: Repository<Message>,
+    @InjectRepository(ChatUser, 'druidia')
+    private readonly chatUserRepository: Repository<ChatUser>,
     @InjectRepository(User, 'druidia')
     private readonly userRepository: Repository<User>,
   ) {}
 
   /**
-   * Given a chat id, will return all active users involved in the chat.
-   *
-   * @param chatId
-   *
-   */
-  public async findAllUsersByChatId(chatId: number) {
-    Logger.log('Attempting to find all active users for chat id:' + chatId);
-    try {
-      const userChats = await this.userChatRepository
-        .createQueryBuilder('userChat')
-        .leftJoinAndSelect('userChat.user', 'u')
-        .where('userChat.inactivatedTime is null')
-        .andWhere('userChat.chat.id = :chatId', { chatId })
-        .andWhere('u.inactivatedTime is null')
-        .getMany();
-
-      if (userChats) {
-        Logger.log(
-          'Successfully found ' + userChats.length + ' for chat id:' + chatId,
-        );
-
-        const users = userChats.map((uc) => uc.user);
-
-        //return friends;
-        return await Promise.all(
-          users.map(
-            this.imageProcessingService.hydrateUserProfilePhoto.bind(this),
-          ),
-        );
-      }
-    } catch (error) {
-      this.logger.error(
-        'Error finding users by chat id:' + chatId + ' with error:' + error,
-      );
-      throw new BadRequestException(
-        'Error encountered finding users for chat.',
-      );
-    }
-  }
-
-  /**
    *
    * @param userId
    *
-   * @returns - list of active Chats for given user ID.
+   * @returns - list of active Chats for given user ID. The chats will contain a list of chatUsers
+   * associated to the chat. Each chatUser will have their user object populated with user profile photo.
    */
   public async findAllChatsByUserId(userId: number) {
     Logger.log('Attempting to find all active chats for user id:' + userId);
     try {
-      const userChats = await this.userChatRepository
-        .createQueryBuilder('userChat')
-        .leftJoin('userChat.user', 'u')
-        .leftJoinAndSelect('userChat.chat', 'c')
-        .where('userChat.inactivatedTime is null')
-        .andWhere('u.id = :userId', { userId })
-        .orderBy('userChat.createdTime')
+      const chatUsers = await this.chatUserRepository
+        .createQueryBuilder('chatUser')
+        .leftJoinAndSelect('chatUser.chat', 'chat')
+        .where('chatUser.user.id = :userId', { userId })
+        .andWhere('chatUser.inactivatedTime is null')
+        .andWhere('chat.inactivatedTime is null')
         .getMany();
 
-      if (userChats) {
+      if (chatUsers) {
         this.logger.log(
-          'Successfully found:' +
-            userChats.length +
-            ' user chats for user ID:' +
+          'Successfully retreived:' +
+            chatUsers.length +
+            ' chat user entries for user id:' +
             userId,
         );
 
-        return userChats;
+        // Extract chatIds from chatUsers
+        const chatIds = chatUsers.map((chatUser) => chatUser.chat.id);
+
+        // Retrieve chats and their associated chatUsers
+        const chats = await this.chatRepository
+          .createQueryBuilder('chat')
+          .leftJoinAndSelect('chat.chatUsers', 'chatUsers')
+          .where('chat.id IN (:...chatIds)', {
+            chatIds: chatIds.length > 0 ? chatIds : [null],
+          })
+          .getMany();
+
+        if(chats){
+          this.logger.log('Successfully mapped:'+chats.length+' chats.');
+          return await Promise.all(chats.map(this.hydrateChats.bind(this)));
+        }
       }
     } catch (error) {
       this.logger.error(
@@ -107,6 +79,20 @@ export class ChatService {
       );
       throw new BadRequestException('Error encountered finding user chats.');
     }
+  }
+
+  private async hydrateChats(chat:Chat){
+    this.logger.log('Now hydrating chat:'+JSON.stringify(chat));    
+    chat.chatUsers = await Promise.all(chat.chatUsers.map(this.hydrateChatUsers.bind(this)));
+    return chat;
+  }
+
+  private async hydrateChatUsers(chatUser:ChatUser){
+    this.logger.log('Now hydrating chat user:'+JSON.stringify(chatUser));
+    let user = await chatUser.user;//lazy load
+    user = await this.imageProcessingService.hydrateUserProfilePhoto(user);
+    chatUser.user = user;
+    return chatUser;
   }
 
   /**
@@ -144,7 +130,7 @@ export class ChatService {
         Logger.log('Successfully saved chat with id:' + savedChat.id);
 
         userIds.forEach(async (userId) => {
-          const userChat = this.userChatRepository.create();
+          const userChat = this.chatUserRepository.create();
           userChat.chat = savedChat;
           userChat.user = this.userRepository.create();
           userChat.user.id = userId;
@@ -153,7 +139,7 @@ export class ChatService {
 
           Logger.log('Saving user chat:' + JSON.stringify(userChat));
 
-          this.userChatRepository.save(userChat); //async
+          this.chatUserRepository.save(userChat); //async
         });
 
         return savedChat;
@@ -167,11 +153,4 @@ export class ChatService {
       );
     }
   }
-
-  /**
-   * Given a user ID and chat ID (usually from a user chat), will give back
-   * a list of messages.
-   *
-   */
-  public async findAllMessagesByUserIdChatId(userId: number, chatId: number) {}
 }

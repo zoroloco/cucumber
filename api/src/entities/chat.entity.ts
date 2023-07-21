@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity } from 'typeorm';
-import { CommonEntity } from './common.entity';
+import { Column, Entity, OneToMany } from 'typeorm';
+import { CommonEntity, ChatUser, ChatMessage } from '.';
 
 @Entity('chat')
 export class Chat extends CommonEntity {
@@ -16,4 +16,10 @@ export class Chat extends CommonEntity {
   })
   @Column({ name: 'public', type: 'boolean', default: false })
   public public: boolean;
+
+  @ApiProperty({
+    description: 'List of users associated to this chat.',
+  })
+  @OneToMany(() => ChatUser, (chatUser) => chatUser.chat)
+  chatUsers: ChatUser[];
 }
