@@ -27,9 +27,8 @@ export class UserAssociationController {
   ) {}
 
   /**
-   * findUserAssociationsByUserId
+   * findUserAssociationsByUser
    *
-   * @param id - id of the user
    * @returns - list of user associates for given user id
    */
   @UseGuards(JwtAuthGuard, AuthUserRoleGuard)
@@ -41,8 +40,8 @@ export class UserAssociationController {
   @ApiOperation({ summary: AppConstants.FIND_USER_ASSOCIATIONS_BY_USER_DESC })
   @ApiBearerAuth()
   @Get(AppConstants.FIND_USER_ASSOCIATIONS_BY_USER)
-  async findUserAssociationsByUserId(@Param('userid') userId: number) {
-    return this.userAssociationService.findUserAssociationsByUserId(userId);
+  async findUserAssociationsByUser(@Request() req) {
+    return this.userAssociationService.findUserAssociationsByUserId(req.user.userId);
   }
 
   /**
@@ -59,7 +58,6 @@ export class UserAssociationController {
       example: {
         value: {
           userId: 1,
-          associateUserId: 2,
         },
       },
     },
@@ -78,8 +76,7 @@ export class UserAssociationController {
   ) {
     return await this.userAssociationService.createUserAssocation(
       req.user.userId,
-      createUserAssociationDto.userId,
-      createUserAssociationDto.associateUserId,
+      createUserAssociationDto.userId
     );
   }
 
@@ -97,8 +94,7 @@ export class UserAssociationController {
     examples: {
       example: {
         value: {
-          userId: 1,
-          associateUserId: 2,
+          userId: 2,
         },
       },
     },
@@ -118,7 +114,6 @@ export class UserAssociationController {
     return await this.userAssociationService.removeUserAssociation(
       req.user.userId,
       removeUserAssociationDto.userId,
-      removeUserAssociationDto.associateUserId,
     );
   }
 }

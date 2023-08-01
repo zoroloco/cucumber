@@ -1,33 +1,78 @@
-import { useContext, useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../../context/auth-context";
-import { Tabs, Tab } from "react-bootstrap";
+import { Form } from "react-bootstrap";
+import ListGroup from "react-bootstrap/ListGroup";
+import config from "../../config";
+import { Chat } from "./Chat";
 import styles from "../../global.module.css";
-import { Friends } from "./Friends";
-import { Conversations } from "./Conversations";
 
-export const Chats = () => {
-  const { accessToken, user, isLoading } = useContext(AuthContext);
+export const Chats = (props) => {
+  const [userChats, setUserChats] = useState([]);
+  const { accessToken, isLoading } = useContext(AuthContext);
   const [showContent, setShowContent] = useState(false);
 
   useEffect(() => {
     setShowContent(!isLoading);
   }, [isLoading]);
 
+  useEffect(() => {
+    async function loadChats() {
+      const response = await fetch(
+        `${config.resourceServer}/api/find-chats-by-user/`,
+        {
+          method: "GET",
+          mode: "cors",
+          cache: "no-cache",
+          credentials: "same-origin",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      const responseJson = await response.json();
+      if (response.status === 200) {
+        setUserChats(responseJson);
+      } else {
+        console.error("Error communicating with server.");
+      }
+    }
+
+    loadChats();
+  }, [accessToken, showContent]);
+
   return (
     <div>
       {showContent ? (
-        <Tabs
-          defaultActiveKey="users"
-          id="menu"
-          className={styles.customTabs}
+        <div
+          className={
+            styles.colorOverlay +
+            " " +
+            "d-flex justify-content-center align-items-center"
+          }
         >
-          <Tab eventKey="users" title="[Users]">
-            <Friends user={user} accessToken={accessToken} />
-          </Tab>
-          <Tab eventKey="chat" title="[Chats]">
-            <Conversations user={user} accessToken={accessToken} />
-          </Tab>
-        </Tabs>
+          <Form className="rounded p-4 p-sm-3">
+            {userChats.length > 0 ? (
+              <ListGroup className={styles.listGroup}>
+                {userChats.map((chat) => {
+                  return (
+                    <ListGroup.Item
+                      className={styles.listGroupItem}
+                      key={chat.id}
+                    >
+                      <Chat chat={chat} />
+                    </ListGroup.Item>
+                  );
+                })}
+              </ListGroup>
+            ) : (
+              <p className={styles.centerText}>
+                Me so sorry, but you are not having any conversations at the
+                moment.
+              </p>
+            )}
+          </Form>
+        </div>
       ) : (
         <div>Please wait...</div>
       )}

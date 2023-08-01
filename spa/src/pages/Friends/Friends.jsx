@@ -1,4 +1,5 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
+import { AuthContext } from "../../context/auth-context";
 import { Form, Button, Container } from "react-bootstrap";
 import styles from "../../global.module.css";
 import ListGroup from "react-bootstrap/ListGroup";
@@ -11,6 +12,12 @@ export const Friends = (props) => {
   const [searchResults, setSearchResults] = useState([]);
   const [friends, setFriends] = useState([]);
   const searchRef = useRef();
+  const { accessToken, user, isLoading } = useContext(AuthContext);
+  const [showContent, setShowContent] = useState(false);
+
+  useEffect(() => {
+    setShowContent(!isLoading);
+  }, [isLoading]);
 
   /**
    * set focus to search field and load any existing friends, if any.
@@ -18,17 +25,16 @@ export const Friends = (props) => {
   useEffect(() => {
     async function loadFriends() {
       searchRef.current.focus();
-      const userId = props.user.id;
 
       const response = await fetch(
-        `${config.resourceServer}/api/find-user-associations-by-user-id/${userId}`,
+        `${config.resourceServer}/api/find-user-associations-by-user`,
         {
           method: "GET",
           mode: "cors",
           cache: "no-cache",
           credentials: "same-origin",
           headers: {
-            Authorization: `Bearer ${props.accessToken}`,
+            Authorization: `Bearer ${accessToken}`,
           },
         }
       );
@@ -48,7 +54,7 @@ export const Friends = (props) => {
     }
 
     loadFriends();
-  }, [props.accessToken, props.user.id]);
+  }, [accessToken, showContent]);
 
   /**
    * clear search field and reset list to just existing friends, if any.
@@ -69,7 +75,6 @@ export const Friends = (props) => {
    */
   const searchHandler = async () => {
     let response = null;
-    const userId = props.user.id;
 
     if (searchQuery && searchQuery.trim().length > 3) {
       response = await fetch(
@@ -111,7 +116,7 @@ export const Friends = (props) => {
               isFriend,
             };
           })
-          .filter((r) => r.id !== userId) //filter out yourself.
+          .filter((r) => r.id !== user.id) //filter out yourself.
       );
     } else {
       console.error("Error communicating with server.");
@@ -212,66 +217,75 @@ export const Friends = (props) => {
   };
 
   return (
-    <div
-      className={
-        styles.colorOverlay +
-        " " +
-        "d-flex justify-content-center align-items-center"
-      }
-    >
-      <Form className="rounded p-4 p-sm-3">
-        <Form.Control
-          type="search"
-          placeholder="Search All Users"
-          className="me-2"
-          aria-label="Search"
-          ref={searchRef}
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-        <Container className="d-flex justify-content-center flex-wrap">
-          <Button
-            variant="dark"
-            className="m-2"
-            disabled={
-              searchQuery.trim().length > 0 && searchQuery.trim().length < 3
-            }
-            size="lg"
-            onClick={searchHandler}
-          >
-            Search
-            <TiZoom />
-          </Button>
-          <Button
-            variant="dark"
-            className="m-2"
-            size="lg"
-            onClick={clearHandler}
-          >
-            Friends
-          </Button>
-        </Container>
+    <div>
+      {showContent ? (
+        <div
+          className={
+            styles.colorOverlay +
+            " " +
+            "d-flex justify-content-center align-items-center"
+          }
+        >
+          <Form className="rounded p-4 p-sm-3">
+            <Form.Control
+              type="search"
+              placeholder="Search All Users"
+              className="me-2"
+              aria-label="Search"
+              ref={searchRef}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <Container className="d-flex justify-content-center flex-wrap">
+              <Button
+                variant="dark"
+                className="m-2"
+                disabled={
+                  searchQuery.trim().length > 0 && searchQuery.trim().length < 3
+                }
+                size="lg"
+                onClick={searchHandler}
+              >
+                Search
+                <TiZoom />
+              </Button>
+              <Button
+                variant="dark"
+                className="m-2"
+                size="lg"
+                onClick={clearHandler}
+              >
+                Friends
+              </Button>
+            </Container>
 
-        {searchResults.length > 0 ? (
-          <ListGroup className={styles.listGroup}>
-            {searchResults.map((user) => {
-              return (
-                <ListGroup.Item className={styles.listGroupItem} key={user.id}>
-                  <Friend
-                    user={user}
-                    addFriendHandler={addFriendHandler}
-                    removeFriendHandler={removeFriendHandler}
-                  />
-                </ListGroup.Item>
-              );
-            })}
-          </ListGroup>
-        ) : (
-          <p className={styles.centerText}>
-            I am sorry, but it seems that you have no friends.
-          </p>
-        )}
-      </Form>
+            {searchResults.length > 0 ? (
+              <ListGroup className={styles.listGroup}>
+                {searchResults.map((user) => {
+                  return (
+                    <ListGroup.Item
+                      className={styles.listGroupItem}
+                      key={user.id}
+                    >
+                      <Friend
+                        user={user}
+                        addFriendHandler={addFriendHandler}
+                        removeFriendHandler={removeFriendHandler}
+                      />
+                    </ListGroup.Item>
+                  );
+                })}
+              </ListGroup>
+            ) : (
+              <p className={styles.centerText}>
+                I am sorry, but it seems that you have no friends.
+              </p>
+            )}
+          </Form>
+        </div>
+      ) : (
+        <div>Please wait...</div>
+      )}
     </div>
   );
 };

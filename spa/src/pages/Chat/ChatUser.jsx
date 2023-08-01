@@ -1,6 +1,6 @@
 import { Image, Col } from "react-bootstrap";
 
-export const ConversationUser = (props) => {
+export const ChatUser = (props) => {
 
   return (
     <Col>

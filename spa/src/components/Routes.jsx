@@ -7,6 +7,8 @@ import {
   Register,
   Chats,
   UserAdmin,
+  Conversation,
+  Friends
 } from "../pages";
 import PrivateRoutes from "./PrivateRoutes";
 import SiteTemplate from "./SiteTemplate";
@@ -27,7 +29,15 @@ const AppRouter = createBrowserRouter([
             element: <Chats />,
           },
           {
-            path: "/user-admin",
+            path: "/friends", // requires ROLE_CHAT
+            element: <Friends />
+          },
+          {
+            path: "/conversation", //requires ROLE_CHAT
+            element: <Conversation />,
+          },
+          {
+            path: "/user-admin", //requires ROLE_USER_ADMIN
             element: <UserAdmin />,
           },
         ],

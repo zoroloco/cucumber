@@ -1,4 +1,9 @@
-import { Injectable, Inject, Logger, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  Logger,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User, UserAssociation } from '../entities';
@@ -58,7 +63,9 @@ export class UserAssociationService {
       }
     } catch (error) {
       Logger.error('Error finding user associations for user id:' + userId);
-      throw new BadRequestException('Error encountered finding user associations.');
+      throw new BadRequestException(
+        'Error encountered finding user associations.',
+      );
     }
   }
 
@@ -67,15 +74,14 @@ export class UserAssociationService {
    *
    * @param reqUserId
    * @param userId
-   * @param associateUserId
-   * @returns
+   * @returns - the saved user assocation.
    */
-  public async createUserAssocation(reqUserId:number, userId: number, associateUserId: number) {
+  public async createUserAssocation(reqUserId: number, userId: number) {
     Logger.log(
       'Attempting to create association between userId:' +
-        userId +
+        reqUserId +
         ' and associate userId:' +
-        associateUserId,
+        userId,
     );
 
     try {
@@ -85,29 +91,29 @@ export class UserAssociationService {
         where: { id: userId },
       });
       userAssociation.associate = await this.userRepository.findOne({
-        where: { id: associateUserId },
+        where: { id: userId },
       });
       userAssociation.setAuditFields(reqUserId);
-      
+
       const savedUserAssociation = await this.userAssociationRepository.save(
         userAssociation,
       );
-      Logger.log(
-        'Successfully linked users:' + userId + ' and ' + associateUserId,
-      );
+      Logger.log('Successfully linked users:' + reqUserId + ' and ' + userId);
       savedUserAssociation.user.password = '';
       savedUserAssociation.associate.password = '';
       return savedUserAssociation;
     } catch (error) {
       Logger.error(
         'Error creating association between userIds:' +
-          userId +
+          reqUserId +
           ' and ' +
-          associateUserId +
+          userId +
           ' with error:' +
           error,
       );
-      throw new BadRequestException('Error encountered creating user association.');
+      throw new BadRequestException(
+        'Error encountered creating user association.',
+      );
     }
   }
 
@@ -116,19 +122,17 @@ export class UserAssociationService {
    *
    * @param reqUserId
    * @param userId
-   * @param associateUserId
    * @returns
    */
   public async removeUserAssociation(
     reqUserId: number,
     userId: number,
-    associateUserId: number,
   ) {
     Logger.log(
       'Attempting to remove association between userId:' +
-        userId +
+        reqUserId +
         ' and associate userId:' +
-        associateUserId,
+        userId,
     );
 
     try {
@@ -137,7 +141,7 @@ export class UserAssociationService {
         .leftJoin('ua.user', 'u')
         .leftJoinAndSelect('ua.associate', 'a')
         .where('ua.user.id = :userId', { userId })
-        .andWhere('ua.associate.id = :associateUserId', { associateUserId })
+        .andWhere('ua.associate.id = :associateUserId', { userId })
         .andWhere('ua.inactivatedTime is null')
         .getOne();
 
@@ -153,7 +157,7 @@ export class UserAssociationService {
           userAssociation,
         );
         Logger.log(
-          'Successfully unlinked users:' + userId + ' and ' + associateUserId,
+          'Successfully unlinked users:' + reqUserId + ' and ' + userId,
         );
         savedUserAssociation.associate.password = '';
         return savedUserAssociation;
@@ -161,13 +165,15 @@ export class UserAssociationService {
     } catch (error) {
       Logger.error(
         'Error removing association between userIds:' +
-          userId +
+          reqUserId +
           ' and ' +
-          associateUserId +
+          userId +
           ' with error:' +
           error,
       );
-      throw new BadRequestException('Error encountered removing user association.');
+      throw new BadRequestException(
+        'Error encountered removing user association.',
+      );
     }
   }
 }

@@ -28,6 +28,8 @@ const PrivateRoutes = () => {
         // Define the required roles for each route
         const requiredRoles = {
           "/chats": "ROLE_CHAT",
+          "/friends": "ROLE_CHAT",
+          "/conversation": "ROLE_CHAT",
           "/home": "ROLE_VERIFIED",
           "/user-admin": "ROLE_USER_ADMIN"
         };

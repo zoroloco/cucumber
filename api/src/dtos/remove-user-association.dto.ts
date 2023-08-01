@@ -6,15 +6,7 @@ export class RemoveUserAssociationDto {
   @IsNumber()
   @ApiProperty({
     required: true,
-    description: 'ID of the user context.',
-  })
-  readonly userId: number;
-
-  @IsNotEmpty()
-  @IsNumber()
-  @ApiProperty({
-    required: true,
     description: 'ID of the user that will be de-associated.',
   })
-  readonly associateUserId: number;
+  readonly userId: number;
 }

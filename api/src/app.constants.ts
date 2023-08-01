@@ -74,7 +74,7 @@ export class AppConstants {
   static LOGIN: string = 'login';
   static VALIDATE_TOKEN: string = 'validate-token';
   static FIND_USER_ASSOCIATIONS_BY_USER =
-    'find-user-associations-by-user-id/:userid';
+    'find-user-associations-by-user';
   static CREATE_USER_ASSOCIATION = 'create-user-association';
   static REMOVE_USER_ASSOCIATION = 'remove-user-association';
   static FIND_USER_ROLE_REFS_BY_USER = 'find-user-role-refs-by-user-id/:userid';
@@ -84,7 +84,7 @@ export class AppConstants {
   static CREATE_USER_ROLE = 'create-user-role';
   static REMOVE_USER_ROLE = 'remove-user-role';
   static CREATE_CHAT = 'create-chat';
-  static FIND_ALL_CHATS_BY_USER = 'find-chats-by-user-id/:userid';
+  static FIND_ALL_CHATS_FOR_USER = 'find-chats-by-user';
   static CREATE_CHAT_MESSAGE = 'create-chat-message';
   static FIND_CHAT_MESSAGES_BY_CHAT = 'find-chat-messages-by-chat-id/:chatid';
 
@@ -100,11 +100,11 @@ export class AppConstants {
   static VALIDATE_TOKEN_DESC =
     'Provides a way for clients to see if their token is valid.';
   static FIND_USER_ASSOCIATIONS_BY_USER_DESC =
-    'Returns all active user associations given a user id. This is the friend list.';
+    'Returns all active user associations for the requesting user. This is the friend list.';
   static CREATE_USER_ASSOCIATION_DESC =
-    'Given two user ids, will create a link between them (will you be my frend?).';
+    'Will create an assocation between the user requesting and the given user id(will you be my frend?).';
   static REMOVE_USER_ASSOCIATION_DESC =
-    'Deactivates an association between 2 users (unfriend).';
+    'Deactivates the assocation between the requesting user and the given user id(leave me alone!).';
   static FIND_USER_ROLE_REFS_BY_USER_DESC =
     'Finds all active user role refs for a given user id.';
   static FIND_ALL_CACHED_USER_ROLE_REFS_DESC =
@@ -118,11 +118,11 @@ export class AppConstants {
   static REMOVE_USER_ROLE_DESC =
     'Deactivates the user role with the given user role ref id and user id.';
   static CREATE_CHAT_DESC =
-    'Creates a chat conversation with the optional name for the given user ids.';
-  static FIND_ALL_CHATS_BY_USER_DESC =
-    'Finds all active chats for a user. Also returns the list of chat users associated to the chat. Each chat user will have its user populated with user profile and profile photo.';
+    'Creates a chat conversation for the requesting user and given user ids.';
+  static FIND_ALL_CHATS_FOR_USER_DESC =
+    'Finds all active chats for the user requesting. Also returns the list of chat users associated to the chat. Each chat user will have its user populated with user profile and profile photo.';
   static CREATE_CHAT_MESSAGE_DESC =
-    'Creates a chat message for the given user id and chat id.';
+    'Creates a chat message for the user requesting and chat id.';
   static FIND_CHAT_MESSAGES_BY_CHAT_DESC =
     'Finds all active chat messages given the chat id. Validation done to make sure request user id is part of the chat.';
 

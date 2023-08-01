@@ -2,6 +2,7 @@ import { useContext, useState, useEffect, useRef } from "react";
 import { AuthContext } from "../../context/auth-context";
 import { Form, Button, Container } from "react-bootstrap";
 import config from "../../config";
+import classes from "./UserAdmin.module.css";
 import styles from "../../global.module.css";
 import { TiZoom } from "react-icons/ti";
 import ListGroup from "react-bootstrap/ListGroup";
@@ -87,7 +88,7 @@ export const UserAdmin = () => {
     if (response.status === 201) {
       let urMap = []; //build up user roles data structure. key= user id, value = list of user role ref ids.
       const uniqueUsers = responseJson.reduce((acc, userRole) => {
-        const { id, user, userRoleRef } = userRole;
+        const { user, userRoleRef } = userRole;
 
         if (!urMap[user.id]) {
           let userRoleList = [];
@@ -164,11 +165,11 @@ export const UserAdmin = () => {
               </Container>
 
               {searchResults.length > 0 ? (
-                <ListGroup className={styles.listGroup}>
+                <ListGroup className={classes.listGroup}>
                   {searchResults.map((user) => {
                     return (
                       <ListGroup.Item
-                        className={styles.listGroupItem}
+                        className={classes.listGroupItem}
                         key={user.id}
                       >
                         <UserDetails

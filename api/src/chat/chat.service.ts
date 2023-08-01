@@ -107,7 +107,7 @@ export class ChatService {
    * @param userIds
    * @param publicFlag
    */
-  public async createUserChat(
+  public async createChat(
     reqUserId: number,
     name: string,
     userIds: Array<number>,
@@ -116,6 +116,8 @@ export class ChatService {
     Logger.log(
       'Attempting to create a chat conversation with name:' +
         name +
+        ' for user id:' +
+        reqUserId +
         ' publicFlag:' +
         publicFlag +
         ' and user ids:' +
@@ -132,17 +134,22 @@ export class ChatService {
       if (savedChat) {
         Logger.log('Successfully saved chat with id:' + savedChat.id);
 
+        //add yourself to the chat
+        userIds.push(reqUserId);
+
         userIds.forEach(async (userId) => {
-          const userChat = this.chatUserRepository.create();
-          userChat.chat = savedChat;
-          userChat.user = this.userRepository.create();
-          userChat.user.id = userId;
+          const chatUser = this.chatUserRepository.create();
+          chatUser.chat = savedChat;
+          
+          const user = this.userRepository.create();
+          user.id = userId;
+          chatUser.user = user;
+          
+          chatUser.setAuditFields(reqUserId);
 
-          userChat.setAuditFields(reqUserId);
+          Logger.log('Saving chat user:' + JSON.stringify(chatUser));
 
-          Logger.log('Saving user chat:' + JSON.stringify(userChat));
-
-          this.chatUserRepository.save(userChat); //async
+          this.chatUserRepository.save(chatUser); //async
         });
 
         return savedChat;
@@ -245,17 +252,11 @@ export class ChatService {
           .where('chat.id = :chatId', { chatId })
           .getOne();
 
-        if (chat) {
-          this.logger.log('Successfully populated chat for chat messages.');
-
-          const doYouBelongInChat: boolean =
-            chat.chatUsers.filter((cu) => {
-              cu.user.id === reqUserId;
-            }).length > 0;
-
-          if (doYouBelongInChat) {
-            return chatMessages;
-          }
+        if (chat && chat.chatUsers.filter((cu) => cu.user.id === reqUserId)) {
+          this.logger.log(
+            'Successfully populated chat for chat messages and this user is part of the chat.',
+          );
+          return chatMessages;
         }
 
         return new UnauthorizedException(

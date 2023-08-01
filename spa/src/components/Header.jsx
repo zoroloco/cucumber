@@ -18,14 +18,15 @@ const Header = () => {
         <Container fluid>
           {ctx.loggedIn && (
             <Image
-            src={`data:image/png;base64, ${ctx.user.profilePhotoFile}`}
-            alt={ctx.user.username}
-          />
+              src={`data:image/png;base64, ${ctx.user.profilePhotoFile}`}
+              alt={ctx.user.username}
+            />
           )}
 
-          <Navbar.Brand className={classes.navBrandSpacer} href={
-            ctx.loggedIn ? '/home' : '/'
-          }>
+          <Navbar.Brand
+            className={classes.navBrandSpacer}
+            href={ctx.loggedIn ? "/home" : "/"}
+          >
             [druidia.net]
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -61,11 +62,19 @@ const Header = () => {
                     </Nav.Link>
                   </Nav.Item>
                   {ctx.user.userRoles.includes("ROLE_CHAT") && (
-                    <Nav.Item>
-                      <Nav.Link className={classes.navLink} href="/chats">
-                        [Chats]
-                      </Nav.Link>
-                    </Nav.Item>
+                    <>
+                      <Nav.Item>
+                        <Nav.Link className={classes.navLink} href="/friends">
+                          [Friends]
+                        </Nav.Link>
+                      </Nav.Item>
+
+                      <Nav.Item>
+                        <Nav.Link className={classes.navLink} href="/chats">
+                          [Chats]
+                        </Nav.Link>
+                      </Nav.Item>
+                    </>
                   )}
                   {ctx.user.userRoles.includes("ROLE_USER_ADMIN") && (
                     <Nav.Item>

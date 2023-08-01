@@ -19,11 +19,11 @@ values
 ((select id from user_role_ref where roleName='ROLE_USER_ADMIN'), '/find-all-user-roles-heavy-by-search-params', CURRENT_TIMESTAMP, 0),
 ((select id from user_role_ref where roleName='ROLE_USER_ADMIN'), '/create-user-role', CURRENT_TIMESTAMP, 0),
 ((select id from user_role_ref where roleName='ROLE_USER_ADMIN'), '/remove-user-role', CURRENT_TIMESTAMP, 0),
-((select id from user_role_ref where roleName='ROLE_CHAT'), '/find-user-associations-by-user-id', CURRENT_TIMESTAMP, 0),
+((select id from user_role_ref where roleName='ROLE_CHAT'), '/find-user-associations-by-user', CURRENT_TIMESTAMP, 0),
 ((select id from user_role_ref where roleName='ROLE_CHAT'), '/create-user-association', CURRENT_TIMESTAMP, 0),
 ((select id from user_role_ref where roleName='ROLE_CHAT'), '/remove-user-association', CURRENT_TIMESTAMP, 0),
 ((select id from user_role_ref where roleName='ROLE_CHAT'), '/create-chat', CURRENT_TIMESTAMP, 0),
-((select id from user_role_ref where roleName='ROLE_CHAT'), '/find-chats-by-user-id', CURRENT_TIMESTAMP, 0),
+((select id from user_role_ref where roleName='ROLE_CHAT'), '/find-chats-by-user', CURRENT_TIMESTAMP, 0),
 ((select id from user_role_ref where roleName='ROLE_CHAT'), '/create-chat-message', CURRENT_TIMESTAMP, 0),
 ((select id from user_role_ref where roleName='ROLE_CHAT'), '/find-chat-messages-by-chat-id', CURRENT_TIMESTAMP, 0);
 

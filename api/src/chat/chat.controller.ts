@@ -53,11 +53,11 @@ export class ChatController {
   @ApiOperation({ summary: AppConstants.CREATE_CHAT_DESC })
   @ApiBearerAuth()
   @Post(AppConstants.CREATE_CHAT)
-  async removeUserAssociation(
+  async createChat(
     @Request() req,
     @Body() createChatDto: CreateChatDto,
   ) {
-    return await this.chatService.createUserChat(
+    return await this.chatService.createChat(
       req.user.userId,
       createChatDto.name,
       createChatDto.userIds,
@@ -66,22 +66,22 @@ export class ChatController {
   }
 
   /**
-   * findAllChatsByUserId
+   * findAllChatsForUser
    *
    * @param string
-   * @returns - all chats associated to the user given the user id.
+   * @returns - all chats associated to the user.
    */
   @UseGuards(JwtAuthGuard, AuthUserRoleGuard)
-  @Get(AppConstants.FIND_ALL_CHATS_BY_USER)
+  @Get(AppConstants.FIND_ALL_CHATS_FOR_USER)
   @ApiBearerAuth()
   @ApiTags(AppConstants.API_TAG)
   @ApiResponse({
     status: 201,
-    description: AppConstants.FIND_ALL_CHATS_BY_USER_DESC,
+    description: AppConstants.FIND_ALL_CHATS_FOR_USER_DESC,
   })
-  @ApiOperation({ summary: AppConstants.FIND_ALL_CHATS_BY_USER_DESC })
-  async findAllChatsByUserId(@Param('userid') userId: number) {
-    return this.chatService.findAllChatsByUserId(userId);
+  @ApiOperation({ summary: AppConstants.FIND_ALL_CHATS_FOR_USER_DESC })
+  async findAllChatsForUser(@Request() req) {
+    return this.chatService.findAllChatsByUserId(req.user.userId);
   }
 
   /**
