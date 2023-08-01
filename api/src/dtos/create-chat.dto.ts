@@ -1,11 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsNotEmpty, MaxLength, IsAlphanumeric } from 'class-validator';
+import {
+  IsNumber,
+  IsNotEmpty,
+  MaxLength,
+  IsAlphanumeric,
+} from 'class-validator';
 
 export class CreateChatDto {
-  
   @MaxLength(64)
   @ApiProperty({
-    description: 'The name of the chat conversation. This does not have to be unique.',
+    description:
+      'The name of the chat conversation. This does not have to be unique.',
   })
   readonly name: string;
 

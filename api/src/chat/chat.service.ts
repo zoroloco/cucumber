@@ -3,6 +3,7 @@ import {
   Injectable,
   Inject,
   Logger,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -65,8 +66,8 @@ export class ChatService {
           })
           .getMany();
 
-        if(chats){
-          this.logger.log('Successfully mapped:'+chats.length+' chats.');
+        if (chats) {
+          this.logger.log('Successfully mapped:' + chats.length + ' chats.');
           return await Promise.all(chats.map(this.hydrateChats.bind(this)));
         }
       }
@@ -81,15 +82,17 @@ export class ChatService {
     }
   }
 
-  private async hydrateChats(chat:Chat){
-    this.logger.log('Now hydrating chat:'+JSON.stringify(chat));    
-    chat.chatUsers = await Promise.all(chat.chatUsers.map(this.hydrateChatUsers.bind(this)));
+  private async hydrateChats(chat: Chat) {
+    this.logger.log('Now hydrating chat:' + JSON.stringify(chat));
+    chat.chatUsers = await Promise.all(
+      chat.chatUsers.map(this.hydrateChatUsers.bind(this)),
+    );
     return chat;
   }
 
-  private async hydrateChatUsers(chatUser:ChatUser){
-    this.logger.log('Now hydrating chat user:'+JSON.stringify(chatUser));
-    let user = await chatUser.user;//lazy load
+  private async hydrateChatUsers(chatUser: ChatUser) {
+    this.logger.log('Now hydrating chat user:' + JSON.stringify(chatUser));
+    let user = await chatUser.user; //lazy load
     user = await this.imageProcessingService.hydrateUserProfilePhoto(user);
     chatUser.user = user;
     return chatUser;
@@ -151,6 +154,122 @@ export class ChatService {
       throw new BadRequestException(
         'Error encountered creating chat conversation',
       );
+    }
+  }
+
+  /**
+   * Creates a chat message for the requester user id and given chat id.
+   *
+   * @param reqUserId
+   * @param chatId
+   * @param content
+   */
+  public async createChatMessage(
+    reqUserId: number,
+    chatId: number,
+    content: string,
+  ) {
+    Logger.log(
+      'Attempting to create a chat message for:' +
+        reqUserId +
+        ' and chat id:' +
+        chatId +
+        ' with content:' +
+        content,
+    );
+
+    try {
+      const chatMessage = this.chatMessageRepository.create();
+      chatMessage.setAuditFields(reqUserId);
+
+      const chat = this.chatRepository.create();
+      chat.id = chatId;
+      chatMessage.chat = chat;
+
+      const user = this.userRepository.create();
+      user.id = reqUserId;
+      chatMessage.user = user;
+
+      chatMessage.content = content;
+
+      const savedChatMessage = await this.chatMessageRepository.save(
+        chatMessage,
+      );
+      if (savedChatMessage) {
+        Logger.log(
+          'Successfully saved chat message with id:' + savedChatMessage.id,
+        );
+        return savedChatMessage;
+      }
+    } catch (error) {
+      this.logger.error('Error creating new chat message with error:' + error);
+      throw new BadRequestException('Error encountered creating chat message.');
+    }
+  }
+
+  /**
+   * @param reqUserId
+   * @param chatId
+   *
+   * @returns - list of chat messages for the given chat id. Validation is done to make sure
+   * the requestor's user id is involved in the chat.
+   */
+  public async findAllChatMessagesByChatId(reqUserId: number, chatId: number) {
+    Logger.log(
+      'Attempting to find all active chat messages for chat id:' +
+        chatId +
+        ' for user id:' +
+        reqUserId,
+    );
+    try {
+      const chatMessages = await this.chatMessageRepository
+        .createQueryBuilder('chatMessage')
+        .leftJoinAndSelect('chatMessage.chat', 'chat')
+        .where('chatMessage.chat.id = :chatId', { chatId })
+        .andWhere('chatMessage.inactivatedTime is null')
+        .andWhere('chat.inactivatedTime is null')
+        .getMany();
+
+      if (chatMessages) {
+        this.logger.log(
+          'Successfully found:' +
+            chatMessages.length +
+            ' chat messages for chat id:' +
+            chatId,
+        );
+
+        // Retrieve chats and their associated chatUsers
+        const chat = await this.chatRepository
+          .createQueryBuilder('chat')
+          .leftJoinAndSelect('chat.chatUsers', 'chatUsers')
+          .where('chat.id = :chatId', { chatId })
+          .getOne();
+
+        if (chat) {
+          this.logger.log('Successfully populated chat for chat messages.');
+
+          const doYouBelongInChat: boolean =
+            chat.chatUsers.filter((cu) => {
+              cu.user.id === reqUserId;
+            }).length > 0;
+
+          if (doYouBelongInChat) {
+            return chatMessages;
+          }
+        }
+
+        return new UnauthorizedException(
+          'Error encountered finding chat messages.',
+        );
+      }
+    } catch (error) {
+      this.logger.error(
+        'Error finding chats messages by chat id:' +
+          chatId +
+          ' with error:' +
+          error,
+      );
+      throw new BadRequestException('Error encountered finding chat messages.');
     }
   }
 }

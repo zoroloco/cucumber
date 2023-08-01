@@ -23,8 +23,11 @@ values
 ((select id from user_role_ref where roleName='ROLE_CHAT'), '/create-user-association', CURRENT_TIMESTAMP, 0),
 ((select id from user_role_ref where roleName='ROLE_CHAT'), '/remove-user-association', CURRENT_TIMESTAMP, 0),
 ((select id from user_role_ref where roleName='ROLE_CHAT'), '/create-chat', CURRENT_TIMESTAMP, 0),
-((select id from user_role_ref where roleName='ROLE_CHAT'), '/find-chats-by-user-id', CURRENT_TIMESTAMP, 0);
+((select id from user_role_ref where roleName='ROLE_CHAT'), '/find-chats-by-user-id', CURRENT_TIMESTAMP, 0),
+((select id from user_role_ref where roleName='ROLE_CHAT'), '/create-chat-message', CURRENT_TIMESTAMP, 0),
+((select id from user_role_ref where roleName='ROLE_CHAT'), '/find-chat-messages-by-chat-id', CURRENT_TIMESTAMP, 0);
 
+c
 -- give yourself all user roles. replace 2 with your user id
 insert into user_role(userId,createdTime,createdBy,userRoleRefId)
 values 

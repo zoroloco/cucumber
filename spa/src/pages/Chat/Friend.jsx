@@ -11,7 +11,7 @@ export const Friend = (props) => {
         src={`data:image/png;base64, ${props.user.profilePhotoFile}`}
         alt={props.user.username}
       />
-      <div className={classes.userInfo}>
+      <div className={classes.friendInfo}>
         <h5>
           {fullName.trim().substring(0,19)}
         </h5>
@@ -20,7 +20,7 @@ export const Friend = (props) => {
 
       {props.user.isFriend ? (
         <Button
-          className={classes.userButton}
+          className={classes.friendButton}
           variant="dark"
           size="sm"
           onClick={() => props.removeFriendHandler(props.user.id)}
@@ -29,7 +29,7 @@ export const Friend = (props) => {
         </Button>
       ) : (
         <Button
-          className={classes.userButton}
+          className={classes.friendButton}
           variant="dark"
           size="sm"
           onClick={() => props.addFriendHandler(props.user.id)}

@@ -17,11 +17,11 @@ export const Chats = () => {
     <div>
       {showContent ? (
         <Tabs
-          defaultActiveKey="friends"
+          defaultActiveKey="users"
           id="menu"
           className={styles.customTabs}
         >
-          <Tab eventKey="friends" title="[Friends]">
+          <Tab eventKey="users" title="[Users]">
             <Friends user={user} accessToken={accessToken} />
           </Tab>
           <Tab eventKey="chat" title="[Chats]">

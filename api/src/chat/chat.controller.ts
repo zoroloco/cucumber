@@ -16,9 +16,9 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 import { AppConstants } from '../app.constants';
-import { CreateChatDto } from '../dtos';
+import { CreateChatDto, CreateChatMessageDto } from '../dtos';
 import { ChatService } from './chat.service';
-import { Chat } from '../entities';
+import { Chat, ChatMessage } from '../entities';
 
 @Controller(AppConstants.API_PATH)
 export class ChatController {
@@ -79,8 +79,69 @@ export class ChatController {
     status: 201,
     description: AppConstants.FIND_ALL_CHATS_BY_USER_DESC,
   })
-  @ApiOperation({ summary: AppConstants.FIND_ALL_CHATS_BY_USER_DESC})
+  @ApiOperation({ summary: AppConstants.FIND_ALL_CHATS_BY_USER_DESC })
   async findAllChatsByUserId(@Param('userid') userId: number) {
     return this.chatService.findAllChatsByUserId(userId);
+  }
+
+  /**
+   * createChatMessage
+   *
+   * @param req
+   * @param createChatMessageDto
+   * @returns
+   */
+  @UseGuards(JwtAuthGuard, AuthUserRoleGuard)
+  @ApiTags(AppConstants.API_TAG)
+  @ApiBody({
+    type: CreateChatMessageDto,
+    examples: {
+      example: {
+        value: {
+          content: 'Hello ASL? WTF?',
+          chatId: 2,
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 201,
+    description: AppConstants.CREATE_CHAT_MESSAGE_DESC,
+    type: ChatMessage,
+  })
+  @ApiOperation({ summary: AppConstants.CREATE_CHAT_MESSAGE_DESC })
+  @ApiBearerAuth()
+  @Post(AppConstants.CREATE_CHAT_MESSAGE)
+  async createChatMessage(
+    @Request() req,
+    @Body() createChatMessageDto: CreateChatMessageDto,
+  ) {
+    return await this.chatService.createChatMessage(
+      req.user.userId,
+      createChatMessageDto.chatId,
+      createChatMessageDto.content,
+    );
+  }
+
+  /**
+   * findAllChatMessagesByChatId
+   *
+   * @param string
+   * @returns - all chat messages associated to the request user id and given chat id.
+   */
+  @UseGuards(JwtAuthGuard, AuthUserRoleGuard)
+  @Get(AppConstants.FIND_CHAT_MESSAGES_BY_CHAT)
+  @ApiBearerAuth()
+  @ApiTags(AppConstants.API_TAG)
+  @ApiResponse({
+    status: 201,
+    description: AppConstants.FIND_CHAT_MESSAGES_BY_CHAT_DESC,
+  })
+  @ApiOperation({ summary: AppConstants.FIND_CHAT_MESSAGES_BY_CHAT_DESC })
+  async findAllChatMessagesByChatId(
+    @Request() req,
+    @Param('chatid') chatId: number,
+  ) {
+    return this.chatService.findAllChatMessagesByChatId(req.userId, chatId);
   }
 }

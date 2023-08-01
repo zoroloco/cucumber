@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Container, Nav, Navbar, Card } from "react-bootstrap";
+import { Container, Nav, Navbar, Card, Image } from "react-bootstrap";
 import classes from "./Header.module.css";
 import { AuthContext } from "../context/auth-context";
 
@@ -16,6 +16,13 @@ const Header = () => {
         sticky="top"
       >
         <Container fluid>
+          {ctx.loggedIn && (
+            <Image
+            src={`data:image/png;base64, ${ctx.user.profilePhotoFile}`}
+            alt={ctx.user.username}
+          />
+          )}
+
           <Navbar.Brand className={classes.navBrandSpacer} href={
             ctx.loggedIn ? '/home' : '/'
           }>

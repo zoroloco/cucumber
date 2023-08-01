@@ -4,7 +4,6 @@ import styles from "../../global.module.css";
 import ListGroup from "react-bootstrap/ListGroup";
 import { Friend } from "./Friend";
 import config from "../../config";
-import classes from "./Friend.module.css";
 import { TiZoom } from "react-icons/ti";
 
 export const Friends = (props) => {
@@ -254,10 +253,10 @@ export const Friends = (props) => {
         </Container>
 
         {searchResults.length > 0 ? (
-          <ListGroup className={classes.listGroup}>
+          <ListGroup className={styles.listGroup}>
             {searchResults.map((user) => {
               return (
-                <ListGroup.Item className={classes.listGroupItem} key={user.id}>
+                <ListGroup.Item className={styles.listGroupItem} key={user.id}>
                   <Friend
                     user={user}
                     addFriendHandler={addFriendHandler}

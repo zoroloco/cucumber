@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { Form, Button, Container } from "react-bootstrap";
-import styles from "../../global.module.css";
+import { Form } from "react-bootstrap";
 import ListGroup from "react-bootstrap/ListGroup";
 import config from "../../config";
-import classes from "./Friend.module.css";
+import { Conversation} from "./Conversation";
+import styles from "../../global.module.css";
 
 export const Conversations = (props) => {
   const [userChats, setUserChats] = useState([]);
@@ -26,8 +26,7 @@ export const Conversations = (props) => {
       );
 
       const responseJson = await response.json();
-      if (response.status === 200) {
-        console.info('got 200 for chats:'+JSON.stringify(responseJson));
+      if (response.status === 200) {        
         setUserChats(responseJson);
       } else {
         console.error("Error communicating with server.");
@@ -47,12 +46,13 @@ export const Conversations = (props) => {
     >
       <Form className="rounded p-4 p-sm-3">
         {userChats.length > 0 ? (
-          <ListGroup className={classes.listGroup}>
-            {userChats.map((chat) => {
-              console.info('got chat:'+JSON.stringify(chat));
+          <ListGroup className={styles.listGroup}>
+            {userChats.map((chat) => {              
               return (
-                <ListGroup.Item className={classes.listGroupItem} key={chat.id}>
-                  {chat.name}
+                <ListGroup.Item className={styles.listGroupItem} key={chat.id}>
+                  <Conversation
+                    chat={chat}                    
+                  />
                 </ListGroup.Item>
               );
             })}

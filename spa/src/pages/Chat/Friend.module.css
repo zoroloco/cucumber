@@ -1,59 +1,23 @@
-.listGroupItem {
-  display: flex;
-  align-items: center;
-  padding: 1rem;
-  border: none;
-  background-color: #f5f5f5;
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
-  margin-bottom: 5px;
-}
-
-.listGroupItem img {
-  width: 70px;
-  height: 70px;
-  object-fit: cover;
-  margin-right: 0.4rem;
-  border-radius: 50%;
-}
-
-.listGroupItem .userInfo {
+.listGroupItem .friendInfo {
   display: flex;
   flex-direction: column;
-  margin-left:auto;
+  margin-left: auto;
 }
 
-.listGroupItem .userInfo h5 {
+.listGroupItem .friendInfo h5 {
   margin: 0;
   text-align: left;
-  flex-wrap:wrap;
-  font-size: 1.0rem;
+  flex-wrap: wrap;
+  font-size: 1rem;
 }
 
-.listGroupItem .userInfo span {
+.listGroupItem .friendInfo span {
   font-size: 0.8rem;
   flex-wrap: wrap;
   text-align: left;
   color: #666;
 }
 
-.listGroupItem .userButton {
-  margin-left: 1rem;  
+.listGroupItem .friendButton {
+  margin-left: 1rem;
 }
-
-.listGroupItem:first-child {
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
-}
-
-.listGroupItem:last-child {
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
-}
-
