@@ -88,7 +88,7 @@ export class UserAssociationService {
       const userAssociation: UserAssociation =
         this.userAssociationRepository.create();
       userAssociation.user = await this.userRepository.findOne({
-        where: { id: userId },
+        where: { id: reqUserId },
       });
       userAssociation.associate = await this.userRepository.findOne({
         where: { id: userId },
@@ -140,8 +140,8 @@ export class UserAssociationService {
         .createQueryBuilder('ua')
         .leftJoin('ua.user', 'u')
         .leftJoinAndSelect('ua.associate', 'a')
-        .where('ua.user.id = :userId', { userId })
-        .andWhere('ua.associate.id = :associateUserId', { userId })
+        .where('ua.user.id = :reqUserId', { reqUserId })
+        .andWhere('ua.associate.id = :userId', { userId })
         .andWhere('ua.inactivatedTime is null')
         .getOne();
 

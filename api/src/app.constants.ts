@@ -84,7 +84,7 @@ export class AppConstants {
   static CREATE_USER_ROLE = 'create-user-role';
   static REMOVE_USER_ROLE = 'remove-user-role';
   static CREATE_CHAT = 'create-chat';
-  static FIND_ALL_CHATS_FOR_USER = 'find-chats-by-user';
+  static FIND_CHATS_FOR_USER = 'find-chats-for-user';
   static CREATE_CHAT_MESSAGE = 'create-chat-message';
   static FIND_CHAT_MESSAGES_BY_CHAT = 'find-chat-messages-by-chat-id/:chatid';
 
@@ -119,7 +119,7 @@ export class AppConstants {
     'Deactivates the user role with the given user role ref id and user id.';
   static CREATE_CHAT_DESC =
     'Creates a chat conversation for the requesting user and given user ids.';
-  static FIND_ALL_CHATS_FOR_USER_DESC =
+  static FIND_CHATS_FOR_USER_DESC =
     'Finds all active chats for the user requesting. Also returns the list of chat users associated to the chat. Each chat user will have its user populated with user profile and profile photo.';
   static CREATE_CHAT_MESSAGE_DESC =
     'Creates a chat message for the user requesting and chat id.';

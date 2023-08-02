@@ -48,11 +48,14 @@ export class AuthUserRoleGuard implements CanActivate {
       if (urlPath && urlPath.trim().length > 4) {
         //chop off /api
         let endPointPath: string = urlPath.substring(4, urlPath.length);
-        
+
         //chop off everything after second slash if exists
-        if(-1 != endPointPath.indexOf('/',1)){
-          endPointPath = endPointPath.substring(0, endPointPath.indexOf('/', 1));
-        }        
+        if (-1 != endPointPath.indexOf('/', 1)) {
+          endPointPath = endPointPath.substring(
+            0,
+            endPointPath.indexOf('/', 1),
+          );
+        }
 
         this.logger.log('Parsed URL:' + endPointPath);
 

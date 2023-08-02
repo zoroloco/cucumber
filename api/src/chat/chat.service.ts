@@ -35,13 +35,13 @@ export class ChatService {
    * @returns - list of active Chats for given user ID. The chats will contain a list of chatUsers
    * associated to the chat. Each chatUser will have their user object populated with user profile photo.
    */
-  public async findAllChatsByUserId(userId: number) {
-    Logger.log('Attempting to find all active chats for user id:' + userId);
+  public async findChatsForUser(reqUserId: number) {
+    Logger.log('Attempting to find all active chats for user id:' + reqUserId);
     try {
       const chatUsers = await this.chatUserRepository
         .createQueryBuilder('chatUser')
         .leftJoinAndSelect('chatUser.chat', 'chat')
-        .where('chatUser.user.id = :userId', { userId })
+        .where('chatUser.user.id = :reqUserId', { reqUserId })
         .andWhere('chatUser.inactivatedTime is null')
         .andWhere('chat.inactivatedTime is null')
         .getMany();
@@ -51,7 +51,7 @@ export class ChatService {
           'Successfully retreived:' +
             chatUsers.length +
             ' chat user entries for user id:' +
-            userId,
+            reqUserId,
         );
 
         // Extract chatIds from chatUsers
@@ -74,7 +74,7 @@ export class ChatService {
     } catch (error) {
       this.logger.error(
         'Error finding user chats by user id:' +
-          userId +
+          reqUserId +
           ' with error:' +
           error,
       );
@@ -140,11 +140,11 @@ export class ChatService {
         userIds.forEach(async (userId) => {
           const chatUser = this.chatUserRepository.create();
           chatUser.chat = savedChat;
-          
+
           const user = this.userRepository.create();
           user.id = userId;
           chatUser.user = user;
-          
+
           chatUser.setAuditFields(reqUserId);
 
           Logger.log('Saving chat user:' + JSON.stringify(chatUser));

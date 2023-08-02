@@ -66,22 +66,22 @@ export class ChatController {
   }
 
   /**
-   * findAllChatsForUser
+   * findChatsForUser
    *
    * @param string
    * @returns - all chats associated to the user.
    */
   @UseGuards(JwtAuthGuard, AuthUserRoleGuard)
-  @Get(AppConstants.FIND_ALL_CHATS_FOR_USER)
+  @Get(AppConstants.FIND_CHATS_FOR_USER)
   @ApiBearerAuth()
   @ApiTags(AppConstants.API_TAG)
   @ApiResponse({
     status: 201,
-    description: AppConstants.FIND_ALL_CHATS_FOR_USER_DESC,
+    description: AppConstants.FIND_CHATS_FOR_USER_DESC,
   })
-  @ApiOperation({ summary: AppConstants.FIND_ALL_CHATS_FOR_USER_DESC })
-  async findAllChatsForUser(@Request() req) {
-    return this.chatService.findAllChatsByUserId(req.user.userId);
+  @ApiOperation({ summary: AppConstants.FIND_CHATS_FOR_USER_DESC })
+  async findChatsForUser(@Request() req) {
+    return this.chatService.findChatsForUser(req.user.userId);
   }
 
   /**

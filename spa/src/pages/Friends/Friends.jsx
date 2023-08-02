@@ -53,7 +53,9 @@ export const Friends = (props) => {
       }
     }
 
-    loadFriends();
+    if(showContent){
+      loadFriends();
+    }    
   }, [accessToken, showContent]);
 
   /**
@@ -86,7 +88,7 @@ export const Friends = (props) => {
           credentials: "same-origin",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${props.accessToken}`,
+            Authorization: `Bearer ${accessToken}`,
           },
           body: JSON.stringify({
             searchQuery: searchQuery,
@@ -99,7 +101,7 @@ export const Friends = (props) => {
         cache: "no-cache",
         credentials: "same-origin",
         headers: {
-          Authorization: `Bearer ${props.accessToken}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       });
     }
@@ -129,7 +131,6 @@ export const Friends = (props) => {
    */
   const addFriendHandler = async (associateUserId) => {
     console.info("Adding friend with ID:" + associateUserId);
-    const userId = props.user.id;
 
     const response = await fetch(
       config.resourceServer + "/api/create-user-association",
@@ -140,11 +141,10 @@ export const Friends = (props) => {
         credentials: "same-origin",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${props.accessToken}`,
+          Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify({
-          userId: userId,
-          associateUserId: associateUserId,
+          userId: associateUserId
         }),
       }
     );
@@ -175,7 +175,6 @@ export const Friends = (props) => {
 
   const removeFriendHandler = async (associateUserId) => {
     console.info("Removing friend with ID:" + associateUserId);
-    const userId = props.user.id;
 
     const response = await fetch(
       config.resourceServer + "/api/remove-user-association",
@@ -186,11 +185,10 @@ export const Friends = (props) => {
         credentials: "same-origin",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${props.accessToken}`,
+          Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify({
-          userId: userId,
-          associateUserId: associateUserId,
+          userId: associateUserId
         }),
       }
     );

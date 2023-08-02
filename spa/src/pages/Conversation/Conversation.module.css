@@ -24,16 +24,16 @@ body {
   
   .chatMessage:nth-child(even) {
     align-self: flex-start;
-    background-color: #e0e0e0;
+    background-color: #716c6c;
   }
   
   .chatMessage:nth-child(odd) {
     align-self: flex-end;
-    background-color: #dcf8c6;
+    background-color: #5c9d2a;
   }
   
   .sentByUser {
-    background-color: #dcf8c6;
+    background-color: #5c9d2a;
     align-self: flex-end;
   }
   

@@ -18,7 +18,7 @@ export const Chats = (props) => {
   useEffect(() => {
     async function loadChats() {
       const response = await fetch(
-        `${config.resourceServer}/api/find-chats-by-user/`,
+        `${config.resourceServer}/api/find-chats-for-user/`,
         {
           method: "GET",
           mode: "cors",
@@ -38,7 +38,9 @@ export const Chats = (props) => {
       }
     }
 
-    loadChats();
+    if(showContent){
+      loadChats();
+    }    
   }, [accessToken, showContent]);
 
   return (
