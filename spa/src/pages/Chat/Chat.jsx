@@ -7,7 +7,7 @@ export const Chat = (props) => {
   const navigate = useNavigate();
 
   const chatClickHandler = () =>{
-    navigate('/conversation');
+    navigate('/conversation/'+props.chat.id);
   }
 
   return (

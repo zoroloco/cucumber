@@ -1,117 +1,109 @@
 body {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-  }
-  
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+.chatContainer {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.chatMessages {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+/* Specific selectors for sent-by-user and received messages */
+.sentByUser{
+  background-color: #5c9d2a;
+  align-self: flex-end;
+}
+
+.received {
+  background-color: #716c6c;
+  align-self: flex-start;
+}
+
+.chatMessage {
+  padding: 8px;
+  margin: 4px 0;
+  border-radius: 8px;
+  max-width: 70%;
+  word-wrap: break-word;
+}
+
+.chatInput {
+  display: flex;
+  margin-top: 10px;
+}
+
+.chatInput input {
+  flex-grow: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.chatInput button {
+  margin-left: 10px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  background-color: #075e54;
+  color: #fff;
+  cursor: pointer;
+}
+
+.chatInput button:hover {
+  background-color: #128c7e;
+}
+
+/* Responsive Styles */
+@media screen and (max-width: 600px) {
   .chatContainer {
-    max-width: 400px;
-    margin: 0 auto;
-    padding: 20px;
+    max-width: 100%;
+    padding: 10px;
   }
-  
+
   .chatMessages {
-    max-height: 400px;
-    overflow-y: auto;
-  }
-  
-  .chatMessage {
-    padding: 8px;
-    margin: 4px 0;
-    border-radius: 8px;
-    max-width: 70%;
-  }
-  
-  .chatMessage:nth-child(even) {
-    align-self: flex-start;
-    background-color: #716c6c;
-  }
-  
-  .chatMessage:nth-child(odd) {
-    align-self: flex-end;
-    background-color: #5c9d2a;
-  }
-  
-  .sentByUser {
-    background-color: #5c9d2a;
-    align-self: flex-end;
-  }
-  
-  .received {
-    background-color: #f3f3f3;
-  }
-  
-  .chatInput {
-    display: flex;
-    margin-top: 10px;
-  }
-  
-  .chatInput input {
-    flex-grow: 1;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  .chatInput button {
-    margin-left: 10px;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 4px;
-    background-color: #075e54;
-    color: #fff;
-    cursor: pointer;
-  }
-  
-  .chatInput button:hover {
-    background-color: #128c7e;
-  }
-  
-  /* Responsive Styles */
-  @media screen and (max-width: 600px) {
-    .chatContainer {
-      max-width: 100%;
-      padding: 10px;
-    }
-  
-    .chatMessages {
       display: flex;
       flex-direction: column;
-    }
-  
-    .chatMessage {
+  }
+
+  .chatMessage {
       padding: 8px;
       margin: 4px 0;
       border-radius: 8px;
       max-width: 70%;
-    }
-  
-    .chatInput {
-      display: flex;
-      flex-wrap: wrap;
-    }
-  
-    /* Update the flex-basis for input and button */
-    .chatInput input {
-      flex: 1;
-      padding: 8px;
-      margin-bottom: 10px;
-    }
-  
-    .chatInput button {
-      flex-basis: 100%;
-    }
   }
-  
-  @media screen and (max-width: 400px) {
-    .chatMessage {
-      max-width: 90%;
-    }
-  
-    /* Update the flex-basis for input */
-    .chatInput input {
-      flex: 1;
-      padding: 8px;
-    }
+
+  .chatInput {
+    display: flex;
+    flex-wrap: wrap;
   }
-  
+
+  /* Update the flex-basis for input and button */
+  .chatInput input {
+    flex: 1;
+    padding: 8px;
+    margin-bottom: 10px;
+  }
+
+  .chatInput button {
+    flex-basis: 100%;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .chatMessage {
+    max-width: 90%;
+  }
+
+  /* Update the flex-basis for input */
+  .chatInput input {
+    flex: 1;
+    padding: 8px;
+  }
+}

@@ -23,9 +23,7 @@ export const Friends = (props) => {
    * set focus to search field and load any existing friends, if any.
    */
   useEffect(() => {
-    async function loadFriends() {
-      searchRef.current.focus();
-
+    async function loadFriends() {      
       const response = await fetch(
         `${config.resourceServer}/api/find-user-associations-by-user`,
         {
@@ -54,6 +52,7 @@ export const Friends = (props) => {
     }
 
     if(showContent){
+      searchRef.current.focus();
       loadFriends();
     }    
   }, [accessToken, showContent]);

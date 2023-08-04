@@ -1,5 +1,6 @@
 import { useContext, useState, useEffect, useRef } from "react";
 import { AuthContext } from "../../context/auth-context";
+import { useParams } from "react-router-dom";
 import { ChatMessage } from "./ChatMessage";
 import { ChatInput } from "./ChatInput";
 import classes from "./Conversation.module.css";
@@ -10,8 +11,9 @@ export const Conversation = () => {
   const [showContent, setShowContent] = useState(false);
   const [messages, setMessages] = useState([]);
   const messageContainerRef = useRef(null);
+  let { chatid } = useParams();
 
-  const chatId = 2;
+  console.info("Loaded conversation for chatid:" + chatid);
 
   useEffect(() => {
     setShowContent(!isLoading);
@@ -28,7 +30,7 @@ export const Conversation = () => {
   useEffect(() => {
     const fetchMessages = async () => {
       const response = await fetch(
-        `${config.resourceServer}/api/find-chat-messages-by-chat-id/${chatId}`,
+        `${config.resourceServer}/api/find-chat-messages-by-chat-id/${chatid}`,
         {
           method: "GET",
           mode: "cors",
@@ -43,10 +45,11 @@ export const Conversation = () => {
       const responseJson = await response.json();
       if (response.status === 200) {
         setMessages(
-          responseJson.map((chatMessage) => {
+          responseJson.map((chatMessage) => {           
+            //use == to not be strict equality like === since we are comparing number to string.
             return {
               ...chatMessage,
-              isSentByUser: chatMessage.createdBy === user.id,
+              isSentByUser: chatMessage.createdBy == user.id
             };
           })
         );
@@ -55,14 +58,45 @@ export const Conversation = () => {
       }
     };
 
-    if(showContent){
+    if (showContent) {
       fetchMessages();
-    }    
-  }, [accessToken, showContent, user]);
+    }
+  }, [accessToken, showContent, user, chatid]);
 
-  const handleSendMessage = (text) => {
-    const newMessage = { id: Date.now(), text, isSentByUser: true };
-    setMessages((prevMessages) => [...prevMessages, newMessage]);
+  const handleSendMessage = async (text) => {
+    //persist async
+    const response = await fetch(
+      `${config.resourceServer}/api/create-chat-message`,
+      {
+        method: "POST",
+        mode: "cors",
+        cache: "no-cache",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({
+          content: text,
+          chatId: parseInt(chatid, 10),
+        }),
+      }
+    );
+
+    const responseJson = await response.json();
+    if (response.status === 201) {
+      //setMessages((prevMessages) => [...prevMessages, responseJson]);
+      setMessages((prevMessages) => {
+        return [...prevMessages, responseJson].map((chatMessage) => {         
+          return {
+            ...chatMessage,
+            isSentByUser: chatMessage.createdBy == user.id,
+          };
+        });
+      });
+    } else {
+      console.error("Error communicating with server.");
+    }
   };
 
   return (
@@ -70,7 +104,7 @@ export const Conversation = () => {
       {showContent ? (
         <div className={classes.chatContainer}>
           <div className={classes.chatMessages} ref={messageContainerRef}>
-            {messages.map((message, index) => (
+            {messages.map((message) => (
               <ChatMessage
                 key={message.id}
                 message={message.content}

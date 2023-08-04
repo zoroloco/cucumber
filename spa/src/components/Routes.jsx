@@ -33,7 +33,7 @@ const AppRouter = createBrowserRouter([
             element: <Friends />
           },
           {
-            path: "/conversation", //requires ROLE_CHAT
+            path: "/conversation/:chatid", //requires ROLE_CHAT
             element: <Conversation />,
           },
           {

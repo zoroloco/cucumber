@@ -1,8 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import classes from "./Conversation.module.css";
 
 export const ChatInput = ({ onSendMessage }) => {
   const [inputText, setInputText] = useState("");
+  const inputRef = useRef();
+
+  useEffect(() => {
+    inputRef.current.focus();
+  }, [inputText]);
 
   const handleInputChange = (event) => {
     setInputText(event.target.value);
@@ -28,6 +33,7 @@ export const ChatInput = ({ onSendMessage }) => {
         value={inputText}
         onChange={handleInputChange}
         onKeyDown={handleKeyDown}
+        ref={inputRef}
         placeholder="Type your message..."
       />
       <button onClick={handleSendButtonClick}>Send</button>
