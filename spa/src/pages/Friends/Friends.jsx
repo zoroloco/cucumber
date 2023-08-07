@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect, useContext } from "react";
 import { AuthContext } from "../../context/auth-context";
 import { Form, Button, Container } from "react-bootstrap";
-import styles from "../../global.module.css";
 import ListGroup from "react-bootstrap/ListGroup";
 import { Friend } from "./Friend";
 import config from "../../config";
@@ -23,7 +22,7 @@ export const Friends = (props) => {
    * set focus to search field and load any existing friends, if any.
    */
   useEffect(() => {
-    async function loadFriends() {      
+    async function loadFriends() {
       const response = await fetch(
         `${config.resourceServer}/api/find-user-associations-by-user`,
         {
@@ -51,10 +50,10 @@ export const Friends = (props) => {
       }
     }
 
-    if(showContent){
+    if (showContent) {
       searchRef.current.focus();
       loadFriends();
-    }    
+    }
   }, [accessToken, showContent]);
 
   /**
@@ -143,7 +142,7 @@ export const Friends = (props) => {
           Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify({
-          userId: associateUserId
+          userId: associateUserId,
         }),
       }
     );
@@ -187,7 +186,7 @@ export const Friends = (props) => {
           Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify({
-          userId: associateUserId
+          userId: associateUserId,
         }),
       }
     );
@@ -218,9 +217,7 @@ export const Friends = (props) => {
       {showContent ? (
         <div
           className={
-            styles.colorOverlay +
-            " " +
-            "d-flex justify-content-center align-items-center"
+            "color-overlay d-flex justify-content-center align-items-center"
           }
         >
           <Form className="rounded p-4 p-sm-3">
@@ -257,13 +254,10 @@ export const Friends = (props) => {
             </Container>
 
             {searchResults.length > 0 ? (
-              <ListGroup className={styles.listGroup}>
+              <ListGroup>
                 {searchResults.map((user) => {
                   return (
-                    <ListGroup.Item
-                      className={styles.listGroupItem}
-                      key={user.id}
-                    >
+                    <ListGroup.Item key={user.id}>
                       <Friend
                         user={user}
                         addFriendHandler={addFriendHandler}
@@ -274,7 +268,7 @@ export const Friends = (props) => {
                 })}
               </ListGroup>
             ) : (
-              <p className={styles.centerText}>
+              <p className={"center-text"}>
                 I am sorry, but it seems that you have no friends.
               </p>
             )}

@@ -1,4 +1,4 @@
-.themeBlue {
+.theme-blue {
   color: #fff;
   background: linear-gradient(
     112.03deg,
@@ -7,19 +7,19 @@
   );
 }
 
-.navBrandSpacer {
+.nav-brand-spacer {
   margin-left: 25px;
 }
 
-.navSpacer {
+.nav .spacer {
   margin-right: 50px;
 }
 
-.druidiaHeader {
+.druidia-header {
   background-color: #212529;
 }
 
-.navLink{
+.nav-link{
   color: white;
   text-align: center;
 }

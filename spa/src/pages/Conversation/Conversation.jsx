@@ -102,8 +102,8 @@ export const Conversation = () => {
   return (
     <div>
       {showContent ? (
-        <div className={classes.chatContainer}>
-          <div className={classes.chatMessages} ref={messageContainerRef}>
+        <div className={classes["chat-container"]}>
+          <div className={classes["chat-messages"]} ref={messageContainerRef}>
             {messages.map((message) => (
               <ChatMessage
                 key={message.id}

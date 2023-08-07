@@ -1,5 +1,4 @@
 import { Image, Button } from "react-bootstrap";
-import classes from "./Friend.module.css";
 import { TiPlus, TiMinus } from "react-icons/ti";
 
 export const Friend = (props) => {
@@ -11,7 +10,7 @@ export const Friend = (props) => {
         src={`data:image/png;base64, ${props.user.profilePhotoFile}`}
         alt={props.user.username}
       />
-      <div className={classes.friendInfo}>
+      <div>
         <h5>
           {fullName.trim().substring(0,19)}
         </h5>
@@ -20,7 +19,6 @@ export const Friend = (props) => {
 
       {props.user.isFriend ? (
         <Button
-          className={classes.friendButton}
           variant="dark"
           size="sm"
           onClick={() => props.removeFriendHandler(props.user.id)}
@@ -29,7 +27,6 @@ export const Friend = (props) => {
         </Button>
       ) : (
         <Button
-          className={classes.friendButton}
           variant="dark"
           size="sm"
           onClick={() => props.addFriendHandler(props.user.id)}

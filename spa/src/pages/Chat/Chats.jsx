@@ -1,10 +1,8 @@
 import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../../context/auth-context";
-import { Form } from "react-bootstrap";
-import ListGroup from "react-bootstrap/ListGroup";
+import { Form, ListGroup } from "react-bootstrap";
 import config from "../../config";
 import { Chat } from "./Chat";
-import styles from "../../global.module.css";
 
 export const Chats = (props) => {
   const [userChats, setUserChats] = useState([]);
@@ -38,9 +36,9 @@ export const Chats = (props) => {
       }
     }
 
-    if(showContent){
+    if (showContent) {
       loadChats();
-    }    
+    }
   }, [accessToken, showContent]);
 
   return (
@@ -48,27 +46,22 @@ export const Chats = (props) => {
       {showContent ? (
         <div
           className={
-            styles.colorOverlay +
-            " " +
-            "d-flex justify-content-center align-items-center"
+            "color-overlay d-flex justify-content-center align-items-center"
           }
         >
           <Form className="rounded p-4 p-sm-3">
             {userChats.length > 0 ? (
-              <ListGroup className={styles.listGroup}>
+              <ListGroup>
                 {userChats.map((chat) => {
                   return (
-                    <ListGroup.Item
-                      className={styles.listGroupItem}
-                      key={chat.id}
-                    >
+                    <ListGroup.Item key={chat.id}>
                       <Chat chat={chat} />
                     </ListGroup.Item>
                   );
                 })}
               </ListGroup>
             ) : (
-              <p className={styles.centerText}>
+              <p className={"center-text"}>
                 Me so sorry, but you are not having any conversations at the
                 moment.
               </p>

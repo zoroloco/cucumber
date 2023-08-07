@@ -1,22 +1,16 @@
-body {
-  margin: 0;
-  padding: 0;
-  font-family: Arial, sans-serif;
-}
-
-.chatContainer {
+.chat-container {
   max-width: 400px;
   margin: 0 auto;
   padding: 20px;
 }
 
-.chatMessages {
+.chat-messages {
   max-height: 400px;
   overflow-y: auto;
 }
 
 /* Specific selectors for sent-by-user and received messages */
-.sentByUser{
+.sent-by-user {
   background-color: #5c9d2a;
   align-self: flex-end;
 }
@@ -26,7 +20,7 @@ body {
   align-self: flex-start;
 }
 
-.chatMessage {
+.chat-message {
   padding: 8px;
   margin: 4px 0;
   border-radius: 8px;
@@ -34,19 +28,19 @@ body {
   word-wrap: break-word;
 }
 
-.chatInput {
+.chat-input {
   display: flex;
   margin-top: 10px;
 }
 
-.chatInput input {
+.chat-input input {
   flex-grow: 1;
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
 }
 
-.chatInput button {
+.chat-input button {
   margin-left: 10px;
   padding: 8px 16px;
   border: none;
@@ -56,53 +50,53 @@ body {
   cursor: pointer;
 }
 
-.chatInput button:hover {
+.chat-input button:hover {
   background-color: #128c7e;
 }
 
 /* Responsive Styles */
 @media screen and (max-width: 600px) {
-  .chatContainer {
+  .chat-container {
     max-width: 100%;
     padding: 10px;
   }
 
-  .chatMessages {
-      display: flex;
-      flex-direction: column;
+  .chat-messages {
+    display: flex;
+    flex-direction: column;
   }
 
-  .chatMessage {
-      padding: 8px;
-      margin: 4px 0;
-      border-radius: 8px;
-      max-width: 70%;
+  .chat-message {
+    padding: 8px;
+    margin: 4px 0;
+    border-radius: 8px;
+    max-width: 70%;
   }
 
-  .chatInput {
+  .chat-input {
     display: flex;
     flex-wrap: wrap;
   }
 
   /* Update the flex-basis for input and button */
-  .chatInput input {
+  .chat-input input {
     flex: 1;
     padding: 8px;
     margin-bottom: 10px;
   }
 
-  .chatInput button {
+  .chat-input button {
     flex-basis: 100%;
   }
 }
 
 @media screen and (max-width: 400px) {
-  .chatMessage {
+  .chat-message {
     max-width: 90%;
   }
 
   /* Update the flex-basis for input */
-  .chatInput input {
+  .chat-input input {
     flex: 1;
     padding: 8px;
   }

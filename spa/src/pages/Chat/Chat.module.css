@@ -1,31 +1,3 @@
-.listGroupItem img {
-  width: 40px;
-  height: 40px;
-  object-fit: cover;
-  margin-right: 0.4rem;
-  border-radius: 50%;
-}
-
-.listGroupItem .conversationInfo {
-  display: flex;
-  flex-direction: column;
-  margin-left: auto;
-}
-
-.listGroupItem .conversationInfo h5 {
-  margin: 0;
-  text-align: left;
-  flex-wrap: wrap;
-  font-size: 1rem;
-}
-
-.listGroupItem .conversationInfo span {
-  font-size: 0.8rem;
-  flex-wrap: wrap;
-  text-align: left;
-  color: #666;
-}
-
-.listGroupItem .conversationButton {
-  margin-left: 1rem;
+.chat-col {
+  margin-left: 30px;
 }

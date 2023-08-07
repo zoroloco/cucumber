@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef, useContext } from "react";
 import Form from "react-bootstrap/form";
 import Alert from "react-bootstrap/Alert";
-import styles from "../global.module.css";
 import Button from "react-bootstrap/Button";
 import { Navigate } from "react-router-dom";
 import { AuthContext } from "../context/auth-context";
@@ -37,8 +36,8 @@ export const Login = () => {
   }, [accessToken, ctx]);
 
   const loginHandler = async () => {
-    console.info('Environment:'+process.env.NODE_ENV);
-    console.info('Resource Server URL:'+config.resourceServer);
+    console.info("Environment:" + process.env.NODE_ENV);
+    console.info("Resource Server URL:" + config.resourceServer);
     const response = await fetch(config.resourceServer + "/api/login", {
       method: "POST",
       mode: "cors",
@@ -73,9 +72,7 @@ export const Login = () => {
       ) : (
         <div
           className={
-            styles.colorOverlay +
-            " " +
-            "d-flex justify-content-center align-items-center"
+            "color-overlay d-flex justify-content-center align-items-center"
           }
         >
           <Form className="rounded p-4 p-sm-3">
@@ -121,7 +118,7 @@ export const Login = () => {
             </div>
             {formState.error && (
               <div className="d-grid gap-2">
-                <Alert className={styles.centerText} variant="danger">
+                <Alert className={"center-text"} variant="danger">
                   {formState.error}
                 </Alert>
               </div>

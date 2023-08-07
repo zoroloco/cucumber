@@ -2,8 +2,6 @@ import { useContext, useState, useEffect, useRef } from "react";
 import { AuthContext } from "../../context/auth-context";
 import { Form, Button, Container } from "react-bootstrap";
 import config from "../../config";
-import classes from "./UserAdmin.module.css";
-import styles from "../../global.module.css";
 import { TiZoom } from "react-icons/ti";
 import ListGroup from "react-bootstrap/ListGroup";
 import { UserDetails } from "./UserDetails";
@@ -125,9 +123,7 @@ export const UserAdmin = () => {
         <>
           <div
             className={
-              styles.colorOverlay +
-              " " +
-              "d-flex justify-content-center align-items-center"
+              "color-overlay d-flex justify-content-center align-items-center"
             }
           >
             <Form className="rounded p-4 p-sm-3">
@@ -165,13 +161,10 @@ export const UserAdmin = () => {
               </Container>
 
               {searchResults.length > 0 ? (
-                <ListGroup className={classes.listGroup}>
+                <ListGroup>
                   {searchResults.map((user) => {
                     return (
-                      <ListGroup.Item
-                        className={classes.listGroupItem}
-                        key={user.id}
-                      >
+                      <ListGroup.Item key={user.id}>
                         <UserDetails
                           accessToken={accessToken}
                           user={user}
@@ -189,7 +182,7 @@ export const UserAdmin = () => {
                   })}
                 </ListGroup>
               ) : (
-                <p className={styles.centerText}>No results found.</p>
+                <p className={"center-text"}>No results found.</p>
               )}
             </Form>
           </div>

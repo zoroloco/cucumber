@@ -27,7 +27,7 @@ export const ChatInput = ({ onSendMessage }) => {
   };
 
   return (
-    <div className={classes.chatInput}>
+    <div className={classes["chat-input"]}>
       <input
         type="text"
         value={inputText}

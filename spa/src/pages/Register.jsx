@@ -1,4 +1,3 @@
-import styles from "../global.module.css";
 import { useReducer, useEffect, useRef, useState } from "react";
 import Form from "react-bootstrap/form";
 import Alert from "react-bootstrap/Alert";
@@ -96,7 +95,7 @@ const formReducer = (prevState, action) => {
     newState.registrationSubmitted = false;
     newState.registrationComplete = false;
     newState.errMsg = action.errMsg;
-  }else if (action.type === "REGISTRATION_SUBMITTED") {
+  } else if (action.type === "REGISTRATION_SUBMITTED") {
     newState.registrationSubmitted = true;
     newState.registrationComplete = false;
   } else if (action.type === "REGISTRATION_SUCCESSFUL") {
@@ -194,7 +193,7 @@ export const Register = () => {
         console.error("Error encountered while creating new user:" + error);
         dispatchForm({
           type: "REGISTRATION_ERROR",
-          errMsg: 'Unknown error.',
+          errMsg: "Unknown error.",
         });
       }
     }
@@ -207,9 +206,7 @@ export const Register = () => {
       ) : (
         <div
           className={
-            styles.colorOverlay +
-            " " +
-            "d-flex justify-content-center align-items-center"
+            "color-overlay d-flex justify-content-center align-items-center"
           }
         >
           <Form className="rounded p-4 p-sm-3">
@@ -234,7 +231,7 @@ export const Register = () => {
             </Form.Group>
             {!formState.username.isValid && formState.username.errMsg && (
               <div className="d-grid gap-2">
-                <Alert className={styles.centerText} variant="danger">
+                <Alert className={"center-text"} variant="danger">
                   {formState.username.errMsg}
                 </Alert>
               </div>
@@ -259,7 +256,7 @@ export const Register = () => {
             </Form.Group>
             {!formState.password.isValid && formState.password.errMsg && (
               <div className="d-grid gap-2">
-                <Alert className={styles.centerText} variant="danger">
+                <Alert className={"center-text"} variant="danger">
                   {formState.password.errMsg}
                 </Alert>
               </div>
@@ -284,7 +281,7 @@ export const Register = () => {
             </Form.Group>
             {!formState.password2.isValid && formState.password2.errMsg && (
               <div className="d-grid gap-2">
-                <Alert className={styles.centerText} variant="danger">
+                <Alert className={"center-text"} variant="danger">
                   {formState.password2.errMsg}
                 </Alert>
               </div>
@@ -349,7 +346,9 @@ export const Register = () => {
               <Button
                 variant="dark"
                 size="lg"
-                disabled={!formState.formValid || formState.registrationComplete}
+                disabled={
+                  !formState.formValid || formState.registrationComplete
+                }
                 onClick={registerHandler}
               >
                 [Register]
@@ -358,16 +357,16 @@ export const Register = () => {
 
             {formState.registrationComplete && (
               <div className="d-grid gap-2">
-                <Alert className={styles.centerText} variant="primary">
-                  Account created. Redirecting in 
-                  {redirectCountdown > 0 ? " "+redirectCountdown : " 0"}
+                <Alert className={"center-text"} variant="primary">
+                  Account created. Redirecting in
+                  {redirectCountdown > 0 ? " " + redirectCountdown : " 0"}
                 </Alert>
               </div>
             )}
 
             {formState.registrationSubmitted && (
               <div className="d-grid gap-2">
-                <Alert className={styles.centerText} variant="primary">
+                <Alert className={"center-text"} variant="primary">
                   Please wait...
                 </Alert>
               </div>
@@ -375,8 +374,8 @@ export const Register = () => {
 
             {formState.errMsg && (
               <div className="d-grid gap-2">
-                <Alert className={styles.centerText} variant="danger">
-                {formState.errMsg}
+                <Alert className={"center-text"} variant="danger">
+                  {formState.errMsg}
                 </Alert>
               </div>
             )}

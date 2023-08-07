@@ -1,12 +1,13 @@
-import React from 'react';
+import React from "react";
 import classes from "./Conversation.module.css";
 
 export const ChatMessage = ({ message, isSentByUser }) => {
-
-  //console.info('Message:'+message+' isSentByUser:'+isSentByUser);
-
   return (
-    <div className={`${classes.chatMessage} ${isSentByUser ? classes.sentByUser : classes.received}`}>
+    <div
+      className={`${classes["chat-message"]} ${
+        isSentByUser ? classes["sent-by-user"] : classes["received"]
+      }`}
+    >
       {message}
     </div>
   );

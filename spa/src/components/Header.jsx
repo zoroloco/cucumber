@@ -7,7 +7,7 @@ const Header = () => {
   const ctx = useContext(AuthContext);
 
   return (
-    <Card.Header className={classes.druidiaHeader}>
+    <Card.Header className={classes["druidia-header"]}>
       <Navbar
         collapseOnSelect
         expand="lg"
@@ -24,7 +24,7 @@ const Header = () => {
           )}
 
           <Navbar.Brand
-            className={classes.navBrandSpacer}
+            className={classes["nav-brand-spacer"]}
             href={ctx.loggedIn ? "/home" : "/"}
           >
             [druidia.net]
@@ -42,13 +42,13 @@ const Header = () => {
               {!ctx.loggedIn && (
                 <>
                   <Nav.Item>
-                    <Nav.Link className={classes.navLink} href="/register">
+                    <Nav.Link className={classes["nav-link"]} href="/register">
                       [Sign Up]
                     </Nav.Link>
                   </Nav.Item>
 
                   <Nav.Item>
-                    <Nav.Link className={classes.navLink} href="/login">
+                    <Nav.Link className={classes["nav-link"]} href="/login">
                       [Sign In]
                     </Nav.Link>
                   </Nav.Item>
@@ -57,20 +57,20 @@ const Header = () => {
               {ctx.loggedIn && (
                 <>
                   <Nav.Item>
-                    <Nav.Link className={classes.navLink} eventKey="logout">
+                    <Nav.Link className={classes["nav-link"]} eventKey="logout">
                       [Sign Out]
                     </Nav.Link>
                   </Nav.Item>
                   {ctx.user.userRoles.includes("ROLE_CHAT") && (
                     <>
                       <Nav.Item>
-                        <Nav.Link className={classes.navLink} href="/friends">
+                        <Nav.Link className={classes["nav-link"]} href="/friends">
                           [Friends]
                         </Nav.Link>
                       </Nav.Item>
 
                       <Nav.Item>
-                        <Nav.Link className={classes.navLink} href="/chats">
+                        <Nav.Link className={classes["nav-link"]} href="/chats">
                           [Chats]
                         </Nav.Link>
                       </Nav.Item>
@@ -78,7 +78,7 @@ const Header = () => {
                   )}
                   {ctx.user.userRoles.includes("ROLE_USER_ADMIN") && (
                     <Nav.Item>
-                      <Nav.Link className={classes.navLink} href="/user-admin">
+                      <Nav.Link className={classes["nav-link"]} href="/user-admin">
                         [User Admin]
                       </Nav.Link>
                     </Nav.Item>

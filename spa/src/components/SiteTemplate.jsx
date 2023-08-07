@@ -1,11 +1,11 @@
 import Header from "./Header";
 import { Outlet } from "react-router-dom";
 import { Card } from "react-bootstrap";
-import styles from "../global.module.css";
+import '../App.css';
 
 const SiteTemplate = () => {
   return (
-    <div className={styles.mainDiv}>
+    <div className={'main-div'}>
       <Card style={{ backgroundColor: "#212529", color: "white" }}>
         <Header />
 

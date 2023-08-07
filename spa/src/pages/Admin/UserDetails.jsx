@@ -1,6 +1,5 @@
 import { Image } from "react-bootstrap";
 import { Container } from "react-bootstrap";
-import classes from "./UserAdmin.module.css";
 import { UserDetailsRole } from "./UserDetailsRole";
 
 export const UserDetails = (props) => {
@@ -15,7 +14,7 @@ export const UserDetails = (props) => {
         src={`data:image/png;base64, ${props.user.profilePhotoFile}`}
         alt={props.user.username}
       />
-      <div className={classes.userInfo}>
+      <div>
         <h5>{fullName.trim()}</h5>
         <span>ID:{props.user.id}</span>
         <span>{props.user.username.trim()}</span>
