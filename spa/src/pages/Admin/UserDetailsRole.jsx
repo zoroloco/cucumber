@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Form } from "react-bootstrap";
 import config from "../../config";
+import styles from "./sharedStyles.module.css";
 
 export const UserDetailsRole = (props) => {
   const [checked, setChecked] = useState(false);
@@ -45,7 +46,8 @@ export const UserDetailsRole = (props) => {
   };
 
   return (
-    <Form.Check
+    <Form.Check 
+      className={styles["form-check"]}
       checked={checked}
       reverse
       type="switch"

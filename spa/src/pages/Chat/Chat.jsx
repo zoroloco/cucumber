@@ -1,4 +1,4 @@
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row } from "react-bootstrap";
 import { ChatUser } from "./ChatUser";
 import { useNavigate } from "react-router-dom";
 import classes from "./Chat.module.css";
@@ -11,11 +11,9 @@ export const Chat = (props) => {
   };
 
   return (
-    <Container>
-      <Row className="clickable-row">
-        <Col className={classes["chat-col"]}>{props.chat.name} </Col>
-      </Row>
-      <Row className="clickable-row" onClick={chatClickHandler}>
+    <Container onClick={chatClickHandler}>
+      <div className={classes["chat-name"]}>{props.chat.name}</div>
+      <Row>
         {props.chat.chatUsers.map((chatUser) => (
           <ChatUser key={chatUser.id} user={chatUser.__user__} />
         ))}

@@ -87,6 +87,7 @@ export class AppConstants {
   static FIND_CHATS_FOR_USER = 'find-chats-for-user';
   static CREATE_CHAT_MESSAGE = 'create-chat-message';
   static FIND_CHAT_MESSAGES_BY_CHAT = 'find-chat-messages-by-chat-id/:chatid';
+  static FIND_USER_PROFILE_PHOTO_FOR_USER = 'find-user-profile-photo-for-user';
 
   //swagger description
   static LOGIN_DESC =
@@ -125,6 +126,7 @@ export class AppConstants {
     'Creates a chat message for the user requesting and chat id.';
   static FIND_CHAT_MESSAGES_BY_CHAT_DESC =
     'Finds all active chat messages given the chat id. Validation done to make sure request user id is part of the chat.';
+  static FIND_USER_PROFILE_PHOTO_FOR_USER_DESC = 'Returns a base64 encoded string that represents the requesting users profile photo. This request can be cached by browser to improve performance.';
 
   //bcrypt
   static BCRYPT_SALT_ROUNDS = 10;

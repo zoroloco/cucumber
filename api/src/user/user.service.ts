@@ -65,7 +65,9 @@ export class UserService {
       );
     } catch (error) {
       Logger.error('Error finding all users:' + error);
-      throw new BadRequestException('Error encountered while finding all users.');
+      throw new BadRequestException(
+        'Error encountered while finding all users.',
+      );
     }
   }
 
@@ -92,6 +94,45 @@ export class UserService {
         username: un,
       },
     });
+  }
+
+  /**
+   * findUserProfilePhotoForUser
+   *
+   * @returns - the base64 encoded user profile photo for the requesting user.
+   */
+  public async findUserProfilePhotoForUser(reqUserId: number) {
+    Logger.log(
+      'Attempting to search user profile photo for user id:' + reqUserId,
+    );
+
+    try {
+      let user: User = await this.userRepository.findOne({
+        relations: {
+          userProfile: true, //joins with userProfile table
+        },
+        select: {
+          id: true,
+        },
+        where: {
+          id: reqUserId,
+        },
+      });
+
+      if (user) {
+        Logger.log(
+          'Successfully found user profile id for user id:' + reqUserId,
+        );
+
+        const hydratedUser:User = await this.imageProcessingService.hydrateUserProfilePhoto(user);
+        return hydratedUser.profilePhotoFile;
+      }
+    } catch (error) {
+      Logger.error('Error finding user profile photo:' + error);
+      throw new BadRequestException(
+        'Error encountered while finding user profile photo.',
+      );
+    }
   }
 
   /**
@@ -123,7 +164,9 @@ export class UserService {
       );
     } catch (error) {
       Logger.error('Error searching for users:' + error);
-      throw new BadRequestException('Error encountered searching users by search criteria.');
+      throw new BadRequestException(
+        'Error encountered searching users by search criteria.',
+      );
     }
   }
 
@@ -141,7 +184,9 @@ export class UserService {
       });
     } catch (error) {
       Logger.error('Error updating user:' + error);
-      throw new BadRequestException('Error encountered while updating user login information.');
+      throw new BadRequestException(
+        'Error encountered while updating user login information.',
+      );
     }
   }
 
@@ -192,14 +237,18 @@ export class UserService {
       const noobUserRole: UserRole = this.userRoleRepository.create();
       noobUserRole.setAuditFields(savedUser.id);
       noobUserRole.user = savedUser;
-      const userRoleRefs = await this.redisService.fetchCachedData(AppConstants.APP_CACHE_USER_ROLE_REFS);
+      const userRoleRefs = await this.redisService.fetchCachedData(
+        AppConstants.APP_CACHE_USER_ROLE_REFS,
+      );
       noobUserRole.userRoleRef = userRoleRefs.find(
         (urr) => urr.roleName === 'ROLE_NOOB',
       );
-      
+
       //NOTE: This can be async. Why wait? User won't be logging in so fast now.
-      const savedNoobUserRole = await this.userRoleService.saveUserRole(noobUserRole);
-      if(savedNoobUserRole){
+      const savedNoobUserRole = await this.userRoleService.saveUserRole(
+        noobUserRole,
+      );
+      if (savedNoobUserRole) {
         Logger.log('Successfully saved a noob.');
       }
 

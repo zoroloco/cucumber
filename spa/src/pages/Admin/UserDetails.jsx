@@ -1,6 +1,7 @@
 import { Image } from "react-bootstrap";
 import { Container } from "react-bootstrap";
 import { UserDetailsRole } from "./UserDetailsRole";
+import styles from "./sharedStyles.module.css";
 
 export const UserDetails = (props) => {
   const fullName =
@@ -9,7 +10,7 @@ export const UserDetails = (props) => {
     props.user.__userProfile__.lastName;
 
   return (
-    <Container>
+    <Container className={styles["admin-container"]}>
       <Image
         src={`data:image/png;base64, ${props.user.profilePhotoFile}`}
         alt={props.user.username}

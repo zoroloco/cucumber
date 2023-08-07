@@ -1,0 +1,50 @@
+/* Add this CSS to your stylesheets */
+.admin-color-overlay {
+  position: relative;
+}
+
+.admin-color-overlay .rounded {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  /* Add any additional styling you need for the container */
+}
+
+.admin-center-text {
+  text-align: center;
+}
+
+/* Add this CSS to your stylesheets */
+.admin-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.admin-container h5 {
+  flex: 1;
+  margin-right: 1rem; /* Adjust the spacing as needed */
+}
+
+.admin-container div {
+  flex: 1;
+}
+
+.admin-container img {
+  max-width: 100px; /* Adjust the image size as needed */
+}
+
+/* Add this CSS to your stylesheets */
+.form-check {
+  margin-right: 1rem; /* Adjust the spacing as needed */
+}
+
+@media screen and (max-width: 768px) {
+  /* Add styles for mobile here */
+  .admin-container {
+    display: flex;
+    flex-direction: column;
+  }
+}

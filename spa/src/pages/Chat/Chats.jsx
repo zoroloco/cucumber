@@ -1,11 +1,12 @@
 import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../../context/auth-context";
-import { Form, ListGroup } from "react-bootstrap";
+import { Container, ListGroup } from "react-bootstrap";
 import config from "../../config";
 import { Chat } from "./Chat";
+import classes from "./Chat.module.css";
 
 export const Chats = (props) => {
-  const [userChats, setUserChats] = useState([]);
+  const [chats, setChats] = useState([]);
   const { accessToken, isLoading } = useContext(AuthContext);
   const [showContent, setShowContent] = useState(false);
 
@@ -30,7 +31,7 @@ export const Chats = (props) => {
 
       const responseJson = await response.json();
       if (response.status === 200) {
-        setUserChats(responseJson);
+        setChats(responseJson);
       } else {
         console.error("Error communicating with server.");
       }
@@ -44,29 +45,23 @@ export const Chats = (props) => {
   return (
     <div>
       {showContent ? (
-        <div
-          className={
-            "color-overlay d-flex justify-content-center align-items-center"
-          }
-        >
-          <Form className="rounded p-4 p-sm-3">
-            {userChats.length > 0 ? (
-              <ListGroup>
-                {userChats.map((chat) => {
-                  return (
-                    <ListGroup.Item key={chat.id}>
-                      <Chat chat={chat} />
-                    </ListGroup.Item>
-                  );
-                })}
+        <div className="color-overlay d-flex justify-content-center align-items-center">
+          <Container>
+            {chats.length > 0 ? (
+              <ListGroup className={classes["custom-list-group"]}>
+                {chats.map((chat) => (
+                  <ListGroup.Item key={chat.id} className={classes["custom-list-group-item"]}>
+                    <Chat chat={chat} />                    
+                  </ListGroup.Item>
+                ))}
               </ListGroup>
             ) : (
-              <p className={"center-text"}>
+              <p className="center-text">
                 Me so sorry, but you are not having any conversations at the
                 moment.
               </p>
             )}
-          </Form>
+          </Container>
         </div>
       ) : (
         <div>Please wait...</div>

@@ -5,6 +5,7 @@ import config from "../../config";
 import { TiZoom } from "react-icons/ti";
 import ListGroup from "react-bootstrap/ListGroup";
 import { UserDetails } from "./UserDetails";
+import styles from "./sharedStyles.module.css";
 
 export const UserAdmin = () => {
   const { accessToken, isLoading } = useContext(AuthContext);
@@ -123,7 +124,8 @@ export const UserAdmin = () => {
         <>
           <div
             className={
-              "color-overlay d-flex justify-content-center align-items-center"
+              styles["admin-color-overlay"]+" "+
+              "d-flex justify-content-center align-items-center"
             }
           >
             <Form className="rounded p-4 p-sm-3">
@@ -182,7 +184,7 @@ export const UserAdmin = () => {
                   })}
                 </ListGroup>
               ) : (
-                <p className={"center-text"}>No results found.</p>
+                <p className={styles["admin-center-text"]}>No results found.</p>
               )}
             </Form>
           </div>

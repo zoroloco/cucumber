@@ -10,6 +10,8 @@ import {
   MaxFileSizeValidator,
   UseInterceptors,
   Logger,
+  Request,
+  Header
 } from '@nestjs/common';
 import { JwtAuthGuard, AuthUserRoleGuard } from '../auth';
 import {
@@ -102,7 +104,7 @@ export class UserController {
    *
    * @returns - All users in system.
    */
-  @UseGuards(JwtAuthGuard,AuthUserRoleGuard)
+  @UseGuards(JwtAuthGuard, AuthUserRoleGuard)
   @Get(AppConstants.FIND_ALL_USERS)
   @ApiTags(AppConstants.API_TAG)
   @ApiBearerAuth()
@@ -122,7 +124,7 @@ export class UserController {
    * @param searchUserDto
    * @returns - The user if found. NotFoundException otherwise.
    */
-  @UseGuards(JwtAuthGuard,AuthUserRoleGuard)
+  @UseGuards(JwtAuthGuard, AuthUserRoleGuard)
   @Post(AppConstants.FIND_USER_BY_USERNAME)
   @ApiBearerAuth()
   @ApiTags(AppConstants.API_TAG)
@@ -150,7 +152,7 @@ export class UserController {
    * @param string
    * @returns - List of users matching search criteria.
    */
-  @UseGuards(JwtAuthGuard,AuthUserRoleGuard)
+  @UseGuards(JwtAuthGuard, AuthUserRoleGuard)
   @Post(AppConstants.FIND_USERS_BY_SEARCH_PARAMS)
   @ApiBearerAuth()
   @ApiTags(AppConstants.API_TAG)
@@ -185,5 +187,26 @@ export class UserController {
     return await this.userService.findUsersBySearchCriteria(
       searchUserDto.searchQuery,
     );
+  }
+
+  /**
+   * findUserProfilePhotoForUser
+   *
+   * @returns - base 64 encoded user profile image for the requesting user.
+   */
+  @UseGuards(JwtAuthGuard, AuthUserRoleGuard)
+  @Get(AppConstants.FIND_USER_PROFILE_PHOTO_FOR_USER)
+  @Header('Content-Type', 'image/png') 
+  @ApiTags(AppConstants.API_TAG)
+  @ApiBearerAuth()
+  @ApiResponse({
+    status: 200,
+    description: AppConstants.FIND_USER_PROFILE_PHOTO_FOR_USER_DESC,
+  })
+  @ApiOperation({
+    summary: AppConstants.FIND_USER_PROFILE_PHOTO_FOR_USER_DESC,
+  })
+  findUserProfilePhotoForUser(@Request() req) {
+    return this.userService.findUserProfilePhotoForUser(req.user.userId);
   }
 }
