@@ -1,3 +1,21 @@
-.btn{
-  flex-grow:1;
+.friend-container {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  padding: none;
+}
+
+.friend-image {
+  margin-right: 1px;
+}
+
+.friend-info {
+  font-size: 10px;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.friend-button {
+  display: flex;
+  justify-content: flex-end;
 }

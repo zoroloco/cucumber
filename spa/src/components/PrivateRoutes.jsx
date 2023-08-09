@@ -29,7 +29,7 @@ const PrivateRoutes = () => {
           "chats": "ROLE_CHAT",
           "friends": "ROLE_CHAT",
           "conversation": "ROLE_CHAT",
-          "home": "ROLE_VERIFIED",
+          "home": "ROLE_NOOB",
           "user-admin": "ROLE_USER_ADMIN",
         };
 
@@ -51,15 +51,15 @@ const PrivateRoutes = () => {
           }
 
           if (endPointPath) {
-            console.log("PrivateRoutes currentRoute parsed to:" + endPointPath);
+            //console.log("PrivateRoutes currentRoute parsed to:" + endPointPath);
             const requiredRole = requiredRoles[endPointPath];
             const hasRequiredRole = userRoles.includes(requiredRole);
 
-            if (!hasRequiredRole && endPointPath !== "/home") {
+            if (!hasRequiredRole && endPointPath !== "home") {
               console.error("Not Authorized.");
               return <Navigate to="/" />;
             } else {
-              console.info("User authorized to view:" + endPointPath);
+              //console.info("User authorized to view:" + endPointPath);
             }
           }
         }

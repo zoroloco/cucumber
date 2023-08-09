@@ -6,9 +6,10 @@ import { Friend } from "./Friend";
 import config from "../../config";
 import { TiZoom } from "react-icons/ti";
 
-export const Friends = (props) => {
+export const Friends = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  const [activeChats, setActiveChats] = useState([]);
   const [friends, setFriends] = useState([]);
   const searchRef = useRef();
   const { accessToken, user, isLoading } = useContext(AuthContext);
@@ -22,6 +23,29 @@ export const Friends = (props) => {
    * set focus to search field and load any existing friends, if any.
    */
   useEffect(() => {
+    async function loadActiveChats() {
+      const response = await fetch(
+        `${config.resourceServer}/api/find-chats-for-user-skinny`,
+        {
+          method: "GET",
+          mode: "cors",
+          cache: "no-cache",
+          credentials: "same-origin",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      const responseJson = await response.json();
+      if (response.status === 200) {
+        console.log("got back active chats:" + JSON.stringify(responseJson));
+        setActiveChats(responseJson);
+      } else {
+        console.error("Error communicating with server.");
+      }
+    }
+
     async function loadFriends() {
       const response = await fetch(
         `${config.resourceServer}/api/find-user-associations-by-user`,
@@ -53,8 +77,28 @@ export const Friends = (props) => {
     if (showContent) {
       searchRef.current.focus();
       loadFriends();
+      loadActiveChats();
     }
   }, [accessToken, showContent]);
+
+  const chatWithFriendHandler = (friendId) => {
+    console.log(
+      "User id:" + user.id + " clicked to start chat with:" + friendId
+    );
+
+    //see if there already exists an active chat for the friendId
+    if (activeChats && activeChats.length > 0) {
+      activeChats
+        .map((ac) => {
+          return ac.chatUsers;
+        })
+        .map((cu) => {});
+    } else {
+      //make backend call to create new chat with involved users
+    }
+
+    //redirect to conversation page for newly created chat.
+  };
 
   /**
    * clear search field and reset list to just existing friends, if any.
@@ -255,13 +299,15 @@ export const Friends = (props) => {
 
             {searchResults.length > 0 ? (
               <ListGroup>
-                {searchResults.map((user) => {
+                {searchResults.map((f) => {
                   return (
-                    <ListGroup.Item key={user.id}>
+                    <ListGroup.Item key={f.id}>
                       <Friend
                         user={user}
+                        friend={f}
                         addFriendHandler={addFriendHandler}
                         removeFriendHandler={removeFriendHandler}
+                        chatWithFriendHandler={chatWithFriendHandler}
                       />
                     </ListGroup.Item>
                   );

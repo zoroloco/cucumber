@@ -53,10 +53,7 @@ export class ChatController {
   @ApiOperation({ summary: AppConstants.CREATE_CHAT_DESC })
   @ApiBearerAuth()
   @Post(AppConstants.CREATE_CHAT)
-  async createChat(
-    @Request() req,
-    @Body() createChatDto: CreateChatDto,
-  ) {
+  async createChat(@Request() req, @Body() createChatDto: CreateChatDto) {
     return await this.chatService.createChat(
       req.user.userId,
       createChatDto.name,
@@ -65,11 +62,28 @@ export class ChatController {
     );
   }
 
+    /**
+   * findChatsForUserSkinny
+   *
+   * @returns - all chats associated to the user.
+   */
+    @UseGuards(JwtAuthGuard, AuthUserRoleGuard)
+    @Get(AppConstants.FIND_CHATS_FOR_USER_SKINNY)
+    @ApiBearerAuth()
+    @ApiTags(AppConstants.API_TAG)
+    @ApiResponse({
+      status: 201,
+      description: AppConstants.FIND_CHATS_FOR_USER_SKINNY_DESC,
+    })
+    @ApiOperation({ summary: AppConstants.FIND_CHATS_FOR_USER_SKINNY_DESC })
+    async findChatsForUserSkinny(@Request() req) {
+      return this.chatService.findChatsForUser(req.user.userId, true);
+    }
+
   /**
    * findChatsForUser
    *
-   * @param string
-   * @returns - all chats associated to the user.
+   * @returns - all chats associated to the user with involved user details such as profile photo, user profile, etc.
    */
   @UseGuards(JwtAuthGuard, AuthUserRoleGuard)
   @Get(AppConstants.FIND_CHATS_FOR_USER)
@@ -81,7 +95,7 @@ export class ChatController {
   })
   @ApiOperation({ summary: AppConstants.FIND_CHATS_FOR_USER_DESC })
   async findChatsForUser(@Request() req) {
-    return this.chatService.findChatsForUser(req.user.userId);
+    return this.chatService.findChatsForUser(req.user.userId, false);
   }
 
   /**

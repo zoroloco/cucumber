@@ -20,7 +20,7 @@ const Header = () => {
         {
           method: "GET",
           mode: "cors",
-          cache: "no-cache",
+          cache: "default",
           credentials: "same-origin",
           headers: {
             Authorization: `Bearer ${ctx.accessToken}`,
@@ -28,18 +28,18 @@ const Header = () => {
         }
       );
 
-      const responseJson = await response.json();
-      if (response.status === 200) {
-        setProfilePhotoFile(responseJson);
+      if (response.ok) {
+        const profilePhotoFileStr = await response.text();
+        setProfilePhotoFile(profilePhotoFileStr);
       } else {
         console.error("Error communicating with server.");
       }
     };
 
-    if (showContent) {
+    if (showContent && ctx.loggedIn) {
       fetchProfilePhotoFile();
     }
-  }, [ctx.accessToken, showContent]);
+  }, [ctx.accessToken, showContent, ctx.loggedIn]);
 
   return (
     <Card.Header className={classes["druidia-header"]}>
@@ -51,8 +51,9 @@ const Header = () => {
         sticky="top"
       >
         <Container fluid>
-          {showContent && (
+          {ctx.loggedIn && (
             <Image
+              className={classes["header-profile-img"]}
               src={`data:image/png;base64, ${profilePhotoFile}`}
               alt={ctx.user.username}
             />
@@ -60,7 +61,7 @@ const Header = () => {
 
           <Navbar.Brand
             className={classes["nav-brand-spacer"]}
-            href={showContent ? "/home" : "/"}
+            href={ctx.loggedIn ? "/home" : "/"}
           >
             [druidia.net]
           </Navbar.Brand>
@@ -74,7 +75,7 @@ const Header = () => {
                 }
               }}
             >
-              {!showContent && (
+              {!ctx.loggedIn && (
                 <>
                   <Nav.Item>
                     <Nav.Link className={classes["nav-link"]} href="/register">
@@ -89,7 +90,7 @@ const Header = () => {
                   </Nav.Item>
                 </>
               )}
-              {showContent && (
+              {ctx.loggedIn && (
                 <>
                   <Nav.Item>
                     <Nav.Link className={classes["nav-link"]} eventKey="logout">

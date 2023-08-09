@@ -31,12 +31,13 @@ export class ChatService {
   /**
    *
    * @param userId
+   * @param skinnyFlag - if true then no profile photos hydrated with user profile.
    *
    * @returns - list of active Chats for given user ID. The chats will contain a list of chatUsers
    * associated to the chat. Each chatUser will have their user object populated with user profile photo.
    */
-  public async findChatsForUser(reqUserId: number) {
-    Logger.log('Attempting to find all active chats for user id:' + reqUserId);
+  public async findChatsForUser(reqUserId: number, skinnyFlag: boolean) {
+    Logger.log('Attempting to find all active chats for user id:' + reqUserId+' skinnyFlag:'+skinnyFlag);
     try {
       const chatUsers = await this.chatUserRepository
         .createQueryBuilder('chatUser')
@@ -66,9 +67,13 @@ export class ChatService {
           })
           .getMany();
 
-        if (chats) {
+        if (chats) {          
           this.logger.log('Successfully mapped:' + chats.length + ' chats.');
-          return await Promise.all(chats.map(this.hydrateChats.bind(this)));
+          if(!skinnyFlag){
+            return await Promise.all(chats.map(this.hydrateChats.bind(this)));
+          }else{
+            return await Promise.all(chats.map(this.hydrateChatsSkinny.bind(this)));
+          }
         }
       }
     } catch (error) {
@@ -80,6 +85,14 @@ export class ChatService {
       );
       throw new BadRequestException('Error encountered finding user chats.');
     }
+  }
+
+  private async hydrateChatsSkinny(chat: Chat) {
+    this.logger.log('Now hydrating skinny chat:' + JSON.stringify(chat));
+    chat.chatUsers = await Promise.all(
+      chat.chatUsers.map(this.hydrateChatUsersSkinny.bind(this)),
+    );
+    return chat;
   }
 
   private async hydrateChats(chat: Chat) {
@@ -94,6 +107,13 @@ export class ChatService {
     this.logger.log('Now hydrating chat user:' + JSON.stringify(chatUser));
     let user = await chatUser.user; //lazy load
     user = await this.imageProcessingService.hydrateUserProfilePhoto(user);
+    chatUser.user = user;
+    return chatUser;
+  }
+
+  private async hydrateChatUsersSkinny(chatUser: ChatUser) {
+    this.logger.log('Now hydrating skinny chat user:' + JSON.stringify(chatUser));
+    let user = await chatUser.user; //lazy load    
     chatUser.user = user;
     return chatUser;
   }

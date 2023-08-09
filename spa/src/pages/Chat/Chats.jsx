@@ -3,7 +3,6 @@ import { AuthContext } from "../../context/auth-context";
 import { Container, ListGroup } from "react-bootstrap";
 import config from "../../config";
 import { Chat } from "./Chat";
-import classes from "./Chat.module.css";
 
 export const Chats = (props) => {
   const [chats, setChats] = useState([]);
@@ -48,9 +47,9 @@ export const Chats = (props) => {
         <div className="color-overlay d-flex justify-content-center align-items-center">
           <Container>
             {chats.length > 0 ? (
-              <ListGroup className={classes["custom-list-group"]}>
+              <ListGroup>
                 {chats.map((chat) => (
-                  <ListGroup.Item key={chat.id} className={classes["custom-list-group-item"]}>
+                  <ListGroup.Item key={chat.id}>
                     <Chat chat={chat} />                    
                   </ListGroup.Item>
                 ))}

@@ -1,41 +1,45 @@
+import React from "react";
 import { Image, Button } from "react-bootstrap";
-import { TiPlus, TiMinus } from "react-icons/ti";
+import { TiMinus, TiPlus } from "react-icons/ti";
 import classes from "./Friend.module.css";
 
 export const Friend = (props) => {
-  const fullName =
-    props.user.__userProfile__.firstName +
-    " " +
-    props.user.__userProfile__.lastName;
+  const fullName = `${props.friend.__userProfile__.firstName} ${props.friend.__userProfile__.lastName}`;
 
   return (
-    <>
-      <Image
-        src={`data:image/png;base64, ${props.user.profilePhotoFile}`}
-        alt={props.user.username}
-      />
-      <div>
-        <h6>{fullName}</h6>
-        <span>{props.user.username}</span>
+    <div
+      className={classes["friend-container"]}
+      onClick={()=>props.chatWithFriendHandler(props.friend.id)}
+    >
+      <div className={classes["friend-image"]}>
+        <Image
+          src={`data:image/png;base64, ${props.friend.profilePhotoFile}`}
+          alt={props.friend.username}
+        />
       </div>
-
-      {props.user.isFriend ? (
-        <Button className={classes["friend-button"]}
-          variant="dark"
-          size="sm"
-          onClick={() => props.removeFriendHandler(props.user.id)}
-        >
-          <TiMinus />
-        </Button>
-      ) : (
-        <Button className={classes["friend-button"]}
-          variant="dark"
-          size="sm"
-          onClick={() => props.addFriendHandler(props.user.id)}
-        >
-          <TiPlus />
-        </Button>
-      )}
-    </>
+      <div className={classes["friend-info"]}>
+        <h6>{fullName.trim().substring(0, 22)}</h6>
+        <h6>{props.friend.username.trim().substring(0, 22)}</h6>
+      </div>
+      <div className={classes["friend-button"]}>
+        {props.friend.isFriend ? (
+          <Button
+            variant="dark"
+            size="sm"
+            onClick={() => props.removeFriendHandler(props.friend.id)}
+          >
+            <TiMinus />
+          </Button>
+        ) : (
+          <Button
+            variant="dark"
+            size="sm"
+            onClick={() => props.addFriendHandler(props.friend.id)}
+          >
+            <TiPlus />
+          </Button>
+        )}
+      </div>
+    </div>
   );
 };

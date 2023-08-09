@@ -197,6 +197,7 @@ export class UserController {
   @UseGuards(JwtAuthGuard, AuthUserRoleGuard)
   @Get(AppConstants.FIND_USER_PROFILE_PHOTO_FOR_USER)
   @Header('Content-Type', 'image/png') 
+  @Header('Cache-Control', 'public, max-age=3600')
   @ApiTags(AppConstants.API_TAG)
   @ApiBearerAuth()
   @ApiResponse({
