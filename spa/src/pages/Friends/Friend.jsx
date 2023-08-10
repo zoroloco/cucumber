@@ -9,7 +9,7 @@ export const Friend = (props) => {
   return (
     <div
       className={classes["friend-container"]}
-      onClick={()=>props.chatWithFriendHandler(props.friend.id)}
+      onClick={()=>props.chatWithFriendHandler(props.friend)}
     >
       <div className={classes["friend-image"]}>
         <Image

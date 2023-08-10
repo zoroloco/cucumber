@@ -5,6 +5,7 @@ import ListGroup from "react-bootstrap/ListGroup";
 import { Friend } from "./Friend";
 import config from "../../config";
 import { TiZoom } from "react-icons/ti";
+import { useNavigate } from "react-router-dom";
 
 export const Friends = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -14,6 +15,7 @@ export const Friends = () => {
   const searchRef = useRef();
   const { accessToken, user, isLoading } = useContext(AuthContext);
   const [showContent, setShowContent] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setShowContent(!isLoading);
@@ -39,7 +41,7 @@ export const Friends = () => {
 
       const responseJson = await response.json();
       if (response.status === 200) {
-        console.log("got back active chats:" + JSON.stringify(responseJson));
+        //console.log("got back active chats:" + JSON.stringify(responseJson));
         setActiveChats(responseJson);
       } else {
         console.error("Error communicating with server.");
@@ -81,23 +83,86 @@ export const Friends = () => {
     }
   }, [accessToken, showContent]);
 
-  const chatWithFriendHandler = (friendId) => {
-    console.log(
-      "User id:" + user.id + " clicked to start chat with:" + friendId
-    );
+  const createChat = async (friends) => {
+    try {
+      const reqBody = {
+        name: friends.map(f=> f.__userProfile__.firstName).join(' '),
+        publicFlag: 0,
+        userIds: friends.filter(f => f.id !== user.id).map(f => f.id), //filter out yourself and only send back friend id
+      };
 
-    //see if there already exists an active chat for the friendId
-    if (activeChats && activeChats.length > 0) {
-      activeChats
-        .map((ac) => {
-          return ac.chatUsers;
-        })
-        .map((cu) => {});
-    } else {
-      //make backend call to create new chat with involved users
+      console.log('Here is my body:'+JSON.stringify(reqBody));
+
+      const response = await fetch(config.resourceServer + "/api/create-chat", {
+        method: "POST",
+        mode: "cors",
+        cache: "no-cache",
+        credentials: "same-origin",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(reqBody),
+      });
+
+      const responseJson = await response.json();
+      console.log("got resp status:" + response.status);
+      if (response.status === 201) {
+        console.log("Successfully created new chat with id:" + responseJson.id);
+        return responseJson.id; //the new chat id
+      } else {
+        console.error("Error communicating with server.");
+      }
+    } catch (error) {
+      console.error("Error communicating with server:" + error);
     }
 
-    //redirect to conversation page for newly created chat.
+    return null;
+  };
+
+  const chatWithFriendHandler = async (friend) => {
+    console.log(
+      "User id:" + user.id + " clicked to start chat with:" + friend.id
+    );
+
+    //create search criteria for finding existing chat
+    const friendUserIds = [];
+    friendUserIds.push(user.id);
+    friendUserIds.push(friend.id);
+    const existingChat = findExistingChat(friendUserIds);
+
+    if (existingChat) {
+      console.log("Found existing chat with id:" + existingChat.id);
+      navigate("/conversation/" + existingChat.id);
+    } else {
+      console.log("Did not find existing chat with friend(s):" + friendUserIds);
+      const friendsInNewChat = [];
+      friendsInNewChat.push(friend);
+      const newChatId = await createChat(friendsInNewChat);
+      navigate("/conversation/" + newChatId);
+    }
+  };
+
+  /**
+   *
+   * @param {*} friendUserIds - contains list of friends in chat plus your own id.
+   * @returns
+   */
+  const findExistingChat = (friendUserIds) => {
+    for (const chat of activeChats) {
+      const userIdsInChat = chat.chatUsers.map(
+        (chatUser) => chatUser.__user__.id
+      );
+
+      const containsExactFriendsAndMyself =
+        friendUserIds.length === userIdsInChat.length &&
+        friendUserIds.every((friendId) => userIdsInChat.includes(friendId));
+
+      if (containsExactFriendsAndMyself) {
+        return chat; // Return the chat object if conditions are met
+      }
+    }
+    return null; // Return null if no matching chat is found
   };
 
   /**

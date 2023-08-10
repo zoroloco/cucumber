@@ -15,9 +15,10 @@ export const UserDetails = (props) => {
         src={`data:image/png;base64, ${props.user.profilePhotoFile}`}
         alt={props.user.username}
       />
-      <div>
+      <div className={"center-text"}>
         <h5>{fullName.trim()}</h5>
         <span>ID:{props.user.id}</span>
+        <br />
         <span>{props.user.username.trim()}</span>
       </div>
       <div key="reverse-switch" className="mb-3">

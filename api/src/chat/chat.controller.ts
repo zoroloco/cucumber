@@ -6,6 +6,7 @@ import {
   Request,
   UseGuards,
   Body,
+  Logger
 } from '@nestjs/common';
 import { JwtAuthGuard, AuthUserRoleGuard } from '../auth';
 import {
@@ -22,6 +23,8 @@ import { Chat, ChatMessage } from '../entities';
 
 @Controller(AppConstants.API_PATH)
 export class ChatController {
+  private readonly logger = new Logger(ChatController.name);
+
   constructor(private readonly chatService: ChatService) {}
 
   /**
@@ -54,6 +57,8 @@ export class ChatController {
   @ApiBearerAuth()
   @Post(AppConstants.CREATE_CHAT)
   async createChat(@Request() req, @Body() createChatDto: CreateChatDto) {
+    this.logger.log('Chat controller got create chat dto:'+JSON.stringify(createChatDto));
+
     return await this.chatService.createChat(
       req.user.userId,
       createChatDto.name,

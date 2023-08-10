@@ -107,13 +107,15 @@ export class ChatService {
     this.logger.log('Now hydrating chat user:' + JSON.stringify(chatUser));
     let user = await chatUser.user; //lazy load
     user = await this.imageProcessingService.hydrateUserProfilePhoto(user);
-    chatUser.user = user;
+    user.password = '';
+    chatUser.user = user;    
     return chatUser;
   }
 
   private async hydrateChatUsersSkinny(chatUser: ChatUser) {
     this.logger.log('Now hydrating skinny chat user:' + JSON.stringify(chatUser));
     let user = await chatUser.user; //lazy load    
+    user.password = '';
     chatUser.user = user;
     return chatUser;
   }

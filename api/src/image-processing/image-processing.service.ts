@@ -14,7 +14,7 @@ export class ImageProcessingService {
    * @returns - user with user profile photo
    */
   public async hydrateUserProfilePhoto(user: User) {
-    user.password = '';
+    user.password = '';//extra insurance
 
     const userProfile = await user.userProfile; //lazy load
 
