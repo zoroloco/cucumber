@@ -27,7 +27,7 @@ export class UserAssociationController {
   ) {}
 
   /**
-   * findUserAssociationsByUser
+   * findUserAssociationsForUser
    *
    * @returns - list of user associates for given user id
    */
@@ -35,13 +35,13 @@ export class UserAssociationController {
   @ApiTags(AppConstants.API_TAG)
   @ApiResponse({
     status: 200,
-    description: AppConstants.FIND_USER_ASSOCIATIONS_BY_USER_DESC,
+    description: AppConstants.FIND_USER_ASSOCIATIONS_FOR_USER_DESC,
   })
-  @ApiOperation({ summary: AppConstants.FIND_USER_ASSOCIATIONS_BY_USER_DESC })
+  @ApiOperation({ summary: AppConstants.FIND_USER_ASSOCIATIONS_FOR_USER_DESC })
   @ApiBearerAuth()
-  @Get(AppConstants.FIND_USER_ASSOCIATIONS_BY_USER)
-  async findUserAssociationsByUser(@Request() req) {
-    return this.userAssociationService.findUserAssociationsByUserId(req.user.userId);
+  @Get(AppConstants.FIND_USER_ASSOCIATIONS_FOR_USER)
+  async findUserAssociationsForUser(@Request() req) {
+    return this.userAssociationService.findUserAssociationsForUser(req.user.userId);
   }
 
   /**

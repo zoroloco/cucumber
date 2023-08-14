@@ -48,12 +48,12 @@ export class UserRoleService {
 
   /**
    *
-   * @param userId
+   * @param reqUserId
    *
    * @returns - list of active UserRoleRefs for given user ID.
    */
-  public async findAllByUserId(userId: number) {
-    Logger.log('Attempting to find all user roles for user id:' + userId);
+  public async findUserRoleRefsForUser(reqUserId: number) {
+    Logger.log('Attempting to find all user roles for user id:' + reqUserId);
     try {
       const userRoles = await this.userRoleRepository
         .createQueryBuilder('userRole')
@@ -61,7 +61,7 @@ export class UserRoleService {
         .leftJoinAndSelect('userRole.userRoleRef', 'userRoleRef')
         .where('userRole.inactivatedTime is null')
         .andWhere('userRoleRef.inactivatedTime is null')
-        .andWhere('u.id = :userId', { userId })
+        .andWhere('u.id = :reqUserId', { reqUserId })
         .getMany();
 
       if (userRoles) {
@@ -69,7 +69,7 @@ export class UserRoleService {
           'Successfully found:' +
             userRoles.length +
             ' user roles for user ID:' +
-            userId,
+            reqUserId,
         );
 
         return userRoles;
@@ -77,7 +77,7 @@ export class UserRoleService {
     } catch (error) {
       this.logger.error(
         'Error finding user roles by user id:' +
-          userId +
+        reqUserId +
           ' with error:' +
           error,
       );

@@ -73,10 +73,10 @@ export class AppConstants {
   static CREATE_USER = 'create-user';
   static LOGIN: string = 'login';
   static VALIDATE_TOKEN: string = 'validate-token';
-  static FIND_USER_ASSOCIATIONS_BY_USER = 'find-user-associations-by-user';
+  static FIND_USER_ASSOCIATIONS_FOR_USER = 'find-user-associations-for-user';
   static CREATE_USER_ASSOCIATION = 'create-user-association';
   static REMOVE_USER_ASSOCIATION = 'remove-user-association';
-  static FIND_USER_ROLE_REFS_BY_USER = 'find-user-role-refs-by-user-id/:userid';
+  static FIND_USER_ROLE_REFS_FOR_USER = 'find-user-role-refs-for-user';
   static FIND_ALL_CACHED_USER_ROLE_REFS = 'find-all-cached-user-role-refs';
   static FIND_ALL_CACHED_USER_ROLE_REF_ENDPOINTS =
     'find-all-cached-user-role-ref-endpoints';
@@ -100,14 +100,14 @@ export class AppConstants {
   static CREATE_USER_DESC = 'Registers a user.';
   static VALIDATE_TOKEN_DESC =
     'Provides a way for clients to see if their token is valid.';
-  static FIND_USER_ASSOCIATIONS_BY_USER_DESC =
+  static FIND_USER_ASSOCIATIONS_FOR_USER_DESC =
     'Returns all active user associations for the requesting user. This is the friend list.';
   static CREATE_USER_ASSOCIATION_DESC =
     'Will create an assocation between the user requesting and the given user id(will you be my frend?).';
   static REMOVE_USER_ASSOCIATION_DESC =
     'Deactivates the assocation between the requesting user and the given user id(leave me alone!).';
-  static FIND_USER_ROLE_REFS_BY_USER_DESC =
-    'Finds all active user role refs for a given user id.';
+  static FIND_USER_ROLE_REFS_FOR_USER_DESC =
+    'Finds all active user role refs for the requesting user.';
   static FIND_ALL_CACHED_USER_ROLE_REFS_DESC =
     'Finds all active user role refs in the application that are cached.';
   static FIND_ALL_CACHED_USER_ROLE_REF_ENDPOINTS_DESC =

@@ -50,7 +50,7 @@ export const Friends = () => {
 
     async function loadFriends() {
       const response = await fetch(
-        `${config.resourceServer}/api/find-user-associations-by-user`,
+        `${config.resourceServer}/api/find-user-associations-for-user`,
         {
           method: "GET",
           mode: "cors",

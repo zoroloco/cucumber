@@ -42,7 +42,7 @@ export class AuthService {
 
     const updatedUser: User = await this.userService.updateUserPostLogin(user);
 
-    const userRoles = await this.userRoleService.findAllByUserId(updatedUser.id);
+    const userRoles = await this.userRoleService.findUserRoleRefsForUser(updatedUser.id);
 
     const payload = {
       username: updatedUser.username,

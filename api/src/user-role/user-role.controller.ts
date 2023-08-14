@@ -25,22 +25,22 @@ export class UserRoleController {
   ) {}
   
   /**
-   * findUserRoleRefsByUserId
+   * findUserRoleRefsForUser
    *
    * @param string
    * @returns - List of user role refs matching given user id.
    */
   @UseGuards(JwtAuthGuard, AuthUserRoleGuard)
-  @Post(AppConstants.FIND_USER_ROLE_REFS_BY_USER)
+  @Post(AppConstants.FIND_USER_ROLE_REFS_FOR_USER)
   @ApiBearerAuth()
   @ApiTags(AppConstants.API_TAG)
   @ApiResponse({
     status: 201,
-    description: AppConstants.FIND_USER_ROLE_REFS_BY_USER_DESC,
+    description: AppConstants.FIND_USER_ROLE_REFS_FOR_USER_DESC,
   })
-  @ApiOperation({ summary: AppConstants.FIND_USER_ROLE_REFS_BY_USER_DESC })
-  async findUserRoleRefsByUserId(@Param('userid') userId: number) {
-    return this.userRoleService.findAllByUserId(userId);
+  @ApiOperation({ summary: AppConstants.FIND_USER_ROLE_REFS_FOR_USER_DESC })
+  async findUserRoleRefsForUser(@Request() req) {
+    return this.userRoleService.findUserRoleRefsForUser(req.user.userId);
   }
 
   /**

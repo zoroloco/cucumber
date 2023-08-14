@@ -25,19 +25,19 @@ export class UserAssociationService {
   ) {}
 
   /**
-   * findUserAssociationsByUserId
+   * findUserAssociationsForUser
    *
-   * @param userId
+   * @param reqUserId
    * @returns
    */
-  public async findUserAssociationsByUserId(userId: number) {
-    Logger.log('Attempting to find user associations for user id:' + userId);
+  public async findUserAssociationsForUser(reqUserId: number) {
+    Logger.log('Attempting to find user associations for user id:' + reqUserId);
     try {
       const userAssociations = await this.userAssociationRepository
         .createQueryBuilder('ua')
         .leftJoin('ua.user', 'u')
         .leftJoinAndSelect('ua.associate', 'a')
-        .where('ua.user.id = :userId', { userId })
+        .where('ua.user.id = :userId', { reqUserId })
         .andWhere('ua.inactivatedTime is null')
         .andWhere('a.inactivatedTime is null') //don't get inactivated friends
         .orderBy('a.username')
@@ -62,7 +62,7 @@ export class UserAssociationService {
         );
       }
     } catch (error) {
-      Logger.error('Error finding user associations for user id:' + userId);
+      Logger.error('Error finding user associations for user id:' + reqUserId);
       throw new BadRequestException(
         'Error encountered finding user associations.',
       );
