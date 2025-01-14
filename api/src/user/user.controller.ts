@@ -105,15 +105,15 @@ export class UserController {
    * @returns - All users in system.
    */
   @UseGuards(JwtAuthGuard, AuthUserRoleGuard)
-  @Get(AppConstants.FIND_ALL_USERS)
+  @Get('find-all-users')
   @ApiTags(AppConstants.API_TAG)
   @ApiBearerAuth()
   @ApiResponse({
     status: 200,
-    description: AppConstants.FIND_ALL_USERS_DESC,
+    description: 'Returns all active users. With user profile info.',
     type: [User],
   })
-  @ApiOperation({ summary: AppConstants.FIND_ALL_USERS_DESC })
+  @ApiOperation({ summary: 'Returns all active users. With user profile info.' })
   findAllUsers() {
     return this.userService.findAll();
   }
@@ -210,4 +210,55 @@ export class UserController {
   findUserProfilePhotoForUser(@Request() req) {
     return this.userService.findUserProfilePhotoForUser(req.user.userId);
   }
+
+  /**
+   * updateUserProfileImage
+   *
+   * @returns - updated user object with password ommitted.
+   */
+  @ApiTags(AppConstants.API_TAG)
+  @ApiResponse({
+    status: 201,
+    description: AppConstants.UPDATE_USER_PROFILE_IMAGE_DESC,
+  })
+  @ApiOperation({ summary: AppConstants.UPDATE_USER_PROFILE_IMAGE_DESC })
+  @Post(AppConstants.UPDATE_USER_PROFILE_IMAGE)
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (req, file, cb) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const extension = path.extname(file.originalname);
+          const newFileName = file.fieldname + '-' + uniqueSuffix + extension;
+          Logger.log('filename interceptor renaming file to:' + newFileName);
+          if (!extension.match(/\.(jpg|jpeg|png|JPEG|JPG)$/)) {
+            cb(
+              new Error(
+                'jpg|jpeg|png|JPG|JPEG are the only allowed file types.',
+              ),
+              newFileName,
+            );
+          }
+          cb(null, newFileName);
+        },
+      }),
+    }),
+  )
+  async updateUserProfileImage(
+    @Request() req,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 15000000 }), //15mb max size
+        ],
+      }),
+    )
+    file: any,
+  ) {
+    Logger.log('here is req user id:'+req.user.userId);
+    const user = await this.userService.updateUserProfileImage(req.user.userId ,file.filename);
+  }
 }
+   

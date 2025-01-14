@@ -53,6 +53,7 @@ async function bootstrap() {
     .setDescription('A secure restful resource API.')
     .setVersion(process.env.API_VERSION)
     .addTag(AppConstants.API_TAG)
+    .addTag(AppConstants.NFL_TAG)
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);

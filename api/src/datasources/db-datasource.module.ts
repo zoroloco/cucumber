@@ -3,12 +3,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import {
   User,
   UserProfile,
-  UserAssociation,
   UserRole,
   UserRoleRef,
-  Chat,
-  ChatMessage,
-  ChatUser,
   UserRoleRefEndpoint,
 } from '../entities';
 
@@ -26,13 +22,9 @@ import {
       entities: [
         User,
         UserProfile,
-        UserAssociation,
         UserRole,
         UserRoleRef,
-        UserRoleRefEndpoint,
-        Chat,
-        ChatUser,
-        ChatMessage,
+        UserRoleRefEndpoint
       ],
     }),
   ],

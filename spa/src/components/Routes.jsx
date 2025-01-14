@@ -5,10 +5,8 @@ import {
   Login,
   ErrorPage,
   Register,
-  Chats,
   UserAdmin,
-  Conversation,
-  Friends
+  UserProfile
 } from "../pages";
 import PrivateRoutes from "./PrivateRoutes";
 import SiteTemplate from "./SiteTemplate";
@@ -25,21 +23,13 @@ const AppRouter = createBrowserRouter([
             element: <PrivateHome />,
           },
           {
-            path: "/chats", // requires ROLE_CHAT
-            element: <Chats />,
-          },
-          {
-            path: "/friends", // requires ROLE_CHAT
-            element: <Friends />
-          },
-          {
-            path: "/conversation/:chatid", //requires ROLE_CHAT
-            element: <Conversation />,
-          },
-          {
             path: "/user-admin", //requires ROLE_USER_ADMIN
             element: <UserAdmin />,
           },
+          {
+            path: "/user-profile", //requires ROLE_NOOB
+            element: <UserProfile />,
+          }
         ],
       },
       {

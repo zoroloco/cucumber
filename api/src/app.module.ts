@@ -4,9 +4,10 @@ import helmet from 'helmet';
 import { DbModule } from './db/db.module';
 import { AuthModule } from './auth/auth.module';
 import { LoginModule } from './login/login.module';
+import { NflModule} from './nfl/nfl.module';
 
 @Module({
-  imports: [AuthModule, DbModule, LoginModule],
+  imports: [AuthModule, DbModule, LoginModule, NflModule],
   providers: [],
   controllers: [],
 })

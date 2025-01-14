@@ -52,11 +52,15 @@ const Header = () => {
       >
         <Container fluid>
           {ctx.loggedIn && (
-            <Image
-              className={classes["header-profile-img"]}
-              src={`data:image/png;base64, ${profilePhotoFile}`}
-              alt={ctx.user.username}
-            />
+            <Nav.Item>
+              <Nav.Link className={classes["nav-link"]} href="/user-profile">
+                <Image
+                  className={classes["header-profile-img"]}
+                  src={`data:image/png;base64, ${profilePhotoFile}`}
+                  alt={ctx.user.username}
+                />
+              </Nav.Link>
+            </Nav.Item>
           )}
 
           <Navbar.Brand
@@ -92,29 +96,6 @@ const Header = () => {
               )}
               {ctx.loggedIn && (
                 <>
-                  <Nav.Item>
-                    <Nav.Link className={classes["nav-link"]} eventKey="logout">
-                      [Sign Out]
-                    </Nav.Link>
-                  </Nav.Item>
-                  {ctx.user.userRoles.includes("ROLE_CHAT") && (
-                    <>
-                      <Nav.Item>
-                        <Nav.Link
-                          className={classes["nav-link"]}
-                          href="/friends"
-                        >
-                          [Friends]
-                        </Nav.Link>
-                      </Nav.Item>
-
-                      <Nav.Item>
-                        <Nav.Link className={classes["nav-link"]} href="/chats">
-                          [Chats]
-                        </Nav.Link>
-                      </Nav.Item>
-                    </>
-                  )}
                   {ctx.user.userRoles.includes("ROLE_USER_ADMIN") && (
                     <Nav.Item>
                       <Nav.Link
@@ -125,6 +106,11 @@ const Header = () => {
                       </Nav.Link>
                     </Nav.Item>
                   )}
+                  <Nav.Item>
+                    <Nav.Link className={classes["nav-link"]} eventKey="logout">
+                      [Sign Out]
+                    </Nav.Link>
+                  </Nav.Item>
                 </>
               )}
             </Nav>

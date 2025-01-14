@@ -60,12 +60,12 @@ export class AppConstants {
 
   //swagger tags (sections)
   static API_TAG = 'API';
+  static NFL_TAG = 'NFL';
 
   //root
   static API_PATH: string = 'api';
 
   //api endpoints
-  static FIND_ALL_USERS: string = 'find-all-users';
   static FIND_ALL_USER_ROLES_HEAVY_BY_SEARCH_PARAMS: string =
     'find-all-user-roles-heavy-by-search-params';
   static FIND_USER_BY_USERNAME = 'find-user-by-username';
@@ -73,39 +73,24 @@ export class AppConstants {
   static CREATE_USER = 'create-user';
   static LOGIN: string = 'login';
   static VALIDATE_TOKEN: string = 'validate-token';
-  static FIND_USER_ASSOCIATIONS_FOR_USER = 'find-user-associations-for-user';
-  static CREATE_USER_ASSOCIATION = 'create-user-association';
-  static REMOVE_USER_ASSOCIATION = 'remove-user-association';
   static FIND_USER_ROLE_REFS_FOR_USER = 'find-user-role-refs-for-user';
   static FIND_ALL_CACHED_USER_ROLE_REFS = 'find-all-cached-user-role-refs';
   static FIND_ALL_CACHED_USER_ROLE_REF_ENDPOINTS =
     'find-all-cached-user-role-ref-endpoints';
   static CREATE_USER_ROLE = 'create-user-role';
   static REMOVE_USER_ROLE = 'remove-user-role';
-  static CREATE_CHAT = 'create-chat';
-  static FIND_CHATS_FOR_USER = 'find-chats-for-user';
-  static CREATE_CHAT_MESSAGE = 'create-chat-message';
-  static FIND_CHAT_MESSAGES_BY_CHAT = 'find-chat-messages-by-chat-id/:chatid';
   static FIND_USER_PROFILE_PHOTO_FOR_USER = 'find-user-profile-photo-for-user';
-  static FIND_CHATS_FOR_USER_SKINNY = 'find-chats-for-user-skinny';
+  static UPDATE_USER_PROFILE_IMAGE = 'update-user-profile-image-for-user';
 
   //swagger description
   static LOGIN_DESC =
     'Validates credentials. Returns signed JWT if successful. 401 otherwise. Updates last login time.';
-  static FIND_ALL_USERS_DESC =
-    'Returns all active users. With user profile info.';
   static FIND_USER_BY_USERNAME_DESC = 'Returns user given a username.';
   static FIND_USERS_BY_SEARCH_PARAMS_DESC =
     'Returns active users matching only the query string in the request. All other parameters are ignored. User profile info also returned.';
   static CREATE_USER_DESC = 'Registers a user.';
   static VALIDATE_TOKEN_DESC =
     'Provides a way for clients to see if their token is valid.';
-  static FIND_USER_ASSOCIATIONS_FOR_USER_DESC =
-    'Returns all active user associations for the requesting user. This is the friend list.';
-  static CREATE_USER_ASSOCIATION_DESC =
-    'Will create an assocation between the user requesting and the given user id(will you be my frend?).';
-  static REMOVE_USER_ASSOCIATION_DESC =
-    'Deactivates the assocation between the requesting user and the given user id(leave me alone!).';
   static FIND_USER_ROLE_REFS_FOR_USER_DESC =
     'Finds all active user role refs for the requesting user.';
   static FIND_ALL_CACHED_USER_ROLE_REFS_DESC =
@@ -118,18 +103,10 @@ export class AppConstants {
     'Creates a user role for a user given a userId and userRoleRefId.';
   static REMOVE_USER_ROLE_DESC =
     'Deactivates the user role with the given user role ref id and user id.';
-  static CREATE_CHAT_DESC =
-    'Creates a chat conversation for the requesting user and given user ids.';
-  static FIND_CHATS_FOR_USER_DESC =
-    'Finds all active chats for the user requesting. Also returns the list of chat users associated to the chat. Each chat user will have its user populated with user profile and profile photo.';
-  static CREATE_CHAT_MESSAGE_DESC =
-    'Creates a chat message for the user requesting and chat id.';
-  static FIND_CHAT_MESSAGES_BY_CHAT_DESC =
-    'Finds all active chat messages given the chat id. Validation done to make sure request user id is part of the chat.';
   static FIND_USER_PROFILE_PHOTO_FOR_USER_DESC =
     'Returns a base64 encoded string that represents the requesting users profile photo. This request can be cached by browser to improve performance.';
-  static FIND_CHATS_FOR_USER_SKINNY_DESC =
-    'Finds all active chats for the user requesting. Only returns minimum chat information such as user ids involved in chat. No profile photos returned.';
+  static UPDATE_USER_PROFILE_IMAGE_DESC =
+    'Updates the requesting user profile image.';
 
   //bcrypt
   static BCRYPT_SALT_ROUNDS = 10;

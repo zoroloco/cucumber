@@ -1,17 +1,18 @@
 import {
   BadRequestException,
-  Injectable,
   Inject,
+  Injectable,
   Logger,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AppConstants } from '../app.constants';
-import { CreateUserDto } from '../dtos';
+import { ImageProcessingService } from 'src/image-processing';
 import { Repository } from 'typeorm';
+import { AppConstants } from '../app.constants';
+import { RedisService } from '../cache/redis.service';
+import { CreateUserDto } from '../dtos';
 import { User, UserProfile, UserRole } from '../entities';
 import { UserRoleService } from '../user-role';
-import { ImageProcessingService } from 'src/image-processing';
-import { RedisService } from '../cache/redis.service';
 const bcrypt = require('bcrypt');
 
 @Injectable()
@@ -124,7 +125,8 @@ export class UserService {
           'Successfully found user profile id for user id:' + reqUserId,
         );
 
-        const hydratedUser:User = await this.imageProcessingService.hydrateUserProfilePhoto(user);
+        const hydratedUser: User =
+          await this.imageProcessingService.hydrateUserProfilePhoto(user);
         return hydratedUser.profilePhotoFile;
       }
     } catch (error) {
@@ -166,6 +168,43 @@ export class UserService {
       Logger.error('Error searching for users:' + error);
       throw new BadRequestException(
         'Error encountered searching users by search criteria.',
+      );
+    }
+  }
+
+  public async updateUserProfileImage(reqUserId: number, fileName: string) {
+    Logger.log('Updating user profile image for user id:' + reqUserId);
+    try {
+      const user = await this.userRepository.findOne({
+        relations: {
+          userProfile: true, //joins with userProfile table
+        },
+        select: {
+          username: true,
+          id: true,
+          createdTime: true,
+        },
+        where: {
+          id: reqUserId,
+        },
+      });
+
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+
+      if (!user.userProfile) {
+        throw new NotFoundException('User profile not found');
+      }
+
+      user.userProfile.profilePhotoPath = fileName;
+      await this.userProfileRepository.save(user.userProfile);
+
+      return user;
+    } catch (error) {
+      Logger.error('Error updating user:' + error);
+      throw new BadRequestException(
+        'Error encountered while updating user login information.',
       );
     }
   }

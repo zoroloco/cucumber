@@ -5,7 +5,7 @@ CREATE DATABASE IF NOT EXISTS `druidia`;
 CREATE TABLE IF NOT EXISTS `user_profile` (
 	id bigint unsigned auto_increment NOT NULL,
 	firstName varchar(40) DEFAULT NULL,
-  middleName varchar(40) DEFAULT NULL,
+    middleName varchar(40) DEFAULT NULL,
 	lastName varchar(40) DEFAULT NULL,
 	createdTime datetime DEFAULT CURRENT_TIMESTAMP  NOT NULL,
 	createdBy bigint unsigned NOT NULL,
@@ -34,25 +34,6 @@ CREATE TABLE IF NOT EXISTS `user` (
   UNIQUE KEY `username` (`username`),
   CONSTRAINT user_profile_FK FOREIGN KEY (userProfileId) REFERENCES `user_profile`(id)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE IF NOT EXISTS `user_association` (
-	id bigint unsigned auto_increment NOT NULL,
-	userId bigint unsigned NOT NULL,
-	associateUserId bigint unsigned NOT NULL,
-	createdTime datetime DEFAULT CURRENT_TIMESTAMP  NOT NULL,
-	createdBy bigint unsigned NOT NULL,
-	modifiedTime datetime NULL,
-	modifiedBy bigint unsigned DEFAULT NULL,
-	inactivatedTime datetime NULL,
-	inactivatedBy bigint unsigned DEFAULT NULL,
-	CONSTRAINT `PRIMARY` PRIMARY KEY (`id`),
-  KEY `user_association_userId_IDX` (`userId`) USING BTREE,
-  KEY `user_association_associateId_IDX` (`associateUserId`) USING BTREE,
-  CONSTRAINT `user_association_userid_FK` FOREIGN KEY (`userId`) REFERENCES `user` (`id`),
-  CONSTRAINT `user_association__associateuserid_FK` FOREIGN KEY (`associateUserId`) REFERENCES `user` (`id`)
-)
-ENGINE=InnoDB
-DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `user_role_ref` (
 	id bigint unsigned auto_increment NOT NULL,
@@ -85,60 +66,6 @@ CREATE TABLE IF NOT EXISTS `user_role` (
 	KEY `user_role_userrolerefid_FK` (`userRoleRefId`),
 	CONSTRAINT `user_role_userid_FK` FOREIGN KEY (`userId`) REFERENCES `user` (`id`),
 	CONSTRAINT `user_role_userrolerefid_FK` FOREIGN KEY (`userRoleRefId`) REFERENCES `user_role_ref` (`id`)
-)
-ENGINE=InnoDB
-DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE IF NOT EXISTS `chat` (
-	id bigint unsigned auto_increment NOT NULL,
-	name varchar(64) DEFAULT NULL,
-	public bit(1) NOT NULL DEFAULT b'0' COMMENT '1= chat is public. 0= chat is private.',
-	createdTime datetime DEFAULT CURRENT_TIMESTAMP  NOT NULL,
-	createdBy bigint unsigned NOT NULL,
-	modifiedTime datetime NULL,
-	modifiedBy bigint unsigned DEFAULT NULL,
-	inactivatedTime datetime NULL,
-	inactivatedBy bigint unsigned DEFAULT NULL,
-	CONSTRAINT `PRIMARY` PRIMARY KEY (id)
-)
-ENGINE=InnoDB
-DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE IF NOT EXISTS `chat_user` (
-	id bigint unsigned auto_increment NOT NULL,
-	userId bigint unsigned NOT NULL,
-	chatId bigint unsigned NOT NULL,
-	createdTime datetime DEFAULT CURRENT_TIMESTAMP  NOT NULL,
-	createdBy bigint unsigned NOT NULL,
-	modifiedTime datetime NULL,
-	modifiedBy bigint unsigned DEFAULT NULL,
-	inactivatedTime datetime NULL,
-	inactivatedBy bigint unsigned DEFAULT NULL,
-	CONSTRAINT `PRIMARY` PRIMARY KEY (id),
-	KEY `chat_user_userid_FK` (`userId`),
-	KEY `chat_user_chatid_FK` (`chatId`),
-	CONSTRAINT `chat_user_userid_FK` FOREIGN KEY (`userId`) REFERENCES `user` (`id`),
-	CONSTRAINT `chat_user_chatid_FK` FOREIGN KEY (`chatId`) REFERENCES `chat` (`id`)
-)
-ENGINE=InnoDB
-DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE IF NOT EXISTS `chat_message` (
-	id bigint unsigned auto_increment NOT NULL,
-	userId bigint unsigned NOT NULL,
-	chatId bigint unsigned NOT NULL,
-	content varchar(2048) NOT NULL, 
-	createdTime datetime DEFAULT CURRENT_TIMESTAMP  NOT NULL,
-	createdBy bigint unsigned NOT NULL,
-	modifiedTime datetime NULL,
-	modifiedBy bigint unsigned DEFAULT NULL,
-	inactivatedTime datetime NULL,
-	inactivatedBy bigint unsigned DEFAULT NULL,
-	CONSTRAINT `PRIMARY` PRIMARY KEY (id),
-	KEY `chat_message_chatid_FK` (`chatId`),
-	KEY `chat_message_userid_FK` (`userId`),
-	CONSTRAINT `chat_message_chatid_FK` FOREIGN KEY (`chatId`) REFERENCES `chat` (`id`),
-	CONSTRAINT `chat_message_userid_FK` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
 )
 ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4;
