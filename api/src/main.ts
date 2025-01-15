@@ -6,7 +6,6 @@ import { AppConstants } from './app.constants';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  console.info('env:' + process.env.NODE_ENV);
   const dateStamp = new Date();
   let app = null;
 
@@ -40,8 +39,8 @@ async function bootstrap() {
   //}
 
   await app.listen(AppConstants.appPort);
-  Logger.log(`[API ENVIRONMENT: ${process.env.NODE_ENV}`);
-  Logger.log(`API VERSION: ${process.env.API_VERSION}`);
-  Logger.log(`DB USER: ${process.env.MYSQL_USER}`);
+  Logger.log(`[API ENVIRONMENT: ${process.env.NODE_ENV}]`);
+  Logger.log(`[API VERSION: ${process.env.API_VERSION}]`);
+  //Logger.log(`[DB USER: ${process.env.MYSQL_USER}]`);
 }
 bootstrap();
