@@ -1,3 +1,3 @@
 #!/bin/bash -ex
 
-npm start:prod
+npm run start:prod
