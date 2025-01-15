@@ -1,3 +1,3 @@
 #!/bin/bash -ex
 
-npm start
+pm2 start dist/main.js --name "druidia-api" --env production
