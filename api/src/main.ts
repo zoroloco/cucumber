@@ -1,42 +1,25 @@
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import {
-  utilities as nestWinstonModuleUtilities,
-  WinstonModule,
+  WinstonModule
 } from 'nest-winston';
-import * as winston from 'winston';
 import { AppConstants } from './app.constants';
 import { AppModule } from './app.module';
 import path = require('path');
 const fs = require('fs');
-import { Logger, ValidationPipe } from '@nestjs/common';
-
-const httpsOptions = {
-  key: fs.readFileSync(process.env.KEY_PATH, 'utf8'),
-  cert: fs.readFileSync(process.env.CERT_PATH, 'utf8'),
-};
 
 async function bootstrap() {
-  console.info('env:'+process.env.NODE_ENV);
+  console.info('env:' + process.env.NODE_ENV);
   const dateStamp = new Date();
   let app = null;
 
-  if (process.env.NODE_ENV === 'production') {
-    app = await NestFactory.create(AppModule, {
-      logger: WinstonModule.createLogger({
-        transports: AppConstants.winstonTransports,
-        // other options
-      }),
-      httpsOptions,
-    });
-  } else {
-    app = await NestFactory.create(AppModule, {
-      logger: WinstonModule.createLogger({
-        transports: AppConstants.winstonTransports,
-        // other options
-      }),
-    });
-  }
+  app = await NestFactory.create(AppModule, {
+    logger: WinstonModule.createLogger({
+      transports: AppConstants.winstonTransports,
+      // other options
+    }),
+  });
 
   app.enableCors();
 

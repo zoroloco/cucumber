@@ -2,6 +2,8 @@
 
 CREATE DATABASE IF NOT EXISTS `druidia`;
 
+use `druidia`;
+
 CREATE TABLE IF NOT EXISTS `user_profile` (
 	id bigint unsigned auto_increment NOT NULL,
 	firstName varchar(40) DEFAULT NULL,
